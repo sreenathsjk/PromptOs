@@ -7,362 +7,232 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-
-/* ── CRITICAL MOBILE FIX ──
-   Use dvh so browser chrome is excluded.
-   Input bar is position:fixed so it CANNOT be hidden. */
-:root{
-  --nav-h: 50px;
-  --inp-h: 76px;
-  --vh: 1vh;
-}
-html{height:100%}
-body{
-  height:100%;
-  /* fallback then dvh */
-  height: 100dvh;
-  background:#07070a;
-  color:#e8e8f0;
-  font-family:'DM Sans','Segoe UI',sans-serif;
-  overflow:hidden;
-}
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:#07070a}
-::-webkit-scrollbar-thumb{background:#2e2e42;border-radius:2px}
-input,textarea,select,button{font-family:inherit}
-input:focus,textarea:focus,select:focus{outline:none}
-
+body{background:#07070a;color:#e8e8f0;font-family:'DM Sans','Segoe UI',sans-serif;-webkit-text-size-adjust:100%}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#07070a}::-webkit-scrollbar-thumb{background:#2e2e42;border-radius:2px}
+input,select,button{font-family:inherit;-webkit-appearance:none;appearance:none}
+input:focus,select:focus{outline:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes ping{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.2);opacity:0}}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
 
-/* ══ LANDING (scrollable, independent) ══ */
-#land{
-  position:fixed;inset:0;
-  background:#07070a;
-  overflow-y:auto;
-  overflow-x:hidden;
-  z-index:10;
-  display:flex;flex-direction:column;
-  /* iOS safe area */
-  padding-bottom:env(safe-area-inset-bottom);
-}
-#land.hide{display:none}
+/* LANDING */
+#pg-land{display:block;background:#07070a}
+#pg-app{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#07070a;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
 
-.l-nav{
-  position:sticky;top:0;z-index:20;
-  background:rgba(7,7,10,.96);backdrop-filter:blur(16px);
-  border-bottom:1px solid #1e1e2a;
-  padding:12px 16px;
-  display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
-}
-.logo{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:20px;
-  background:linear-gradient(135deg,#7c5cfc,#22d3a0);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  border:none;cursor:pointer;padding:0;background-color:transparent;
-}
+.l-nav{position:sticky;top:0;z-index:50;background:rgba(7,7,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1e1e2a;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.logo-t{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;background:linear-gradient(135deg,#7c5cfc,#22d3a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:none;cursor:pointer;padding:0;display:inline-block}
 .l-links{display:flex;gap:3px;flex-wrap:wrap}
-.lbtn{background:none;border:none;color:#6b6b80;font-size:12px;font-weight:500;padding:5px 9px;border-radius:6px;cursor:pointer}
-.lbtn:hover{color:#e8e8f0;background:#111118}
-
-.hero{padding:52px 20px 36px;text-align:center;animation:rise .6s ease;max-width:640px;margin:0 auto}
+.l-link{background:none;border:none;color:#6b6b80;font-size:12px;font-weight:500;padding:5px 9px;border-radius:6px;cursor:pointer;touch-action:manipulation}
+.hero{padding:50px 20px 32px;text-align:center;max-width:620px;margin:0 auto}
 .hbadge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc44;margin-bottom:16px}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(28px,8vw,54px);font-weight:800;line-height:1.08;margin-bottom:14px}
-.grad{background:linear-gradient(135deg,#7c5cfc,#22d3a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero p{font-size:14px;color:#6b6b80;line-height:1.7;max-width:380px;margin:0 auto 28px}
-.idea-box{display:flex;flex-direction:column;gap:9px;max-width:460px;margin:0 auto 12px}
-.idea-inp{width:100%;padding:14px 16px;border-radius:10px;font-size:15px;background:#111118;border:1px solid #1e1e2a;color:#e8e8f0;transition:border-color .2s,box-shadow .2s}
-.idea-inp:focus{border-color:#7c5cfc55;box-shadow:0 0 0 3px #7c5cfc12}
-.hint-txt{font-size:12px;color:#3a3a50;text-align:center;margin-bottom:36px}
-
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(26px,8vw,52px);font-weight:800;line-height:1.08;margin-bottom:14px}
+.grd{background:linear-gradient(135deg,#7c5cfc,#22d3a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:14px;color:#6b6b80;line-height:1.7;max-width:360px;margin:0 auto 26px}
+.idea-box{display:flex;flex-direction:column;gap:9px;max-width:440px;margin:0 auto 12px}
+.idea-inp{width:100%;padding:14px 16px;border-radius:10px;font-size:15px;background:#111118;border:1px solid #1e1e2a;color:#e8e8f0;transition:border-color .2s}
+.idea-inp:focus{border-color:#7c5cfc55}
+.hint{font-size:12px;color:#3a3a50;text-align:center;margin-bottom:36px}
 .pills{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;padding:0 16px 48px}
 .pill{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;background:#111118;border:1px solid #1e1e2a;font-size:12px;color:#6b6b80}
-
-.feat{max-width:860px;margin:0 auto;padding:0 16px 64px}
-.feat-hd{text-align:center;margin-bottom:36px}
-.feat-hd h2{font-family:'Syne',sans-serif;font-size:clamp(20px,5vw,28px);font-weight:800;margin-bottom:8px}
+.feat{max-width:840px;margin:0 auto;padding:0 16px 60px}
+.feat-hd{text-align:center;margin-bottom:32px}
+.feat-hd h2{font-family:'Syne',sans-serif;font-size:clamp(19px,5vw,28px);font-weight:800;margin-bottom:8px}
 .feat-hd p{color:#6b6b80;font-size:13px}
-.ag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px}
-.ag-card{padding:18px;border-radius:12px;background:#111118;border:1px solid #1e1e2a;animation:rise .5s ease both}
-.ag-card .aci{font-size:22px;margin-bottom:9px}
-.ag-card h3{font-size:13px;font-weight:700;margin-bottom:4px}
+.ag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.ag-card{padding:17px;border-radius:12px;background:#111118;border:1px solid #1e1e2a}
+.ag-card .aci{font-size:21px;margin-bottom:8px}
+.ag-card h3{font-size:13px;font-weight:700;margin-bottom:3px}
 .ag-card p{font-size:12px;color:#6b6b80;line-height:1.6}
-
 .stats{border-top:1px solid #1e1e2a;border-bottom:1px solid #1e1e2a;padding:28px 16px;display:flex;justify-content:center;gap:clamp(20px,5vw,56px);flex-wrap:wrap}
 .sv{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#7c5cfc}
 .sl{font-size:12px;color:#6b6b80;margin-top:3px}
-.l-cta{text-align:center;padding:52px 16px}
-.l-cta h2{font-family:'Syne',sans-serif;font-size:clamp(20px,5vw,28px);font-weight:800;margin-bottom:10px}
+.l-cta{text-align:center;padding:50px 16px}
+.l-cta h2{font-family:'Syne',sans-serif;font-size:clamp(19px,5vw,28px);font-weight:800;margin-bottom:10px}
 .l-cta p{color:#6b6b80;margin-bottom:22px;font-size:13px}
 .l-foot{border-top:1px solid #1e1e2a;padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 .l-foot span{font-size:12px;color:#3a3a50}
 
-/* ══ BUTTONS ══ */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600;border:1px solid #2e2e42;background:transparent;color:#e8e8f0;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
-.btn:active{transform:scale(.97)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600;border:1px solid #2e2e42;background:transparent;color:#e8e8f0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .btn-sm{padding:8px 14px;font-size:13px}
 .btn-xs{padding:6px 11px;font-size:12px}
 .btn-p{background:#7c5cfc;border-color:#7c5cfc;color:#fff}
-.btn-p:hover{background:#8b6dff}
-.btn-full{width:100%}
+.btn-full{width:100%;display:flex}
 .badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 7px;border-radius:4px}
 
-/* ══ APP SHELL ══ */
-#app{
-  position:fixed;inset:0;
-  background:#07070a;
-  display:none;flex-direction:column;
-  padding-bottom:env(safe-area-inset-bottom);
-}
-#app.show{display:flex}
-
-/* ── TOP NAV (fixed height) ── */
-.a-nav{
-  height:var(--nav-h);
-  background:rgba(7,7,10,.97);backdrop-filter:blur(16px);
-  border-bottom:1px solid #1e1e2a;
-  padding:0 14px;
-  display:flex;align-items:center;justify-content:space-between;gap:6px;
-  flex-shrink:0;flex-wrap:wrap;
-}
-.a-links{display:flex;gap:2px;flex-wrap:wrap}
-.aln{background:none;border:1px solid transparent;border-radius:6px;color:#6b6b80;font-size:12px;font-weight:500;padding:5px 8px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+/* APP NAV */
+.a-nav{height:48px;flex-shrink:0;background:rgba(7,7,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1e1e2a;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.a-links{display:flex;gap:2px}
+.aln{background:none;border:1px solid transparent;border-radius:6px;color:#6b6b80;font-size:12px;font-weight:500;padding:5px 8px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .aln.on{background:#7c5cfc22;border-color:#7c5cfc44;color:#7c5cfc}
 .a-st{display:flex;align-items:center;gap:5px;font-size:11px;color:#6b6b80}
 .dot{position:relative;display:inline-flex;width:8px;height:8px;flex-shrink:0}
 .dc{position:absolute;width:8px;height:8px;border-radius:50%}
 .dp{position:absolute;width:8px;height:8px;border-radius:50%;opacity:.4;animation:ping 2s infinite}
 
-/* ── VIEWS ── */
-/* Each view fills space between nav and fixed input bar */
-.view{
-  display:none;
-  position:absolute;
-  top:var(--nav-h);
-  left:0;right:0;
-  /* bottom clears the fixed input bar */
-  bottom:var(--inp-h);
-  overflow:hidden;
-  flex-direction:column;
-}
+/* VIEWS */
+.views-wrap{flex:1;position:relative;overflow:hidden;min-height:0}
+.view{display:none;position:absolute;inset:0;flex-direction:column;overflow:hidden}
 .view.on{display:flex}
-.v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 15px}
+.v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
 
-/* ══ WORKSPACE VIEW ══ */
-/* ws header bar */
-.ws-bar{
-  padding:10px 13px;
-  border-bottom:1px solid #1e1e2a;
-  display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap;
-  flex-shrink:0;background:#07070a;
-}
+/* WORKSPACE */
+.ws-top{flex-shrink:0;padding:10px 13px;border-bottom:1px solid #1e1e2a;background:#07070a;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .ws-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .ws-st{display:flex;align-items:center;gap:6px}
 .ws-stxt{font-size:13px;font-weight:600;color:#6b6b80}
-.itag{display:none;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:4px;background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc44;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.itag{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 7px;border-radius:4px;background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc44;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none}
 .plsel{background:#111118;border:1px solid #1e1e2a;color:#e8e8f0;padding:5px 8px;border-radius:7px;font-size:12px;cursor:pointer}
 
-/* messages — scrollable, sits between ws-bar and fixed input */
-.msgs{
-  flex:1;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  padding:15px;
-}
-.msgs-mt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;color:#3a3a50;height:100%;text-align:center;padding:20px}
-.msgs-mt .ei{font-size:38px}
-.msgs-mt p{font-size:14px;line-height:1.7;max-width:280px}
+/* MESSAGES */
+.msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px}
+.msgs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#3a3a50;height:100%;text-align:center;padding:24px}
+.msgs-empty .ei{font-size:36px}
+.msgs-empty p{font-size:14px;line-height:1.7;max-width:260px}
 
-/* message styles */
-.msg{margin-bottom:13px;animation:rise .3s ease}
+.msg{margin-bottom:12px;animation:rise .3s ease}
 .msys{text-align:center;margin-bottom:9px}
-.msys span{font-size:11px;color:#3a3a50;padding:3px 11px;border-radius:999px;background:#111118;border:1px solid #1e1e2a}
+.msys span{font-size:11px;color:#3a3a50;padding:3px 10px;border-radius:999px;background:#111118;border:1px solid #1e1e2a}
 .mai{display:flex;gap:8px;max-width:92%}
-.mai-av{width:27px;height:27px;border-radius:7px;background:#7c5cfc22;border:1px solid #7c5cfc44;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.mai-b{background:#111118;border:1px solid #1e1e2a;border-radius:3px 11px 11px 11px;padding:10px 13px;font-size:13px;line-height:1.75;color:#e8e8f0;white-space:pre-wrap}
-.magt{display:flex;gap:7px;max-width:85%;margin-left:35px}
+.mai-av{width:26px;height:26px;border-radius:7px;background:#7c5cfc22;border:1px solid #7c5cfc44;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.mai-b{background:#111118;border:1px solid #1e1e2a;border-radius:3px 10px 10px 10px;padding:10px 13px;font-size:13px;line-height:1.75;color:#e8e8f0;white-space:pre-wrap}
+.magt{display:flex;gap:7px;max-width:84%;margin-left:34px}
 .magt-b{background:#0d0d12;border:1px solid #1e1e2a;border-radius:8px;padding:6px 11px;font-size:12px;color:#6b6b80;display:flex;align-items:center;gap:6px}
-.mq{display:flex;gap:8px;max-width:95%}
-.mq-av{width:27px;height:27px;border-radius:7px;background:#7c5cfc22;border:1px solid #7c5cfc44;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.mq-b{flex:1;background:linear-gradient(135deg,#111118,#7c5cfc0d);border:1px solid #7c5cfc44;border-radius:3px 11px 11px 11px;padding:12px 14px}
-.mq-t{font-size:14px;font-weight:600;color:#e8e8f0;line-height:1.6}
-.musr{display:flex;justify-content:flex-end;margin-top:3px}
-.musr-b{background:#7c5cfc;border-radius:11px 3px 11px 11px;padding:9px 14px;font-size:13px;color:#fff;max-width:80%;line-height:1.65}
-.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.chip{padding:7px 11px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:all .15s;-webkit-tap-highlight-color:transparent}
-.yn-row{display:flex;gap:8px;margin-top:10px}
-.yn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.mq{display:flex;gap:8px;max-width:96%}
+.mq-av{width:26px;height:26px;border-radius:7px;background:#7c5cfc22;border:1px solid #7c5cfc44;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.mq-b{flex:1;background:linear-gradient(135deg,#111118,#7c5cfc0d);border:1px solid #7c5cfc44;border-radius:3px 10px 10px 10px;padding:12px 14px}
+.mq-t{font-size:14px;font-weight:600;color:#e8e8f0;line-height:1.6;margin-bottom:4px}
+.musr{display:flex;justify-content:flex-end}
+.musr-b{background:#7c5cfc;border-radius:10px 3px 10px 10px;padding:9px 14px;font-size:13px;color:#fff;max-width:80%;line-height:1.65}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.chip{padding:8px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.yn-row{display:flex;gap:9px;margin-top:10px}
+.yn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:1px solid transparent;transition:opacity .15s}
 
-/* ══ FIXED INPUT BAR ══
-   THIS IS THE KEY FIX.
-   position:fixed + bottom:0 means it ALWAYS shows
-   regardless of browser chrome, keyboard, viewport issues. */
-#ws-inp{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  height:var(--inp-h);
-  padding:12px 14px;
-  padding-bottom:max(12px, env(safe-area-inset-bottom));
+/* INPUT BAR */
+#inp-bar{
+  height:68px;
+  flex-shrink:0;
   background:#07070a;
-  border-top:1px solid #1e1e2a;
-  z-index:100;
-  display:none; /* shown only when app is visible */
+  border-top:1px solid #2e2e42;
+  padding:12px 14px;
+  /* ALWAYS flex — never hidden */
+  display:flex;
+  align-items:center;
 }
-#ws-inp.show{display:block}
-.irow{display:flex;gap:8px;align-items:center}
-.ci{
-  flex:1;padding:11px 14px;border-radius:9px;
-  font-size:15px;background:#111118;
-  border:1px solid #1e1e2a;color:#e8e8f0;
-  transition:border-color .2s;
-  /* single line, no resize — avoids layout shift */
-  resize:none;height:44px;
-  line-height:1.4;overflow:hidden;
-}
-.ci:focus{border-color:#7c5cfc55}
-.ci.lit{border-color:#7c5cfc55}
-.sdb{padding:10px 14px;border-radius:9px;background:#22d3a022;border:1px solid #22d3a044;font-size:13px;color:#22d3a0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sgb{padding:11px 14px;border-radius:9px;background:#f5a62322;border:1px solid #f5a62344;font-size:13px;color:#f5a623;display:flex;align-items:center;gap:7px}
+/* All children hidden by default via inline style in HTML */
+.irow{display:flex;gap:9px;align-items:center;width:100%}
+.ci{flex:1;height:44px;padding:0 14px;border-radius:9px;font-size:15px;background:#1a1a24;border:2px solid #2e2e42;color:#e8e8f0;-webkit-appearance:none}
+.ci:focus{border-color:#7c5cfc;background:#1e1e2e}
+.send-btn{height:44px;min-width:80px;padding:0 16px;border-radius:9px;font-size:15px;font-weight:700;background:#7c5cfc;border:none;color:#fff;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.send-btn:active{background:#5a3cc0}
+.new-btn{height:44px;padding:0 14px;border-radius:9px;font-size:13px;font-weight:600;background:#2e2e42;border:none;color:#e8e8f0;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.status-done{flex:1;height:44px;display:flex;align-items:center;padding:0 12px;border-radius:9px;background:#22d3a022;border:1px solid #22d3a044;font-size:12px;color:#22d3a0;overflow:hidden;white-space:nowrap}
+.status-gen{width:100%;height:44px;display:flex;align-items:center;gap:9px;padding:0 14px;border-radius:9px;background:#f5a62322;border:1px solid #f5a62344;font-size:13px;color:#f5a623}
 .spin-i{width:14px;height:14px;border:2px solid #7c5cfc44;border-top-color:#7c5cfc;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 
-/* ══ AGENTS / PROJECTS / PROMPTS VIEWS ══ */
-.ar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;transition:border-color .3s}
+/* OTHER VIEWS */
+.ar{display:flex;align-items:center;gap:12px;padding:14px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;transition:border-color .3s}
 .ar.lit{border-color:#22d3a055}
 .ar-i{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.ar-inf{flex:1}
-.ar-inf h3{font-size:13px;font-weight:700;margin-bottom:3px}
-.ar-inf p{font-size:12px;color:#6b6b80}
+.ar-inf{flex:1}.ar-inf h3{font-size:13px;font-weight:700;margin-bottom:3px}.ar-inf p{font-size:12px;color:#6b6b80}
 .ar-st{display:flex;align-items:center;gap:6px;font-size:12px}
-.pr{display:flex;align-items:center;gap:11px;padding:14px 16px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.pr:active{border-color:#2e2e42}
+.pr{display:flex;align-items:center;gap:11px;padding:14px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .pr-i{width:38px;height:38px;border-radius:8px;background:#7c5cfc22;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.pr-inf{flex:1;min-width:0}
-.pr-inf h3{font-weight:700;font-size:13px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-inf{flex:1;min-width:0}.pr-inf h3{font-weight:700;font-size:13px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pr-bg{display:flex;gap:5px;flex-wrap:wrap}
-.pr-sc{text-align:right;flex-shrink:0}
-.pr-sv{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
-.pr-sl{font-size:10px;color:#6b6b80}
-.pr-mt{text-align:right;flex-shrink:0;min-width:65px}
-.pr-mp{font-size:12px;color:#6b6b80}
-.pr-md{font-size:11px;color:#3a3a50;margin-top:2px}
-.pli{padding:14px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pr-sc{text-align:right;flex-shrink:0}.pr-sv{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}.pr-sl{font-size:10px;color:#6b6b80}
+.pr-mt{text-align:right;flex-shrink:0;min-width:65px}.pr-mp{font-size:12px;color:#6b6b80}.pr-md{font-size:11px;color:#3a3a50;margin-top:2px}
+.pli{padding:14px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .pli.on{border-color:#7c5cfc44}
 .pli-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .pli-p{font-size:12px;color:#6b6b80;line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.sh{margin-bottom:20px}
-.sh h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:4px}
-.sh p{color:#6b6b80;font-size:13px}
-.shr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-.shr h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:4px}
-.shr p{color:#6b6b80;font-size:13px}
+.sh{margin-bottom:20px}.sh h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:4px}.sh p{color:#6b6b80;font-size:13px}
+.shr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:10px}.shr h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:4px}.shr p{color:#6b6b80;font-size:13px}
 
-/* ══ PROMPT OVERLAY ══ */
-#po{
-  position:fixed;inset:0;z-index:200;
-  background:#0d0d12;
-  display:none;flex-direction:column;
-  animation:fadein .2s ease;
-  padding-bottom:env(safe-area-inset-bottom);
-}
+/* PROMPT OVERLAY */
+#po{position:fixed;inset:0;z-index:300;background:#0d0d12;display:none;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
 #po.open{display:flex}
 .po-hd{padding:13px 15px;border-bottom:1px solid #1e1e2a;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .po-tabs{display:flex;overflow-x:auto;gap:5px;padding:9px 13px;border-bottom:1px solid #1e1e2a;flex-shrink:0}
 .po-tabs::-webkit-scrollbar{height:0}
-.ptab{white-space:nowrap;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #1e1e2a;background:#111118;color:#6b6b80;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.ptab{white-space:nowrap;padding:6px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #1e1e2a;background:#111118;color:#6b6b80;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .ptab.on{background:#7c5cfc;border-color:#7c5cfc;color:#fff}
-.po-sc{display:none;margin:10px 13px;padding:9px 12px;border-radius:8px;background:#22d3a022;border:1px solid #22d3a044}
+.po-sc{margin:10px 13px;padding:9px 12px;border-radius:8px;background:#22d3a022;border:1px solid #22d3a044}
 .po-sc-l{font-size:10px;color:#22d3a0;font-weight:600;letter-spacing:.07em;text-transform:uppercase}
 .po-sc-v{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#22d3a0;line-height:1.2}
 .po-sc-bg{height:4px;border-radius:2px;background:#111118;margin-top:4px}
-.po-sc-b{height:4px;border-radius:2px;background:#22d3a0;width:0%;transition:width 1s ease}
+.po-sc-b{height:4px;border-radius:2px;background:#22d3a0;width:0%;transition:width 1.2s ease}
 .po-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:13px}
 .po-card{padding:13px;border-radius:10px;background:#111118;border:1px solid #1e1e2a}
-.po-card pre{font-family:inherit;font-size:12px;line-height:1.85;color:#8888a0;white-space:pre-wrap;word-break:break-word}
+.po-card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.po-card pre{font-family:inherit;font-size:12px;line-height:1.85;color:#9090b0;white-space:pre-wrap;word-break:break-word}
 .po-ft{padding:10px 13px 14px;border-top:1px solid #1e1e2a;display:flex;gap:7px;flex-shrink:0}
-.po-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#3a3a50;padding:22px;text-align:center}
-.po-empty .pei{font-size:32px;margin-bottom:4px}
-.po-empty p{font-size:13px;line-height:1.7}
-.po-phs{margin-top:10px;display:flex;flex-direction:column;gap:6px;width:100%}
-.po-ph{padding:8px 12px;border-radius:8px;background:#111118;border:1px solid #1e1e2a;font-size:12px;color:#3a3a50;display:flex;align-items:center;gap:7px}
 </style>
 </head>
 <body>
 
-<!-- ══ LANDING ══ -->
-<div id="land">
+<!-- ═══ LANDING ═══ -->
+<div id="pg-land">
   <nav class="l-nav">
-    <button class="logo" onclick="goLand()">PromptOS</button>
+    <span class="logo-t" id="logo-land">PromptOS</span>
     <div class="l-links">
-      <button class="lbtn" onclick="goApp('ws')">Workspace</button>
-      <button class="lbtn" onclick="goApp('prompts')">Prompts</button>
-      <button class="lbtn" onclick="goApp('agents')">Agents</button>
+      <button class="l-link" id="lnk-ws">Workspace</button>
+      <button class="l-link" id="lnk-agents">Agents</button>
+      <button class="l-link" id="lnk-projects">Projects</button>
     </div>
   </nav>
-
   <section class="hero">
     <div class="hbadge">AI Product Architect</div>
-    <h1>Stop prompting.<br/><span class="grad">Start building.</span></h1>
-    <p>PromptOS acts like a senior PM, CTO &amp; UX strategist — then generates ultra-optimized, platform-specific prompts for any AI coding tool.</p>
+    <h1>Stop prompting.<br/><span class="grd">Start building.</span></h1>
+    <p>PromptOS thinks like a senior PM, CTO &amp; UX strategist — then generates ultra-optimized, platform-specific prompts for any AI coding tool.</p>
     <div class="idea-box">
-      <input id="l-idea" class="idea-inp" placeholder="I want to build a food delivery app…"
-        oninput="setIdea(this.value)"
-        onkeydown="if(event.key==='Enter')doStart()"/>
-      <button class="btn btn-p btn-full" onclick="doStart()">Start Building →</button>
+      <input id="l-idea" class="idea-inp" type="text" placeholder="I want to build a food delivery app…"/>
+      <button class="btn btn-p btn-full" id="l-start-btn">Start Building →</button>
     </div>
-    <p class="hint-txt">Works with Lovable, Bolt, Cursor, v0, Claude, GPT-4o &amp; more</p>
+    <p class="hint">Works with Lovable, Bolt, Cursor, v0, Claude, GPT-4o &amp; more</p>
   </section>
-
   <section class="pills">
-    <div class="pill">💜 <span style="color:#a855f7">Lovable</span></div>
-    <div class="pill">⚡ <span style="color:#f59e0b">Bolt</span></div>
-    <div class="pill">◎ <span style="color:#3b82f6">Cursor</span></div>
-    <div class="pill">▲ <span style="color:#e2e8f0">v0</span></div>
-    <div class="pill">🔁 <span style="color:#f97316">Replit</span></div>
-    <div class="pill">✦ <span style="color:#7c5cfc">Claude</span></div>
-    <div class="pill">◉ <span style="color:#10a37f">GPT-4o</span></div>
-    <div class="pill">◈ <span style="color:#4285f4">Gemini</span></div>
+    <div class="pill">💜<span style="color:#a855f7">Lovable</span></div>
+    <div class="pill">⚡<span style="color:#f59e0b">Bolt</span></div>
+    <div class="pill">◎<span style="color:#3b82f6">Cursor</span></div>
+    <div class="pill">▲<span style="color:#e2e8f0">v0</span></div>
+    <div class="pill">🔁<span style="color:#f97316">Replit</span></div>
+    <div class="pill">✦<span style="color:#7c5cfc">Claude</span></div>
+    <div class="pill">◉<span style="color:#10a37f">GPT-4o</span></div>
+    <div class="pill">◈<span style="color:#4285f4">Gemini</span></div>
   </section>
-
   <section class="feat">
-    <div class="feat-hd">
-      <h2>Full-stack prompt intelligence</h2>
-      <p>7 specialized AI agents architect your vision from every angle.</p>
-    </div>
+    <div class="feat-hd"><h2>Full-stack prompt intelligence</h2><p>7 specialized AI agents architect your vision from every angle.</p></div>
     <div class="ag-grid" id="land-ag"></div>
   </section>
-
   <section class="stats">
     <div><div class="sv">10</div><div class="sl">Prompt Types</div></div>
     <div><div class="sv">7</div><div class="sl">AI Agents</div></div>
     <div><div class="sv">8</div><div class="sl">Platforms</div></div>
     <div><div class="sv">95+</div><div class="sl">Avg Score</div></div>
   </section>
-
   <section class="l-cta">
     <h2>Ready to build something great?</h2>
     <p>Describe your idea. PromptOS does the rest.</p>
-    <button class="btn btn-p" style="font-size:15px;padding:13px 26px" onclick="goApp('ws')">Open Workspace →</button>
+    <button class="btn btn-p" id="l-cta-btn" style="font-size:15px;padding:13px 26px">Open Workspace →</button>
   </section>
-
   <footer class="l-foot">
     <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#3a3a50">PromptOS</span>
     <span>© 2025 · AI Product Architect</span>
   </footer>
 </div>
 
-<!-- ══ APP SHELL ══ -->
-<div id="app">
-  <!-- Top nav -->
+<!-- ═══ APP SHELL ═══ -->
+<div id="pg-app">
   <nav class="a-nav">
-    <button class="logo" onclick="goLand()">PromptOS</button>
+    <span class="logo-t" id="logo-app">PromptOS</span>
     <div class="a-links">
-      <button class="aln" id="aln-ws"       onclick="setV('ws')">✦ Workspace</button>
-      <button class="aln" id="aln-prompts"  onclick="setV('prompts')">◈ Prompts</button>
-      <button class="aln" id="aln-agents"   onclick="setV('agents')">◎ Agents</button>
-      <button class="aln" id="aln-projects" onclick="setV('projects')">▦ Projects</button>
+      <button class="aln on" id="aln-ws">✦ Workspace</button>
+      <button class="aln" id="aln-prompts">◈ Prompts</button>
+      <button class="aln" id="aln-agents">◎ Agents</button>
+      <button class="aln" id="aln-projects">▦ Projects</button>
     </div>
     <div class="a-st">
       <span class="dot"><span class="dc" style="background:#22d3a0;animation:pulse 2s infinite"></span><span class="dp" style="background:#22d3a0"></span></span>
@@ -370,128 +240,99 @@ input:focus,textarea:focus,select:focus{outline:none}
     </div>
   </nav>
 
-  <!-- WORKSPACE VIEW -->
-  <div id="v-ws" class="view on">
-    <div class="ws-bar">
-      <div class="ws-l">
-        <div class="ws-st">
-          <span class="dot" id="std"><span class="dc" id="stdc" style="background:#7c5cfc"></span></span>
-          <span class="ws-stxt" id="stlbl">Ready</span>
+  <div class="views-wrap">
+    <!-- WORKSPACE -->
+    <div id="v-ws" class="view on">
+      <div class="ws-top">
+        <div class="ws-l">
+          <div class="ws-st">
+            <span class="dot" id="std"><span class="dc" id="stdc" style="background:#7c5cfc"></span></span>
+            <span class="ws-stxt" id="stlbl">Ready</span>
+          </div>
+          <span class="itag" id="itag"></span>
         </div>
-        <span class="itag" id="itag"></span>
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <button class="btn btn-sm" id="vpbtn" style="display:none">◈ View Prompts</button>
+          <span style="font-size:11px;color:#6b6b80">Platform:</span>
+          <select class="plsel" id="plsel">
+            <option value="lovable">💜 Lovable</option>
+            <option value="bolt">⚡ Bolt</option>
+            <option value="cursor">◎ Cursor</option>
+            <option value="v0">▲ v0</option>
+            <option value="replit">🔁 Replit</option>
+            <option value="claude" selected>✦ Claude</option>
+            <option value="gpt">◉ GPT-4o</option>
+            <option value="gemini">◈ Gemini</option>
+          </select>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
-        <button class="btn btn-sm" id="vpbtn" style="display:none" onclick="openPO()">◈ View Prompts</button>
-        <span style="font-size:11px;color:#6b6b80">Platform:</span>
-        <select class="plsel" id="plsel" onchange="G.pl=this.value">
-          <option value="lovable">💜 Lovable</option>
-          <option value="bolt">⚡ Bolt</option>
-          <option value="cursor">◎ Cursor</option>
-          <option value="v0">▲ v0</option>
-          <option value="replit">🔁 Replit</option>
-          <option value="claude" selected>✦ Claude</option>
-          <option value="gpt">◉ GPT-4o</option>
-          <option value="gemini">◈ Gemini</option>
-        </select>
+      <div class="msgs" id="msgs">
+        <div class="msgs-empty" id="msgs-empty">
+          <div class="ei">✦</div>
+          <p>Type your project idea below and tap Begin →</p>
+        </div>
       </div>
     </div>
-    <div class="msgs" id="msgs">
-      <div class="msgs-mt" id="msgs-mt">
-        <div class="ei">✦</div>
-        <p>Describe your idea in the box below — I'll guide you through a deep product discovery process.</p>
+    <!-- AGENTS -->
+    <div id="v-agents" class="view">
+      <div class="v-scroll"><div class="sh"><h2>AI Agent Panel</h2><p>Seven specialized agents ready to architect your project.</p></div><div id="ag-rows"></div></div>
+    </div>
+    <!-- PROJECTS -->
+    <div id="v-projects" class="view">
+      <div class="v-scroll">
+        <div class="shr"><div><h2>Project Memory</h2><p>Past builds and prompts.</p></div><button class="btn btn-p btn-sm" id="new-proj-btn">+ New</button></div>
+        <div id="pj-rows"></div>
+      </div>
+    </div>
+    <!-- PROMPTS LIST -->
+    <div id="v-prompts" class="view">
+      <div class="v-scroll">
+        <div class="sh"><h2>Prompt Dashboard</h2><p id="pl-sub">No prompts yet.</p></div>
+        <div id="pl-list"></div>
+        <div id="pl-cta" style="text-align:center;padding:40px 0;color:#3a3a50">
+          <div style="font-size:34px;margin-bottom:10px">◈</div>
+          <p style="font-size:13px;margin-bottom:18px">Start a conversation to generate prompts</p>
+          <button class="btn btn-p btn-sm" id="pl-cta-btn">Open Workspace →</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- AGENTS VIEW -->
-  <div id="v-agents" class="view">
-    <div class="v-scroll">
-      <div class="sh"><h2>AI Agent Panel</h2><p>Seven specialized agents ready to architect your project.</p></div>
-      <div id="ag-rows"></div>
-    </div>
-  </div>
-
-  <!-- PROJECTS VIEW -->
-  <div id="v-projects" class="view">
-    <div class="v-scroll">
-      <div class="shr">
-        <div><h2>Project Memory</h2><p>All your past builds and prompts.</p></div>
-        <button class="btn btn-p btn-sm" onclick="setV('ws')">+ New</button>
-      </div>
-      <div id="pj-rows"></div>
-    </div>
-  </div>
-
-  <!-- PROMPTS LIST VIEW -->
-  <div id="v-prompts" class="view">
-    <div class="v-scroll">
-      <div class="sh"><h2>Prompt Dashboard</h2><p id="pl-sub">No prompts yet — start a project first.</p></div>
-      <div id="pl-list"></div>
-      <div id="pl-cta" style="text-align:center;padding:40px 0;color:#3a3a50">
-        <div style="font-size:34px;margin-bottom:10px">◈</div>
-        <p style="font-size:13px;margin-bottom:18px">Start a conversation to generate prompts</p>
-        <button class="btn btn-p btn-sm" onclick="setV('ws')">Open Workspace →</button>
-      </div>
-    </div>
+  <!--
+    INPUT BAR — ALWAYS display:flex, never toggled.
+    Inner children show/hide via JS setting their display directly.
+    #inp-idle starts visible. Others start display:none.
+  -->
+  <div id="inp-bar">
+    <div id="inp-idle" class="irow"><!-- display controlled by JS, starts flex --></div>
+    <div id="inp-q"    class="irow" style="display:none"></div>
+    <div id="inp-gen"  style="display:none;width:100%"></div>
+    <div id="inp-done" style="display:none;width:100%"></div>
   </div>
 </div>
 
-<!-- ══ FIXED INPUT BAR (always visible, position:fixed) ══ -->
-<div id="ws-inp">
-  <!-- idle -->
-  <div id="ii" class="irow">
-    <input id="wsi" class="ci" type="text"
-      placeholder="Describe your project idea…"
-      oninput="setIdea(this.value)"
-      onkeydown="if(event.key==='Enter')doStart()"/>
-    <button class="btn btn-p" onclick="doStart()" style="height:44px;padding:0 15px;flex-shrink:0;white-space:nowrap">Begin →</button>
-  </div>
-  <!-- questioning -->
-  <div id="iq" class="irow" style="display:none">
-    <input id="ans" class="ci" type="text"
-      placeholder="Type your answer…"
-      oninput="this.classList.toggle('lit',this.value.length>0)"
-      onkeydown="if(event.key==='Enter')subAns()"/>
-    <button class="btn btn-p" onclick="subAns()" style="height:44px;padding:0 15px;flex-shrink:0">Next →</button>
-  </div>
-  <!-- generating -->
-  <div id="igen" style="display:none">
-    <div class="sgb"><span class="spin-i"></span>AI agents are analyzing your project…</div>
-  </div>
-  <!-- done -->
-  <div id="idone" style="display:none">
-    <div style="display:flex;gap:8px;align-items:center">
-      <div class="sdb" id="donetxt"></div>
-      <button class="btn btn-sm" onclick="resetF()" style="flex-shrink:0">New</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ PROMPT OVERLAY ══ -->
+<!-- PROMPT OVERLAY -->
 <div id="po">
   <div class="po-hd">
     <span style="font-weight:700;font-size:14px">Generated Prompts</span>
-    <button class="btn btn-xs" onclick="closePO()">✕ Close</button>
+    <button class="btn btn-xs" id="po-close-btn">✕ Close</button>
   </div>
   <div class="po-tabs" id="po-tabs"></div>
-  <div class="po-sc" id="po-sc">
+  <div id="po-sc" style="display:none" class="po-sc">
     <div style="display:flex;align-items:center;gap:10px">
-      <div>
-        <div class="po-sc-l">Prompt Quality Score</div>
-        <div class="po-sc-v" id="po-sc-v">—/100</div>
-      </div>
+      <div><div class="po-sc-l">Prompt Quality Score</div><div class="po-sc-v" id="po-sc-v">—</div></div>
       <div style="flex:1"><div class="po-sc-bg"><div class="po-sc-b" id="po-sc-b"></div></div></div>
     </div>
   </div>
-  <div class="po-empty" id="po-empty">
-    <div class="pei">◈</div>
-    <p>Answer the questions in Workspace and your platform-optimized prompts will appear here.</p>
-    <div class="po-phs" id="po-phs"></div>
+  <div id="po-empty" style="display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#3a3a50;padding:22px;text-align:center">
+    <div style="font-size:32px">◈</div>
+    <p style="font-size:13px;line-height:1.7">Complete the questions in Workspace — prompts appear here.</p>
+    <div id="po-phs" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;width:100%"></div>
   </div>
   <div id="po-fill" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
     <div class="po-body">
       <div class="po-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="po-card-hd">
           <span class="badge" id="po-type" style="background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc44"></span>
           <span style="font-size:11px;color:#3a3a50" id="po-ch"></span>
         </div>
@@ -499,382 +340,980 @@ input:focus,textarea:focus,select:focus{outline:none}
       </div>
     </div>
     <div class="po-ft">
-      <button class="btn btn-sm" style="flex:1" onclick="exportAll()">Export All (MD)</button>
-      <button class="btn btn-p btn-sm" onclick="copyP()" id="cpbtn">Copy Prompt</button>
+      <button class="btn btn-sm" id="export-btn" style="flex:1">Export All (MD)</button>
+      <button class="send-btn" style="font-size:13px;min-width:110px" id="copy-btn">Copy Prompt</button>
     </div>
   </div>
 </div>
 
 <script>
-// ══ DATA ══
-const PLATS=[
-  {id:'lovable',label:'Lovable',icon:'💜',color:'#a855f7'},
-  {id:'bolt',label:'Bolt',icon:'⚡',color:'#f59e0b'},
-  {id:'cursor',label:'Cursor',icon:'◎',color:'#3b82f6'},
-  {id:'v0',label:'v0',icon:'▲',color:'#e2e8f0'},
-  {id:'replit',label:'Replit Agent',icon:'🔁',color:'#f97316'},
-  {id:'claude',label:'Claude',icon:'✦',color:'#7c5cfc'},
-  {id:'gpt',label:'GPT-4o',icon:'◉',color:'#10a37f'},
-  {id:'gemini',label:'Gemini',icon:'◈',color:'#4285f4'},
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+var PLATS = [
+  {id:'lovable',label:'Lovable',      icon:'💜',color:'#a855f7'},
+  {id:'bolt',   label:'Bolt',         icon:'⚡',color:'#f59e0b'},
+  {id:'cursor', label:'Cursor',       icon:'◎',color:'#3b82f6'},
+  {id:'v0',     label:'v0',           icon:'▲',color:'#e2e8f0'},
+  {id:'replit', label:'Replit Agent', icon:'🔁',color:'#f97316'},
+  {id:'claude', label:'Claude',       icon:'✦',color:'#7c5cfc'},
+  {id:'gpt',    label:'GPT-4o',       icon:'◉',color:'#10a37f'},
+  {id:'gemini', label:'Gemini',       icon:'◈',color:'#4285f4'},
 ];
-const AGTS=[
-  {id:'pm',label:'Product Architect',icon:'🏗',color:'#7c5cfc',desc:'App structure, workflows, features'},
-  {id:'ux',label:'UI/UX Expert',icon:'🎨',color:'#22d3a0',desc:'Design, animations, layouts'},
-  {id:'dev',label:'Senior Developer',icon:'⌨',color:'#60a5fa',desc:'Architecture, APIs, databases'},
-  {id:'sa',label:'Startup Advisor',icon:'🚀',color:'#f5a623',desc:'Monetization, growth, virality'},
-  {id:'seo',label:'SEO & Marketing',icon:'📈',color:'#f472b6',desc:'SEO, landing pages, CRO'},
-  {id:'pe',label:'Prompt Engineer',icon:'✦',color:'#a78bfa',desc:'Prompt optimization, context'},
-  {id:'da',label:'Deployment Agent',icon:'☁',color:'#34d399',desc:'Hosting, CI/CD, cloud'},
+var AGTS = [
+  {id:'pm', label:'Product Architect',icon:'🏗',color:'#7c5cfc',desc:'App structure, workflows, features'},
+  {id:'ux', label:'UI/UX Expert',     icon:'🎨',color:'#22d3a0',desc:'Design, animations, layouts'},
+  {id:'dev',label:'Senior Developer', icon:'⌨', color:'#60a5fa',desc:'Architecture, APIs, databases'},
+  {id:'sa', label:'Startup Advisor',  icon:'🚀',color:'#f5a623',desc:'Monetization, growth, virality'},
+  {id:'seo',label:'SEO & Marketing',  icon:'📈',color:'#f472b6',desc:'SEO, landing pages, CRO'},
+  {id:'pe', label:'Prompt Engineer',  icon:'✦', color:'#a78bfa',desc:'Prompt optimization, context'},
+  {id:'da', label:'Deployment Agent', icon:'☁', color:'#34d399',desc:'Hosting, CI/CD, cloud'},
 ];
-const STYS=['Premium Dark','Clean Minimal','Bold & Colorful','Corporate Professional','Futuristic / AI-Native','Playful & Friendly'];
-const PTYPES=['Master Prompt','Frontend','Backend','Database','UI/UX','Branding','Deployment','AI Agent'];
-const PROJS=[
-  {id:1,name:'AtoZ Service Hub',type:'Marketplace',pl:'claude',date:'2 days ago',pc:8,sc:94},
-  {id:2,name:'EduTrack Portal',type:'SaaS Dashboard',pl:'lovable',date:'5 days ago',pc:10,sc:88},
-  {id:3,name:'AutoEarn AI',type:'AI Tool',pl:'bolt',date:'1 week ago',pc:7,sc:91},
+var STYS = ['Premium Dark','Clean Minimal','Bold & Colorful','Corporate Professional','Futuristic / AI-Native','Playful & Friendly'];
+var PTYPES = ['Master Prompt','Frontend','Backend','Database','UI/UX','Branding','Deployment','AI Agent'];
+var PROJS = [
+  {id:1,name:'AtoZ Service Hub',type:'Marketplace',   pl:'claude', date:'2 days ago',pc:8, sc:94},
+  {id:2,name:'EduTrack Portal', type:'SaaS Dashboard',pl:'lovable',date:'5 days ago',pc:10,sc:88},
+  {id:3,name:'AutoEarn AI',     type:'AI Tool',        pl:'bolt',   date:'1 week ago',pc:7, sc:91},
 ];
-const G={idea:'',pl:'claude',phase:'idle',qs:[],qi:0,ans:{},prompts:[],ap:0,score:null,aAg:[]};
+var G = {pl:'claude',phase:'idle',qs:[],qi:0,ans:{},prompts:[],ap:0,score:null,aAg:[]};
 
-// ══ BOOT ══
-(function(){
-  // landing agents
-  const g=document.getElementById('land-ag');
-  AGTS.forEach((a,i)=>{
-    g.innerHTML+=`<div class="ag-card" style="animation-delay:${i*.07}s">
-      <div class="aci">${a.icon}</div>
-      <h3 style="color:${a.color}">${a.label}</h3>
-      <p>${a.desc}</p></div>`;
-  });
-  // prompt overlay placeholders
-  const ph=document.getElementById('po-phs');
-  PTYPES.forEach(t=>{
-    ph.innerHTML+=`<div class="po-ph"><span style="width:5px;height:5px;border-radius:50%;background:#3a3a50;display:inline-block;flex-shrink:0"></span>${t}</div>`;
-  });
-  renderAg(); renderPj();
-  // Start on landing — input bar hidden
-  document.getElementById('ws-inp').classList.remove('show');
-})();
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function g(id){ return document.getElementById(id); }
+function show(id,flex){ var e=g(id); if(e) e.style.display = flex?'flex':'block'; }
+function hide(id){ var e=g(id); if(e) e.style.display='none'; }
+function txt(id,t){ var e=g(id); if(e) e.textContent=t; }
+function W(fn,ms){ return setTimeout(fn,ms); }
+function esc(t){
+  return String(t)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
 
-// ══ NAV ══
+// ═══════════════════════════════════════════
+// INPUT BAR — build content once at boot
+// Then show/hide each section directly
+// ═══════════════════════════════════════════
+function buildInputBar() {
+  // IDLE row
+  var idle = g('inp-idle');
+  idle.innerHTML = '';
+  var idea = document.createElement('input');
+  idea.id = 'inp-idea'; idea.className = 'ci'; idea.type = 'text';
+  idea.placeholder = 'Type your project idea…';
+  var beginBtn = document.createElement('button');
+  beginBtn.id = 'begin-btn'; beginBtn.className = 'send-btn';
+  beginBtn.textContent = 'Begin →';
+  idle.appendChild(idea); idle.appendChild(beginBtn);
+  idle.style.display = 'flex'; // visible by default
+
+  // Q row
+  var qrow = g('inp-q');
+  qrow.innerHTML = '';
+  var ans = document.createElement('input');
+  ans.id = 'inp-ans'; ans.className = 'ci'; ans.type = 'text';
+  ans.placeholder = 'Type your answer…';
+  var nextBtn = document.createElement('button');
+  nextBtn.id = 'next-btn'; nextBtn.className = 'send-btn';
+  nextBtn.textContent = 'Next →';
+  qrow.appendChild(ans); qrow.appendChild(nextBtn);
+  // stays display:none
+
+  // GEN row
+  var gen = g('inp-gen');
+  gen.innerHTML = '<div class="status-gen"><span class="spin-i"></span>AI agents analyzing your project…</div>';
+
+  // DONE row
+  var done = g('inp-done');
+  done.innerHTML = '<div style="display:flex;gap:8px;align-items:center;width:100%"><div class="status-done" id="done-txt">Prompts ready!</div><button class="new-btn" id="new-btn">New</button></div>';
+
+  // Bind events
+  beginBtn.addEventListener('click', function(){
+    var v = (idea.value||'').trim();
+    if(!v){ idea.focus(); return; }
+    runFlow(v);
+  });
+  idea.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){ e.preventDefault(); var v=(idea.value||'').trim(); if(v) runFlow(v); }
+  });
+  nextBtn.addEventListener('click', function(){ subAns(); });
+  ans.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){ e.preventDefault(); subAns(); }
+  });
+  // new-btn bound after done is built
+}
+
+// ═══════════════════════════════════════════
+// SHOW INPUT STATE — direct display control
+// ═══════════════════════════════════════════
+function showInp(s) {
+  // Always set each one explicitly — no ambiguity
+  g('inp-idle').style.display = (s==='idle') ? 'flex'  : 'none';
+  g('inp-q').style.display    = (s==='q')    ? 'flex'  : 'none';
+  g('inp-gen').style.display  = (s==='gen')  ? 'block' : 'none';
+  g('inp-done').style.display = (s==='done') ? 'block' : 'none';
+
+  if(s==='q'){
+    W(function(){ var a=g('inp-ans'); if(a) a.focus(); }, 200);
+  }
+}
+
+// ═══════════════════════════════════════════
+// STATUS DOT
+// ═══════════════════════════════════════════
+function setSt(ph, idx, tot) {
+  var dc = g('stdc');
+  if(dc){
+    if(ph==='idle'){ dc.style.background='#7c5cfc'; dc.style.animation=''; }
+    else if(ph==='q'){ dc.style.background='#7c5cfc'; dc.style.animation='pulse 2s infinite'; }
+    else if(ph==='gen'){ dc.style.background='#f5a623'; dc.style.animation='pulse 2s infinite'; }
+    else if(ph==='done'){ dc.style.background='#22d3a0'; dc.style.animation=''; }
+  }
+  var lbl = g('stlbl');
+  if(lbl){
+    if(ph==='idle') lbl.textContent='Ready';
+    else if(ph==='q') lbl.textContent='Q '+(idx+1)+'/'+tot;
+    else if(ph==='gen') lbl.textContent='Generating…';
+    else if(ph==='done') lbl.textContent='Complete ✓';
+  }
+  var dot = g('std');
+  if(dot){
+    var old=dot.querySelectorAll('.dp'); for(var i=0;i<old.length;i++) old[i].remove();
+    if(ph==='q'||ph==='gen'){
+      var p=document.createElement('span'); p.className='dp';
+      p.style.background = ph==='gen'?'#f5a623':'#7c5cfc';
+      dot.appendChild(p);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
 function goLand(){
-  document.getElementById('land').classList.remove('hide');
-  document.getElementById('app').classList.remove('show');
-  document.getElementById('ws-inp').classList.remove('show');
+  g('pg-land').style.display='block';
+  g('pg-app').style.display='none';
 }
 function goApp(v){
-  document.getElementById('land').classList.add('hide');
-  document.getElementById('app').classList.add('show');
-  document.getElementById('ws-inp').classList.add('show');
+  g('pg-land').style.display='none';
+  g('pg-app').style.display='flex';
   setV(v||'ws');
 }
 function setV(v){
-  ['ws','agents','projects','prompts'].forEach(x=>{
-    const el=document.getElementById('v-'+x);
-    if(el) el.classList.toggle('on', x===v);
-    const b=document.getElementById('aln-'+x);
-    if(b) b.classList.toggle('on', x===v);
-  });
-  // Only show input bar on workspace
-  const inp=document.getElementById('ws-inp');
-  if(v==='ws') inp.classList.add('show');
-  else inp.classList.remove('show');
+  var vs=['ws','agents','projects','prompts'];
+  for(var i=0;i<vs.length;i++){
+    var ve=g('v-'+vs[i]); if(ve) ve.classList.toggle('on',vs[i]===v);
+    var be=g('aln-'+vs[i]); if(be) be.classList.toggle('on',vs[i]===v);
+  }
   if(v==='prompts') renderPL();
-  if(v==='agents') renderAg();
+  if(v==='agents')  renderAg();
 }
 
-// ══ IDEA ══
-function setIdea(v){
-  G.idea=v;
-  const l=document.getElementById('l-idea'),w=document.getElementById('wsi');
-  if(l&&l!==document.activeElement) l.value=v;
-  if(w&&w!==document.activeElement) w.value=v;
+// ═══════════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════════
+function scrollMsgs(){
+  var m=g('msgs'); if(m) W(function(){ m.scrollTop=m.scrollHeight; },60);
+}
+function addMsg(html){
+  var mc=g('msgs'); if(!mc) return;
+  // hide empty state
+  var mt=g('msgs-empty'); if(mt) mt.style.display='none';
+  var d=document.createElement('div');
+  d.innerHTML=html;
+  var node=d.firstChild;
+  mc.appendChild(node);
+  bindChips(node);
+  scrollMsgs();
+}
+function addSys(t){ addMsg('<div class="msg msys"><span>'+esc(t)+'</span></div>'); }
+function addAi(t){
+  // preserve newlines
+  var safe=esc(t).replace(/&lt;br\/&gt;/g,'<br/>');
+  addMsg('<div class="msg mai"><div class="mai-av">✦</div><div class="mai-b">'+t.replace(/</g,'&lt;')+'</div></div>');
+}
+function addAgt(t){ addMsg('<div class="msg magt"><div class="magt-b"><span style="width:6px;height:6px;border-radius:50%;background:#f5a623;animation:pulse 1s infinite;display:inline-block;flex-shrink:0"></span> '+esc(t)+'</div></div>'); }
+function addUser(t){ addMsg('<div class="msg musr"><div class="musr-b">'+esc(t)+'</div></div>'); }
+
+function addQ(q){
+  var ex='';
+  if(q.t==='pl'){
+    ex='<div class="chip-row">';
+    for(var i=0;i<PLATS.length;i++){
+      var p=PLATS[i];
+      ex+='<button class="chip" data-val="'+p.label+'" data-pid="'+p.id+'" style="background:'+p.color+'22;border-color:'+p.color+'44;color:'+p.color+'">'+p.icon+' '+p.label+'</button>';
+    }
+    ex+='</div>';
+  } else if(q.t==='st'){
+    ex='<div class="chip-row">';
+    for(var j=0;j<STYS.length;j++){
+      ex+='<button class="chip" data-val="'+STYS[j]+'" style="background:#7c5cfc11;border-color:#2e2e42;color:#8888a0">'+STYS[j]+'</button>';
+    }
+    ex+='</div>';
+  } else if(q.t==='yn'){
+    ex='<div class="yn-row">'+
+      '<button class="yn" data-val="yes" style="background:#22d3a022;border-color:#22d3a044;color:#22d3a0">Yes</button>'+
+      '<button class="yn" data-val="no"  style="background:#7c5cfc22;border-color:#7c5cfc44;color:#7c5cfc">No</button>'+
+    '</div>';
+  }
+  addMsg('<div class="msg mq"><div class="mq-av">◎</div><div class="mq-b"><div class="mq-t">'+esc(q.q)+'</div>'+ex+'</div></div>');
 }
 
-// ══ QUESTIONS ══
+function bindChips(node){
+  if(!node||!node.querySelectorAll) return;
+  var chips=node.querySelectorAll('.chip');
+  for(var i=0;i<chips.length;i++){
+    (function(btn,all){
+      btn.addEventListener('click',function(){
+        for(var k=0;k<all.length;k++){ all[k].style.opacity='.5'; all[k].style.fontWeight='500'; }
+        btn.style.opacity='1'; btn.style.fontWeight='700';
+        var ai=g('inp-ans'); if(ai) ai.value=btn.getAttribute('data-val');
+        var pid=btn.getAttribute('data-pid');
+        if(pid){ G.pl=pid; var ps=g('plsel'); if(ps) ps.value=pid; }
+      });
+    })(chips[i],chips);
+  }
+  var yns=node.querySelectorAll('.yn');
+  for(var j=0;j<yns.length;j++){
+    (function(btn,all){
+      btn.addEventListener('click',function(){
+        for(var k=0;k<all.length;k++){ all[k].style.opacity='.5'; all[k].style.fontWeight='500'; }
+        btn.style.opacity='1'; btn.style.fontWeight='800';
+        var ai=g('inp-ans'); if(ai) ai.value=btn.getAttribute('data-val');
+      });
+    })(yns[j],yns);
+  }
+}
+
+// ═══════════════════════════════════════════
+// QUESTION ENGINE
+// ═══════════════════════════════════════════
 function getQs(idea){
-  const lo=idea.toLowerCase();
-  const b=[
-    {k:'name',q:"What's the name of your project or brand?"},
-    {k:'audience',q:"Who is the primary audience? (e.g. students, businesses, consumers, developers)"},
-    {k:'platform',q:"Which platform will you build on?",t:'pl'},
-    {k:'style',q:"What visual style fits best?",t:'st'},
-    {k:'features',q:"List your 3–5 must-have features:"},
-    {k:'monetization',q:"What's the monetization model? (subscriptions, ads, marketplace fees, free)"},
-    {k:'scale',q:"Expected scale in year 1? (hundreds / thousands / millions)"},
-    {k:'backend',q:"Do you need a backend, database, or user auth?",t:'yn'},
-    {k:'ai',q:"Should this app include AI features?",t:'yn'},
-    {k:'timeline',q:"What's your target launch timeline?"},
+  var lo=idea.toLowerCase();
+  var b=[
+    {k:'name',     q:"What is the name of your project or brand?"},
+    {k:'audience', q:"Who is the primary audience? (e.g. students, businesses, consumers, developers)"},
+    {k:'platform', q:"Which platform will you build on?",t:'pl'},
+    {k:'style',    q:"What visual style fits best?",t:'st'},
+    {k:'features', q:"List your 3–5 must-have features (comma separated):"},
+    {k:'monetize', q:"Monetization model? (subscriptions, ads, marketplace fees, free)"},
+    {k:'scale',    q:"Expected scale in year 1? (hundreds / thousands / millions of users)"},
+    {k:'backend',  q:"Do you need a backend, database, or user authentication?",t:'yn'},
+    {k:'ai',       q:"Should this app include AI features?",t:'yn'},
+    {k:'timeline', q:"What is your target launch timeline?"},
   ];
-  if(lo.includes('school')||lo.includes('educat')){b.splice(3,0,{k:'curr',q:"What curriculum or grade levels does this cover?"});b.splice(4,0,{k:'portal',q:"Need a student/parent portal?",t:'yn'});}
-  if(lo.includes('food')||lo.includes('deliver')||lo.includes('restaurant')){b.splice(3,0,{k:'deliv',q:"In-house orders, third-party delivery, or both?"});b.splice(4,0,{k:'pay',q:"Payment methods? (card, UPI, COD, wallets)"});}
-  if(lo.includes('crm')||lo.includes('real estate')){b.splice(3,0,{k:'pipe',q:"Describe your sales pipeline stages."});b.splice(4,0,{k:'int',q:"Third-party integrations? (email, Slack, Zapier…)"});}
-  if(lo.includes('saas')||lo.includes('dashboard')){b.splice(3,0,{k:'roles',q:"User roles? (admin, user, viewer…)"});b.splice(4,0,{k:'api',q:"Need a public API or webhooks?",t:'yn'});}
+  if(lo.includes('school')||lo.includes('educat')){
+    b.splice(3,0,{k:'curr',q:"What curriculum or grade levels does this cover?"});
+    b.splice(4,0,{k:'portal',q:"Do you need a student or parent portal with login?",t:'yn'});
+  }
+  if(lo.includes('food')||lo.includes('deliver')||lo.includes('restaurant')){
+    b.splice(3,0,{k:'deliv',q:"In-house orders, third-party delivery, or both?"});
+    b.splice(4,0,{k:'pay',q:"What payment methods? (card, UPI, COD, wallets)"});
+  }
+  if(lo.includes('crm')||lo.includes('real estate')){
+    b.splice(3,0,{k:'pipe',q:"Describe your sales or workflow pipeline stages."});
+    b.splice(4,0,{k:'int',q:"Third-party integrations needed? (email, Slack, Zapier…)"});
+  }
+  if(lo.includes('saas')||lo.includes('dashboard')){
+    b.splice(3,0,{k:'roles',q:"What user roles will exist? (admin, user, viewer…)"});
+    b.splice(4,0,{k:'api',q:"Do you need a public API or webhook system?",t:'yn'});
+  }
   return b;
 }
 
-// ══ FLOW ══
-function doStart(){
-  const idea=(G.idea||'').trim()||document.getElementById('l-idea').value.trim()||document.getElementById('wsi').value.trim();
-  if(!idea){alert('Please describe your project idea first!');return;}
-  G.idea=idea;
-  goApp('ws');
-  G.qs=getQs(idea);G.qi=0;G.ans={};G.prompts=[];G.aAg=[];G.score=null;G.phase='q';
-  document.getElementById('msgs').innerHTML='';
-  document.getElementById('msgs-mt').style.display='none';
-  const tag=document.getElementById('itag');
-  tag.textContent='"'+idea.slice(0,22)+(idea.length>22?'…':'"');
-  tag.style.display='inline-block';
-  showI('q'); setSt('q',0,G.qs.length);
+// ═══════════════════════════════════════════
+// MAIN FLOW
+// ═══════════════════════════════════════════
+function runFlow(idea){
+  if(!idea) return;
+  G.qs=getQs(idea); G.qi=0; G.ans={idea:idea};
+  G.prompts=[]; G.aAg=[]; G.score=null; G.phase='q';
+
+  // Reset messages
+  var mc=g('msgs');
+  if(mc){
+    mc.innerHTML='<div class="msgs-empty" id="msgs-empty" style="display:none"><div class="ei">✦</div><p>Type your project idea below and tap Begin →</p></div>';
+  }
+
+  // Show idea tag
+  var tag=g('itag');
+  if(tag){ tag.textContent='"'+idea.slice(0,20)+(idea.length>20?'…':'"'); tag.style.display='inline-block'; }
+
+  // Switch input to question mode
+  showInp('q');
+  setSt('q',0,G.qs.length);
+
   addSys('Analyzing: "'+idea+'"');
-  wait(()=>{
-    addAi('Excellent idea! I\'ll act as your senior product strategist.\n\nLet\'s start with a few focused questions.');
-    wait(()=>addQ(G.qs[0]),350);
+  W(function(){
+    addAi('Excellent! I\'ll act as your senior product strategist.\n\nLet\'s go through focused questions to build your perfect prompts.');
+    W(function(){ addQ(G.qs[0]); }, 400);
   },300);
 }
 
 function subAns(){
-  const inp=document.getElementById('ans'),ans=inp.value.trim();
-  if(!ans){inp.focus();return;}
+  var ainp=g('inp-ans');
+  if(!ainp) return;
+  var ans=(ainp.value||'').trim();
+  if(!ans){ ainp.focus(); return; }
+
+  // Save answer
   G.ans[G.qs[G.qi].k]=ans;
-  G.ans.idea=G.idea;
-  G.ans.pt=G.idea.split(' ').slice(-2).join('_').toLowerCase();
   addUser(ans);
-  inp.value='';inp.classList.remove('lit');
-  const nxt=G.qi+1;
+  ainp.value='';
+
+  var nxt=G.qi+1;
   if(nxt<G.qs.length){
-    G.qi=nxt;setSt('q',nxt,G.qs.length);
-    wait(()=>addQ(G.qs[nxt]),420);
+    G.qi=nxt;
+    setSt('q',nxt,G.qs.length);
+    W(function(){ addQ(G.qs[nxt]); }, 420);
   } else {
-    G.phase='gen';showI('gen');setSt('gen');
-    addSys('Context collected. Activating AI agents…');
-    runAg();
+    // All questions answered → generate
+    G.phase='gen';
+    showInp('gen');
+    setSt('gen');
+    addSys('All '+ G.qs.length +' questions answered. Activating AI agents…');
+    W(function(){ runAgents(); }, 500);
   }
 }
 
-function runAg(){
-  let i=0;
+function runAgents(){
+  var i=0;
   function tick(){
     if(i>=AGTS.length){
-      const ps=buildPs(G.ans,G.pl);
-      G.prompts=ps;G.score=Math.floor(Math.random()*8)+91;G.phase='done';
-      setSt('done');showI('done');
-      document.getElementById('donetxt').textContent='✓ '+ps.length+' prompts ready · Score: '+G.score+'/100';
-      const pl=PLATS.find(p=>p.id===G.pl);
-      addAi('✦ All '+ps.length+' prompts generated — optimized for '+(pl?pl.label:G.pl)+'.\nQuality score: '+G.score+'/100.\n\nTap "◈ View Prompts" above to see them all.');
-      document.getElementById('vpbtn').style.display='inline-flex';
+      // Build all prompts
+      var ps=buildPrompts(G.ans,G.pl);
+      G.prompts=ps;
+      G.score=Math.floor(Math.random()*8)+91;
+      G.phase='done';
+      setSt('done');
+      showInp('done');
+      txt('done-txt','✓ '+ps.length+' prompts ready · Score: '+G.score+'/100');
+
+      var plLabel='the selected platform';
+      for(var x=0;x<PLATS.length;x++){ if(PLATS[x].id===G.pl){plLabel=PLATS[x].label;break;} }
+
+      addAi('✦ All '+ps.length+' prompts generated and optimized for '+plLabel+'!\n\nPrompt Quality Score: '+G.score+'/100\n\nTap "◈ View Prompts" above to browse, copy, or export all prompts.');
+
+      var vp=g('vpbtn'); if(vp) vp.style.display='inline-flex';
+      renderPL();
       return;
     }
     G.aAg.push(AGTS[i].id);
     addAgt(AGTS[i].icon+' '+AGTS[i].label+' analyzing context…');
-    renderAg();i++;wait(tick,560);
+    renderAg();
+    i++;
+    W(tick,560);
   }
-  wait(tick,900);
+  W(tick,300);
 }
 
-function resetF(){
-  G.phase='idle';G.idea='';G.prompts=[];G.aAg=[];G.score=null;
-  document.getElementById('msgs').innerHTML='';
-  document.getElementById('msgs-mt').style.display='flex';
-  document.getElementById('itag').style.display='none';
-  document.getElementById('l-idea').value='';
-  document.getElementById('wsi').value='';
-  document.getElementById('vpbtn').style.display='none';
-  showI('idle');setSt('idle');renderAg();
+function resetFlow(){
+  G.phase='idle'; G.prompts=[]; G.aAg=[]; G.score=null; G.ans={};
+  var mc=g('msgs');
+  if(mc) mc.innerHTML='<div class="msgs-empty" id="msgs-empty"><div class="ei">✦</div><p>Type your project idea below and tap Begin →</p></div>';
+  var tag=g('itag'); if(tag) tag.style.display='none';
+  var vp=g('vpbtn'); if(vp) vp.style.display='none';
+  var ii=g('inp-idea'); if(ii) ii.value='';
+  showInp('idle');
+  setSt('idle');
+  renderAg();
 }
 
-function wait(fn,ms){setTimeout(fn,ms);}
-
-// ══ INPUT STATE ══
-function showI(s){
-  document.getElementById('ii').style.display=s==='idle'?'flex':'none';
-  document.getElementById('iq').style.display=s==='q'?'flex':'none';
-  document.getElementById('igen').style.display=s==='gen'?'block':'none';
-  document.getElementById('idone').style.display=s==='done'?'block':'none';
-  if(s==='q') wait(()=>document.getElementById('ans').focus(),200);
+// ═══════════════════════════════════════════
+// PROMPT BUILDER
+// ═══════════════════════════════════════════
+function getPl(pid){
+  for(var i=0;i<PLATS.length;i++){ if(PLATS[i].id===pid) return PLATS[i]; }
+  return PLATS[5]; // default claude
 }
 
-function setSt(ph,idx,tot){
-  const dc=document.getElementById('stdc'),lbl=document.getElementById('stlbl'),dot=document.getElementById('std');
-  dot.querySelectorAll('.dp').forEach(e=>e.remove());
-  if(ph==='idle'){dc.style.background='#7c5cfc';dc.style.animation='';lbl.textContent='Ready';}
-  else if(ph==='q'){
-    dc.style.background='#7c5cfc';dc.style.animation='pulse 2s infinite';
-    const p=document.createElement('span');p.className='dp';p.style.background='#7c5cfc';dot.appendChild(p);
-    lbl.textContent='Q '+(idx+1)+'/'+tot;
+function buildPrompts(ctx,pid){
+  var pl=getPl(pid);
+  var nm   = ctx.name     || 'the app';
+  var aud  = ctx.audience || 'general users';
+  var feat = ctx.features || 'core features';
+  var sty  = ctx.style    || 'premium modern';
+  var mon  = ctx.monetize || 'freemium';
+  var be   = ctx.backend  === 'yes';
+  var ai   = ctx.ai       === 'yes';
+  var sc   = ctx.scale    || 'MVP scale';
+  var tm   = ctx.timeline || 'ASAP';
+  var idea = ctx.idea     || nm;
+
+  var hints={
+    lovable:'Focus on visual UI descriptions, component layout, color systems, and UX flow. Describe every screen in detail. Include animation preferences and design tokens.',
+    bolt:   'Emphasize feature structure, app flow logic, and step-by-step implementation details. Specify exact functionality for each feature.',
+    cursor: 'Structure as modular engineering tasks. Include folder structure, file names, component architecture, and technology decisions.',
+    v0:     'Specify React components with Tailwind classes, exact UI hierarchy, props, and responsive layout at each breakpoint.',
+    replit: 'Include full deployable backend logic, environment variable setup, package.json dependencies, and database initialization scripts.',
+    claude: 'Use structured reasoning chains with detailed context, constraints, architecture decisions, and success criteria for each component.',
+    gpt:    'Provide clear role definition, expected output format, concrete examples, edge cases to handle, and quality criteria.',
+    gemini: 'Use structured JSON schemas for data. Be concise and precise. Provide multimodal context where relevant. Focus on key architectural decisions.',
+  };
+  var h=hints[pid]||hints.claude;
+
+  var fArr=feat.split(',');
+  var fL=''; for(var i=0;i<fArr.length;i++) fL+=(i+1)+'. '+fArr[i].trim()+' — full dedicated screen/section\n';
+  var aL=''; for(var j=0;j<fArr.length;j++) aL+='POST/GET /api/'+fArr[j].trim().toLowerCase().replace(/\s+/g,'-')+'\n';
+  var dT='';
+  for(var k=0;k<fArr.length;k++){
+    var t=fArr[k].trim().toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+    dT+=t+' (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id uuid REFERENCES users(id) ON DELETE CASCADE,\n  title text NOT NULL,\n  data jsonb DEFAULT \'{}\',\n  status text DEFAULT \'active\',\n  created_at timestamptz DEFAULT now(),\n  updated_at timestamptz DEFAULT now()\n)\n\n';
   }
-  else if(ph==='gen'){dc.style.background='#f5a623';dc.style.animation='pulse 2s infinite';lbl.textContent='Generating…';}
-  else if(ph==='done'){dc.style.background='#22d3a0';dc.style.animation='';lbl.textContent='Complete';}
-}
 
-// ══ MESSAGES ══
-function sc(){const m=document.getElementById('msgs');wait(()=>{m.scrollTop=m.scrollHeight;},60);}
-function mk(t,c){const e=document.createElement(t);e.className=c;return e;}
-function app(el){document.getElementById('msgs').appendChild(el);sc();}
-function addSys(t){const d=mk('div','msg msys');d.innerHTML=`<span>${t}</span>`;app(d);}
-function addAi(t){const d=mk('div','msg mai');d.innerHTML=`<div class="mai-av">✦</div><div class="mai-b">${t}</div>`;app(d);}
-function addAgt(t){const d=mk('div','msg magt');d.innerHTML=`<div class="magt-b"><span style="width:6px;height:6px;border-radius:50%;background:#f5a623;animation:pulse 1s infinite;display:inline-block;flex-shrink:0"></span>${t}</div>`;app(d);}
-function addUser(t){const d=mk('div','msg musr');d.innerHTML=`<div class="musr-b">${t}</div>`;app(d);}
-function addQ(q){
-  const d=mk('div','msg mq');
-  let ex='';
-  if(q.t==='pl'){
-    ex='<div class="chip-row">'+PLATS.map(p=>
-      `<button class="chip" onclick="cpick(this,'${p.label}','${p.id}')"
-        style="background:${p.color}22;border-color:${p.color}44;color:${p.color}">${p.icon} ${p.label}</button>`
-    ).join('')+'</div>';
-  } else if(q.t==='st'){
-    ex='<div class="chip-row">'+STYS.map(s=>
-      `<button class="chip" onclick="cpick(this,\`${s}\`,null)"
-        style="background:#7c5cfc11;border-color:#2e2e42;color:#8888a0">${s}</button>`
-    ).join('')+'</div>';
-  } else if(q.t==='yn'){
-    ex=`<div class="yn-row">
-      <button class="yn" onclick="ynp(this,'yes')" style="background:#22d3a022;border:1px solid #22d3a044;color:#22d3a0">Yes</button>
-      <button class="yn" onclick="ynp(this,'no')" style="background:#7c5cfc22;border:1px solid #7c5cfc44;color:#7c5cfc">No</button>
-    </div>`;
-  }
-  d.innerHTML=`<div class="mq-av">◎</div><div class="mq-b"><div class="mq-t" style="margin-bottom:${ex?'8px':'0'}">${q.q}</div>${ex}</div>`;
-  app(d);
-}
-function cpick(btn,val,pid){
-  btn.closest('.chip-row').querySelectorAll('.chip').forEach(b=>{b.style.opacity='.45';b.style.fontWeight='500';});
-  btn.style.opacity='1';btn.style.fontWeight='700';
-  const a=document.getElementById('ans');a.value=val;a.classList.add('lit');
-  if(pid){G.pl=pid;document.getElementById('plsel').value=pid;}
-}
-function ynp(btn,val){
-  btn.closest('.yn-row').querySelectorAll('.yn').forEach(b=>{b.style.opacity='.45';b.style.fontWeight='500';});
-  btn.style.opacity='1';btn.style.fontWeight='800';
-  const a=document.getElementById('ans');a.value=val;a.classList.add('lit');
-}
-
-// ══ PROMPT GENERATION ══
-function buildPs(ctx,pid){
-  const pl=PLATS.find(p=>p.id===pid)||PLATS[5];
-  const nm=ctx.name||'the app',aud=ctx.audience||'general users',feat=ctx.features||'core features',sty=ctx.style||'premium modern',mon=ctx.monetization||'freemium';
-  const be=ctx.backend==='yes',ai=ctx.ai==='yes';
-  const hs={lovable:'Focus on visual UI descriptions, component layout, color systems, and UX flow.',bolt:'Emphasize feature structure, app flow logic, and implementation details.',cursor:'Structure as modular engineering tasks with clean architecture and file structure.',v0:'Specify React components with Tailwind classes and exact UI hierarchy.',replit:'Include deployable backend logic, environment setup, and infrastructure details.',claude:'Use structured reasoning chains with detailed context and step-by-step architecture.',gpt:'Provide clear role context, expected output format, and concrete examples.',gemini:'Focus on multimodal context, use structured JSON schemas, be concise.'};
-  const h=hs[pid]||hs.claude;
-  const fL=feat.split(',').map((f,i)=>`${i+1}. ${f.trim()} — dedicated screen/section`).join('\n');
-  const aL=feat.split(',').map(f=>`POST/GET /api/${f.trim().toLowerCase().replace(/\s+/g,'-')}`).join('\n');
-  const dT=feat.split(',').map(f=>{const t=f.trim().toLowerCase().replace(/\s+/g,'_');return `${t} (\n  id uuid PRIMARY KEY,\n  user_id uuid REFERENCES users(id),\n  data jsonb,\n  status text DEFAULT 'active',\n  created_at timestamptz DEFAULT now()\n)`;}).join('\n\n');
   return [
-    {type:'Master Prompt',content:`You are building "${nm}" — a product for ${aud}.\n\nVISION: ${ctx.idea}\n\nPLATFORM: ${pl.label}\n${h}\n\nCORE REQUIREMENTS:\n- Audience: ${aud}\n- Features: ${feat}\n- Style: ${sty}\n- Monetization: ${mon}\n- Backend: ${be?'Yes — auth, database, APIs':'No — frontend only'}\n- AI Features: ${ai?'Yes':'No'}\n- Scale: ${ctx.scale||'MVP'}\n\nCONSTRAINTS:\n- Mobile-first responsive design\n- Performance optimized (Core Web Vitals)\n- Accessible (WCAG 2.1 AA)\n- Production-ready code quality\n\nDELIVERABLE: Complete, deployable "${nm}".`},
-    {type:'Frontend',content:`Build the frontend for "${nm}" — React + Tailwind CSS.\n\nDESIGN SYSTEM:\n- Style: ${sty}\n- Font: Premium display + clean body font pairing\n- Animations: Smooth micro-interactions, page transitions\n\nKEY SCREENS:\n${fL}\n\nCOMPONENTS:\n- Nav (sticky, glass-morphism, mobile hamburger)\n- Hero with animated headline + CTA\n- Feature cards grid\n${be?'- Auth flow (login, signup, password reset)':''}\n- Footer with social proof\n\nTECH:\n- Next.js 14 App Router\n- Tailwind CSS + custom theme\n- Framer Motion animations\n- TypeScript strict mode`},
-    {type:'Backend',content:be?`Backend architecture for "${nm}".\n\nSTACK:\n- Node.js + Next.js API routes\n- PostgreSQL via Supabase\n- Supabase Auth (email, OAuth, magic link)\n- Redis for session caching\n\nENDPOINTS:\n${aL}\n\nSECURITY:\n- JWT middleware on protected routes\n- Rate limiting: 100 req/min\n- Input validation with Zod\n- CORS whitelist\n\nAll responses: { success, data, error } envelope.`:'No backend required. Use Zustand for state + localStorage for persistence.'},
-    {type:'Database',content:`PostgreSQL schema for "${nm}".\n\nCORE TABLES:\n\nusers (\n  id uuid PRIMARY KEY,\n  email text UNIQUE,\n  name text,\n  role text DEFAULT 'user',\n  created_at timestamptz DEFAULT now()\n)\n\n${dT}\n\nINDEXES: user_id FK indexes, full-text on content fields, created_at DESC.\nRLS: Enable Row Level Security — users access only their own rows.`},
-    {type:'UI/UX',content:`Design system for "${nm}".\n\nIDENTITY:\n- Style: ${sty}\n- Spacing: 4px base unit (4,8,12,16,24,32,48,64,96)\n- Radius: 8px default, 12px cards, 999px pills\n\nCOMPONENTS:\n- Buttons: primary / secondary / ghost + all states\n- Cards: glassmorphism, subtle border, shadow\n- Forms: inline validation, loading states\n- Nav: 60px height, backdrop-blur\n\nMOTION:\n- Entry: staggered fade-up, 80ms delay each\n- Hover: scale(1.02) + shadow, 150ms\n- Loading: skeleton screens only\n\nBREAKPOINTS: 360, 640, 768, 1024, 1280px`},
-    {type:'Branding',content:`Brand identity for "${nm}".\n\nPERSONALITY:\n- Style archetype: based on "${sty}"\n- Voice: Confident, clear, approachable\n- Tagline: [5-7 word value statement for ${nm}]\n\nVISUALS:\n- Logo: Modern wordmark or geometric icon-mark\n- Icons: 24px SVG, 1.5px stroke weight\n- Illustration: Abstract geometric or clean line-art\n\nCOPY RULES:\n- Headlines: Verb-first ("Build faster", "Ship smarter")\n- CTAs: Action-oriented ("Start now", "Get started")\n- Errors: Human tone, never blame user\n\nSOCIAL PROOF:\n- "${nm} — trusted by X,000+ builders"\n- Testimonials: avatar + name + role + quote`},
-    {type:'Deployment',content:`Production deployment for "${nm}".\n\nINFRA:\n- Frontend: Vercel (auto-deploy from main branch)\n- DB: Supabase managed PostgreSQL\n- CDN: Cloudflare (DNS + DDoS + edge cache)\n- Monitoring: Vercel Analytics + Sentry\n\nENV VARS:\nNEXT_PUBLIC_SUPABASE_URL=\nNEXT_PUBLIC_SUPABASE_ANON_KEY=\nSUPABASE_SERVICE_ROLE_KEY=\nNEXTAUTH_SECRET=\nNEXTAUTH_URL=\n\nCI/CD (GitHub Actions):\n1. Push main → lint + type-check\n2. PR → full test suite\n3. Merge → auto-deploy Vercel\n4. Tag v* → production + Slack notify\n\nTARGETS: Lighthouse 95+, TTFB <200ms, FCP <1.5s`},
-    {type:'AI Agent',content:ai?`AI integration for "${nm}".\n\nFEATURES:\n- Smart recommendations (embeddings)\n- Natural language search\n- Auto-summarization\n- AI onboarding assistant\n\nSTACK:\n- Primary: Claude claude-sonnet-4-20250514\n- Cost tier: GPT-4o-mini\n- Embeddings: text-embedding-3-small\n- Vector DB: pgvector on Supabase\n\nSYSTEM PROMPT:\n"You are a helpful assistant for ${nm}. Users are ${aud}. Be concise, accurate, and action-oriented."\n\nSAFETY:\n- Content moderation on all inputs\n- Rate limit: 50 AI calls/day free, unlimited Pro\n- Fallback to rule-based logic when unavailable`:'No AI features required for this project phase.'},
+    // ── 1. MASTER PROMPT
+    {type:'Master Prompt', content:
+'PROJECT: "'+nm+'"\n'+
+'AUDIENCE: '+aud+'\n'+
+'VISION: '+idea+'\n\n'+
+'═══ PLATFORM CONTEXT ═══\n'+
+'Platform: '+pl.label+'\n'+
+h+'\n\n'+
+'═══ CORE REQUIREMENTS ═══\n'+
+'• Audience: '+aud+'\n'+
+'• Features: '+feat+'\n'+
+'• Visual Style: '+sty+'\n'+
+'• Monetization: '+mon+'\n'+
+'• Backend & Auth: '+(be?'REQUIRED — full auth, database, and API layer':'NOT needed — frontend only, client-side state')+'\n'+
+'• AI Features: '+(ai?'REQUIRED — integrate intelligent AI capabilities':'Not required for this phase')+'\n'+
+'• Scale Target: '+sc+'\n'+
+'• Launch Timeline: '+tm+'\n\n'+
+'═══ QUALITY STANDARDS ═══\n'+
+'• Mobile-first responsive (min 360px)\n'+
+'• Core Web Vitals: all green\n'+
+'• WCAG 2.1 AA accessibility\n'+
+'• Production-ready code only — no placeholders\n'+
+'• Input validation + rate limiting + CORS on all endpoints\n'+
+'• Error handling with user-friendly messages\n\n'+
+'═══ DELIVERABLE ═══\n'+
+'A complete, fully working, deployable application named "'+nm+'" that serves '+aud+' and delivers on the vision above. Build it as if it will go live tomorrow.'
+    },
+
+    // ── 2. FRONTEND
+    {type:'Frontend', content:
+'BUILD THE FRONTEND FOR "'+nm+'"\n\n'+
+'═══ TECH STACK ═══\n'+
+'• Framework: Next.js 14 with App Router\n'+
+'• Styling: Tailwind CSS with custom design tokens\n'+
+'• Animations: Framer Motion\n'+
+'• Language: TypeScript (strict mode)\n'+
+'• Components: shadcn/ui + Radix UI primitives\n'+
+'• State: Zustand for global, React Query for server state\n'+
+'• Forms: React Hook Form + Zod validation\n\n'+
+'═══ DESIGN SYSTEM ═══\n'+
+'• Style Direction: '+sty+'\n'+
+'• Font Pairing: Syne 800 (headlines) + DM Sans 400/600 (body)\n'+
+'• Spacing: 4px base unit — use multiples of 4\n'+
+'• Radius: 8px (default), 12px (cards), 999px (pills)\n'+
+'• Motion: 150ms ease for hover, 300ms ease for transitions\n'+
+'• Loading: skeleton screens always — never raw spinners\n\n'+
+'═══ REQUIRED SCREENS ═══\n'+fL+'\n'+
+'═══ CORE COMPONENTS ═══\n'+
+'• Navigation: sticky 56px, glassmorphism, logo left, links center, CTA right, mobile hamburger\n'+
+'• Hero: animated headline with gradient, supporting text, primary + secondary CTA\n'+
+'• Feature showcase: icon cards with hover lift effect and description\n'+
+(be?'• Auth flow: login, signup, email verification, password reset, OAuth buttons\n':'')+
+'• Dashboard layout: collapsible sidebar + main content + top header with user menu\n'+
+'• Empty states: illustration + headline + CTA for every list that can be empty\n'+
+'• Error boundary: catches JS errors, shows friendly message with retry button\n'+
+'• Toast notifications: success, error, warning, info variants\n'+
+'• Footer: navigation links, social proof, newsletter signup\n\n'+
+'═══ RESPONSIVE BREAKPOINTS ═══\n'+
+'360px (mobile) | 640px (sm) | 768px (md) | 1024px (lg) | 1280px (xl)'
+    },
+
+    // ── 3. BACKEND
+    {type:'Backend', content: be ?
+'BUILD THE BACKEND FOR "'+nm+'"\n\n'+
+'═══ TECH STACK ═══\n'+
+'• Runtime: Node.js 20 LTS + Next.js API Routes\n'+
+'• Database: PostgreSQL via Supabase (managed)\n'+
+'• Auth: Supabase Auth — email/password, OAuth (Google, GitHub), magic link\n'+
+'• Storage: Supabase Storage for user-uploaded files\n'+
+'• Cache: Redis via Upstash — rate limiting and hot data\n'+
+'• Email: Resend for transactional emails (welcome, reset, notifications)\n'+
+'• Queues: Trigger.dev for background jobs\n\n'+
+'═══ API ENDPOINTS ═══\n'+aL+'\n'+
+'Standard patterns for each:\n'+
+'• GET /api/[resource] — paginated list (page, limit, search, sort)\n'+
+'• GET /api/[resource]/[id] — single item\n'+
+'• POST /api/[resource] — create (validate with Zod)\n'+
+'• PATCH /api/[resource]/[id] — partial update\n'+
+'• DELETE /api/[resource]/[id] — soft delete (set status=deleted)\n\n'+
+'═══ MIDDLEWARE (every protected route) ═══\n'+
+'1. JWT verification via Supabase — return 401 if invalid\n'+
+'2. Rate limiting via Upstash — 100 req/min (free), 1000/min (pro)\n'+
+'3. Zod schema validation — return 400 with field-level errors\n'+
+'4. CORS whitelist — only allow production domains\n'+
+'5. Request logging — structured JSON for debugging\n\n'+
+'═══ RESPONSE ENVELOPE ═══\n'+
+'Success: { "success": true, "data": any, "meta": { "page": n, "total": n } }\n'+
+'Error:   { "success": false, "error": "message", "code": "ERROR_CODE" }\n\n'+
+'HTTP codes: 200 OK | 201 Created | 400 Validation | 401 Unauth | 403 Forbidden | 404 Not found | 429 Rate limited | 500 Server error'
+    :
+'NO BACKEND REQUIRED for "'+nm+'" in this phase.\n\n'+
+'═══ CLIENT-SIDE ARCHITECTURE ═══\n'+
+'• State: Zustand stores with devtools and persist middleware\n'+
+'• Local persistence: localStorage with versioned schema migration\n'+
+'• Auth (if needed): Clerk for hosted authentication — handles UI and sessions\n'+
+'• API calls: native fetch with typed wrappers and error handling\n'+
+'• Offline support: service worker with stale-while-revalidate\n\n'+
+'═══ WHEN READY TO ADD BACKEND ═══\n'+
+'Start with Supabase for rapid setup:\n'+
+'• Auth, database, storage, and realtime in one platform\n'+
+'• Free tier generous enough for MVP\n'+
+'• Instant REST and GraphQL APIs from your schema'
+    },
+
+    // ── 4. DATABASE
+    {type:'Database', content:
+'DATABASE SCHEMA FOR "'+nm+'"\n\n'+
+'═══ CORE TABLES ═══\n\n'+
+'users (\n'+
+'  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n'+
+'  email text UNIQUE NOT NULL,\n'+
+'  name text,\n'+
+'  avatar_url text,\n'+
+'  role text DEFAULT \'user\' CHECK (role IN (\'user\',\'admin\',\'pro\')),\n'+
+'  stripe_customer_id text,\n'+
+'  metadata jsonb DEFAULT \'{}\',\n'+
+'  created_at timestamptz DEFAULT now(),\n'+
+'  updated_at timestamptz DEFAULT now()\n'+
+')\n\n'+
+dT+
+'═══ PERFORMANCE INDEXES ═══\n'+
+'-- Foreign key lookups (critical for JOIN performance)\n'+
+'CREATE INDEX ON each_table (user_id);\n'+
+'-- Pagination (always sort newest first)\n'+
+'CREATE INDEX ON each_table (created_at DESC);\n'+
+'-- Full-text search on content fields\n'+
+'CREATE INDEX ON each_table USING gin(to_tsvector(\'english\', title));\n\n'+
+'═══ ROW LEVEL SECURITY (Supabase) ═══\n'+
+'Enable RLS on ALL tables — users can only access their own data.\n\n'+
+'ALTER TABLE [table] ENABLE ROW LEVEL SECURITY;\n'+
+'CREATE POLICY "Users own their data" ON [table]\n'+
+'  FOR ALL USING (auth.uid() = user_id)\n'+
+'  WITH CHECK (auth.uid() = user_id);\n\n'+
+'Admin override policy:\n'+
+'CREATE POLICY "Admins see all" ON [table]\n'+
+'  FOR SELECT USING (\n'+
+'    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND role = \'admin\')\n'+
+'  );\n\n'+
+'═══ TRIGGERS ═══\n'+
+'-- Auto-create profile on signup\n'+
+'CREATE FUNCTION handle_new_user() RETURNS trigger AS $$\n'+
+'BEGIN INSERT INTO users (id, email) VALUES (NEW.id, NEW.email); RETURN NEW; END;\n'+
+'$$ LANGUAGE plpgsql SECURITY DEFINER;\n'+
+'CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users\n'+
+'  FOR EACH ROW EXECUTE FUNCTION handle_new_user();'
+    },
+
+    // ── 5. UI/UX
+    {type:'UI/UX', content:
+'DESIGN SYSTEM FOR "'+nm+'"\n\n'+
+'═══ VISUAL IDENTITY ═══\n'+
+'Style: '+sty+'\n\n'+
+'COLOR TOKENS:\n'+
+'--color-bg:         #07070a  (page background)\n'+
+'--color-surface:    #111118  (cards, panels)\n'+
+'--color-elevated:   #1a1a24  (dropdowns, popovers)\n'+
+'--color-border:     #1e1e2a  (subtle borders)\n'+
+'--color-border-hi:  #2e2e42  (hover borders)\n'+
+'--color-accent:     #7c5cfc  (primary action)\n'+
+'--color-accent-hi:  #8b6dff  (hover state)\n'+
+'--color-success:    #22d3a0\n'+
+'--color-warning:    #f5a623\n'+
+'--color-error:      #ff4d6d\n'+
+'--color-text:       #e8e8f0  (primary text)\n'+
+'--color-muted:      #6b6b80  (secondary text)\n'+
+'--color-dim:        #3a3a50  (placeholder, disabled)\n\n'+
+'TYPOGRAPHY:\n'+
+'Display  → Syne 800, clamp(30px,6vw,60px), tight leading 1.05\n'+
+'H1       → Syne 800, clamp(24px,4vw,40px), leading 1.1\n'+
+'H2       → DM Sans 700, clamp(19px,3vw,28px), leading 1.2\n'+
+'Body     → DM Sans 400/500, 14–16px, leading 1.7\n'+
+'Caption  → DM Sans 400, 11–12px, leading 1.6\n'+
+'Mono     → JetBrains Mono, 12–14px\n\n'+
+'═══ COMPONENT SPEC ═══\n'+
+'Buttons: 3 variants (primary/secondary/ghost) × 3 sizes (sm/md/lg) × 4 states (default/hover/active/disabled)\n'+
+'Cards: glassmorphism — rgba(17,17,24,.9) + backdrop-blur(12px) + 1px border\n'+
+'Inputs: height 44px, 2px border, focus ring 3px at 20% opacity\n'+
+'Modals: centered overlay, backdrop 60% black, ESC to close, focus trap\n'+
+'Nav: 56px height, sticky, backdrop-blur(16px), smooth color transition on scroll\n\n'+
+'═══ MOTION LANGUAGE ═══\n'+
+'Page entry:    staggered fade-up, Y+12px → 0, 60ms delay per element\n'+
+'Hover:         scale(1.02) + box-shadow lift, 150ms cubic-bezier(.4,0,.2,1)\n'+
+'Route change:  slide + fade, 200ms\n'+
+'Skeleton:      shimmer animation left-to-right, 1.5s loop\n'+
+'Success:       scale(1) → scale(1.05) → scale(1), 300ms spring\n'+
+'Micro:         button press scale(.97), checkbox pop, toggle slide'
+    },
+
+    // ── 6. BRANDING
+    {type:'Branding', content:
+'BRAND IDENTITY FOR "'+nm+'"\n\n'+
+'═══ BRAND STRATEGY ═══\n'+
+'Product: '+nm+'\n'+
+'Audience: '+aud+'\n'+
+'Vision: '+idea+'\n\n'+
+'BRAND PERSONALITY (pick 3):\n'+
+'Bold / Intelligent / Human / Reliable / Innovative / Playful / Premium / Accessible\n\n'+
+'BRAND VOICE:\n'+
+'• Confident but not arrogant\n'+
+'• Clear and direct — never corporate jargon\n'+
+'• Warm and encouraging — celebrates user wins\n'+
+'• Action-oriented — tells users what to do next\n\n'+
+'TAGLINE FORMAT: [Active verb] + [specific outcome] + [for audience]\n'+
+'Example: "Build faster products, ship in days"\n\n'+
+'═══ VISUAL IDENTITY ═══\n'+
+'Logo:\n'+
+'• Primary: modern wordmark with custom letterforms\n'+
+'• Variants: full logo, icon mark only, horizontal, stacked\n'+
+'• Minimum size: 24px height for icon, 80px for wordmark\n'+
+'• Clear space: 0.5× logo height on all sides\n\n'+
+'Icon system:\n'+
+'• Size: 16px, 20px, 24px (standard), 32px\n'+
+'• Style: 1.5px stroke weight, rounded line caps\n'+
+'• Grid: 24px canvas with 2px padding\n\n'+
+'═══ COPY GUIDELINES ═══\n'+
+'Headlines: verb-first ("Build faster", "Ship smarter", "Scale effortlessly")\n'+
+'CTAs: action + outcome ("Start building free", "Get your first prompt")\n'+
+'Errors: human, never blame user ("Something went wrong — try again" ✓)\n'+
+'Empty states: encouraging + next action ("No items yet — create your first one →")\n'+
+'Onboarding: celebrate every step ("Great! Now let\'s set up your first project")\n\n'+
+'SOCIAL PROOF FORMATS:\n'+
+'"'+nm+' — trusted by 10,000+ builders worldwide"\n'+
+'Testimonial: [avatar] [Name, Role at Company] "[2-sentence quote]"'
+    },
+
+    // ── 7. DEPLOYMENT
+    {type:'Deployment', content:
+'PRODUCTION DEPLOYMENT FOR "'+nm+'"\n\n'+
+'═══ INFRASTRUCTURE ═══\n'+
+'Frontend + API:  Vercel — auto-deploy from GitHub main branch\n'+
+'Database:        Supabase — managed PostgreSQL + auth + storage\n'+
+'CDN + Security:  Cloudflare — DDoS protection, WAF, edge caching\n'+
+'Error tracking:  Sentry — real-time alerts for frontend and backend errors\n'+
+'Analytics:       Vercel Analytics + PostHog (product analytics)\n'+
+'Uptime monitor:  Better Uptime — alert via Slack when down\n'+
+'Logs:            Axiom — structured log search and dashboards\n\n'+
+'═══ ENVIRONMENT VARIABLES ═══\n'+
+'NEXT_PUBLIC_SUPABASE_URL=\n'+
+'NEXT_PUBLIC_SUPABASE_ANON_KEY=\n'+
+'SUPABASE_SERVICE_ROLE_KEY=\n'+
+'NEXTAUTH_SECRET=\n'+
+'NEXTAUTH_URL=https://yourapp.com\n'+
+'UPSTASH_REDIS_REST_URL=\n'+
+'UPSTASH_REDIS_REST_TOKEN=\n'+
+'RESEND_API_KEY=\n'+
+'SENTRY_DSN=\n'+
+'NEXT_PUBLIC_POSTHOG_KEY=\n\n'+
+'═══ CI/CD PIPELINE (GitHub Actions) ═══\n'+
+'Trigger: push to any branch\n'+
+'Step 1 — Lint & Type Check: ESLint + TypeScript compiler, fail fast\n'+
+'Step 2 — Unit Tests: Jest + React Testing Library\n'+
+'Step 3 — Preview Deploy: Vercel preview URL on every PR\n'+
+'Step 4 — E2E Tests: Playwright on preview URL\n'+
+'Step 5 — Production Deploy: auto on merge to main\n'+
+'Step 6 — Release: on git tag v* → Slack notification with changelog\n\n'+
+'═══ PERFORMANCE TARGETS ═══\n'+
+'Lighthouse Performance: 95+\n'+
+'Lighthouse Accessibility: 100\n'+
+'Time to First Byte (TTFB): < 200ms\n'+
+'First Contentful Paint (FCP): < 1.2s\n'+
+'Largest Contentful Paint (LCP): < 2.5s\n'+
+'Total Blocking Time (TBT): < 100ms\n'+
+'Uptime SLA: 99.9% (< 8.7 hours downtime/year)'
+    },
+
+    // ── 8. AI AGENT
+    {type:'AI Agent', content: ai ?
+'AI INTEGRATION FOR "'+nm+'"\n\n'+
+'═══ AI FEATURES TO BUILD ═══\n'+
+'1. Smart Recommendations — personalized suggestions using user history + embeddings\n'+
+'2. Natural Language Search — semantic search across all content in the app\n'+
+'3. Auto-Summarization — condense long content to key bullet points\n'+
+'4. AI Onboarding Assistant — guides new users step-by-step to first value\n'+
+'5. Context-aware Autocomplete — intelligent suggestions in text inputs\n\n'+
+'═══ TECH STACK ═══\n'+
+'Primary model:   Claude claude-sonnet-4-20250514 (complex reasoning, 200K context)\n'+
+'Fast model:      GPT-4o-mini (classification, quick responses, cost reduction)\n'+
+'Embeddings:      text-embedding-3-small (1536 dims, excellent quality/cost ratio)\n'+
+'Vector store:    pgvector extension on Supabase (no extra infrastructure)\n'+
+'Streaming:       Server-Sent Events (SSE) for real-time AI responses\n'+
+'Orchestration:   Vercel AI SDK for unified model interface\n\n'+
+'═══ SYSTEM PROMPT ═══\n'+
+'"You are an AI assistant built into '+nm+', a product designed for '+aud+'. '+
+'Your role is to help users [specific task]. '+
+'Always be concise, accurate, and action-oriented. '+
+'Never make up information — if unsure, say so clearly. '+
+'Respond in the same language the user writes in."\n\n'+
+'═══ CONTEXT INJECTION (every API call) ═══\n'+
+'• User ID, role (user/admin/pro), subscription tier\n'+
+'• Current feature/page the user is on\n'+
+'• Last 5 user actions in the app\n'+
+'• User\'s stored preferences and settings\n'+
+'• Relevant data from pgvector similarity search\n\n'+
+'═══ SAFETY & COST CONTROLS ═══\n'+
+'Rate limits: 20 AI calls/day (free) | 200/day (pro) | unlimited (enterprise)\n'+
+'Max tokens: 2000 per chat response | 500 per autocomplete suggestion\n'+
+'Content moderation: screen all user inputs with Anthropic + OpenAI moderation\n'+
+'Cost alerts: Slack notification if daily AI spend exceeds $10\n'+
+'Fallback: if AI unavailable, gracefully degrade to rule-based logic'
+    :
+'AI FEATURES NOT REQUIRED for "'+nm+'" in this phase.\n\n'+
+'═══ RECOMMENDED AI ADDITIONS FOR V2 ═══\n'+
+'1. Smart search — semantic search using text embeddings\n'+
+'2. Auto-suggestions — context-aware input assistance\n'+
+'3. Content generation — AI-powered templates and drafts\n'+
+'4. Analytics insights — natural language querying of your data\n'+
+'5. Onboarding assistant — personalized setup guidance\n\n'+
+'═══ WHEN READY TO ADD AI ═══\n'+
+'Primary model: Claude claude-sonnet-4-20250514 (Anthropic API)\n'+
+'Quick wins first: start with search or autocomplete\n'+
+'Infrastructure: pgvector on your existing Supabase — no new services needed\n'+
+'SDK: Vercel AI SDK for streaming and model-agnostic interface'
+    },
   ];
 }
 
-// ══ PROMPT OVERLAY ══
+// ═══════════════════════════════════════════
+// PROMPT OVERLAY
+// ═══════════════════════════════════════════
 function openPO(){
   if(!G.prompts.length){
-    document.getElementById('po-empty').style.display='flex';
-    document.getElementById('po-fill').style.display='none';
-    document.getElementById('po-sc').style.display='none';
-    document.getElementById('po-tabs').innerHTML='';
+    show('po-empty','flex'); hide('po-fill'); hide('po-sc');
+    g('po-tabs').innerHTML='';
   } else {
-    document.getElementById('po-empty').style.display='none';
-    document.getElementById('po-fill').style.display='flex';
-    document.getElementById('po-tabs').innerHTML=G.prompts.map((p,i)=>
-      `<button class="ptab ${i===G.ap?'on':''}" onclick="selP(${i})">${p.type}</button>`
-    ).join('');
+    hide('po-empty');
+    show('po-fill','flex');
+    // Tabs
+    var tabs='';
+    for(var i=0;i<G.prompts.length;i++){
+      tabs+='<button class="ptab'+(i===G.ap?' on':'')+'" data-idx="'+i+'">'+G.prompts[i].type+'</button>';
+    }
+    g('po-tabs').innerHTML=tabs;
+    var btns=g('po-tabs').querySelectorAll('.ptab');
+    for(var j=0;j<btns.length;j++){
+      (function(btn,all){
+        btn.addEventListener('click',function(){
+          G.ap=parseInt(btn.getAttribute('data-idx'));
+          for(var k=0;k<all.length;k++) all[k].classList.toggle('on',k===G.ap);
+          updPO();
+        });
+      })(btns[j],btns);
+    }
+    // Score
     if(G.score){
-      document.getElementById('po-sc').style.display='block';
-      document.getElementById('po-sc-v').textContent=G.score+'/100';
-      wait(()=>{document.getElementById('po-sc-b').style.width=G.score+'%';},100);
+      show('po-sc','block');
+      txt('po-sc-v',G.score+'/100');
+      W(function(){ var b=g('po-sc-b'); if(b) b.style.width=G.score+'%'; },150);
     }
     updPO();
   }
-  document.getElementById('po').classList.add('open');
+  g('po').classList.add('open');
 }
-function closePO(){document.getElementById('po').classList.remove('open');}
-function selP(i){G.ap=i;document.querySelectorAll('.ptab').forEach((b,x)=>b.classList.toggle('on',x===i));updPO();}
+function closePO(){ g('po').classList.remove('open'); }
 function updPO(){
-  const p=G.prompts[G.ap];if(!p)return;
-  document.getElementById('po-txt').textContent=p.content;
-  document.getElementById('po-type').textContent=p.type;
-  document.getElementById('po-ch').textContent=p.content.length+' chars';
+  var p=G.prompts[G.ap]; if(!p) return;
+  txt('po-type',p.type);
+  txt('po-ch',p.content.length+' chars');
+  var pt=g('po-txt'); if(pt) pt.textContent=p.content;
 }
 function copyP(){
-  const p=G.prompts[G.ap];if(!p)return;
+  var p=G.prompts[G.ap]; if(!p) return;
   wClip(p.content);
-  const b=document.getElementById('cpbtn');b.textContent='✓ Copied!';
-  wait(()=>{b.textContent='Copy Prompt';},2000);
+  var b=g('copy-btn');
+  if(b){ b.textContent='✓ Copied!'; W(function(){ b.textContent='Copy Prompt'; },2000); }
 }
 function exportAll(){
-  if(!G.prompts.length)return;
-  wClip(G.prompts.map(p=>`## ${p.type}\n\n${p.content}`).join('\n\n---\n\n'));
+  if(!G.prompts.length) return;
+  var out='';
+  for(var i=0;i<G.prompts.length;i++){
+    out+='## '+G.prompts[i].type+'\n\n'+G.prompts[i].content+(i<G.prompts.length-1?'\n\n---\n\n':'');
+  }
+  wClip(out);
   alert('All '+G.prompts.length+' prompts copied as Markdown!');
 }
 function wClip(t){
-  if(navigator.clipboard){navigator.clipboard.writeText(t).catch(()=>fallbackCopy(t));}
-  else fallbackCopy(t);
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).catch(function(){ fb(t); });
+    } else { fb(t); }
+  } catch(e){ fb(t); }
 }
-function fallbackCopy(t){
-  const ta=document.createElement('textarea');
-  ta.value=t;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
-  document.body.appendChild(ta);ta.focus();ta.select();
-  try{document.execCommand('copy');}catch(e){}
-  document.body.removeChild(ta);
+function fb(t){
+  try{
+    var ta=document.createElement('textarea');
+    ta.value=t; ta.style.cssText='position:fixed;opacity:0;top:0;left:0;width:2px;height:2px';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  } catch(e){}
 }
 
-// ══ AGENTS ══
+// ═══════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════
 function renderAg(){
-  const el=document.getElementById('ag-rows');if(!el)return;
-  el.innerHTML=AGTS.map(a=>{
-    const on=G.aAg.includes(a.id);
-    return `<div class="ar ${on?'lit':''}">
-      <div class="ar-i" style="background:${a.color}22">${a.icon}</div>
-      <div class="ar-inf"><h3 style="color:${a.color}">${a.label}</h3><p>${a.desc}</p></div>
-      <div class="ar-st">
-        <span class="dot"><span class="dc" style="background:${on?'#22d3a0':'#3a3a50'};${on?'animation:pulse 2s infinite':''}"></span></span>
-        <span style="color:${on?'#22d3a0':'#3a3a50'}">${on?'Active':'Standby'}</span>
-      </div>
-    </div>`;
-  }).join('');
+  var e=g('ag-rows'); if(!e) return;
+  var h='';
+  for(var i=0;i<AGTS.length;i++){
+    var a=AGTS[i], on=G.aAg.indexOf(a.id)>=0;
+    h+='<div class="ar'+(on?' lit':'')+'">'+
+      '<div class="ar-i" style="background:'+a.color+'22">'+a.icon+'</div>'+
+      '<div class="ar-inf"><h3 style="color:'+a.color+'">'+a.label+'</h3><p>'+a.desc+'</p></div>'+
+      '<div class="ar-st"><span class="dot"><span class="dc" style="background:'+(on?'#22d3a0':'#3a3a50')+';'+(on?'animation:pulse 2s infinite':'')+'">&nbsp;</span></span>'+
+      '<span style="color:'+(on?'#22d3a0':'#3a3a50')+'">'+(on?'Active':'Standby')+'</span></div></div>';
+  }
+  e.innerHTML=h;
 }
 
-// ══ PROJECTS ══
 function renderPj(){
-  const el=document.getElementById('pj-rows');if(!el)return;
-  el.innerHTML=PROJS.map(p=>{
-    const pl=PLATS.find(x=>x.id===p.pl);
-    return `<div class="pr" onclick="setV('ws')">
-      <div class="pr-i">${pl?pl.icon:'◈'}</div>
-      <div class="pr-inf"><h3>${p.name}</h3>
-        <div class="pr-bg">
-          <span class="badge" style="background:#6b6b8022;color:#6b6b80;border:1px solid #6b6b8033">${p.type}</span>
-          <span class="badge" style="background:${pl?pl.color+'22':'#7c5cfc22'};color:${pl?pl.color:'#7c5cfc'};border:1px solid ${pl?pl.color+'33':'#7c5cfc33'}">${pl?pl.label:p.pl}</span>
-        </div>
-      </div>
-      <div class="pr-sc"><div class="pr-sv" style="color:${p.sc>=90?'#22d3a0':'#f5a623'}">${p.sc}</div><div class="pr-sl">score</div></div>
-      <div class="pr-mt"><div class="pr-mp">${p.pc} prompts</div><div class="pr-md">${p.date}</div></div>
-    </div>`;
-  }).join('');
+  var e=g('pj-rows'); if(!e) return;
+  var h='';
+  for(var i=0;i<PROJS.length;i++){
+    var p=PROJS[i], pl=getPl(p.pl);
+    h+='<div class="pr" data-id="'+p.id+'">'+
+      '<div class="pr-i">'+(pl?pl.icon:'◈')+'</div>'+
+      '<div class="pr-inf"><h3>'+p.name+'</h3>'+
+        '<div class="pr-bg">'+
+          '<span class="badge" style="background:#6b6b8022;color:#6b6b80;border:1px solid #6b6b8033">'+p.type+'</span>'+
+          '<span class="badge" style="background:'+(pl.color+'22')+';color:'+pl.color+';border:1px solid '+(pl.color+'33')+'">'+pl.label+'</span>'+
+        '</div></div>'+
+      '<div class="pr-sc"><div class="pr-sv" style="color:'+(p.sc>=90?'#22d3a0':'#f5a623')+'">'+p.sc+'</div><div class="pr-sl">score</div></div>'+
+      '<div class="pr-mt"><div class="pr-mp">'+p.pc+' prompts</div><div class="pr-md">'+p.date+'</div></div>'+
+    '</div>';
+  }
+  e.innerHTML=h;
+  var rows=e.querySelectorAll('.pr');
+  for(var j=0;j<rows.length;j++){
+    rows[j].addEventListener('click',function(){ setV('ws'); });
+  }
 }
 
-// ══ PROMPTS LIST ══
 function renderPL(){
-  const sub=document.getElementById('pl-sub'),list=document.getElementById('pl-list'),cta=document.getElementById('pl-cta');
-  if(!G.prompts.length){sub.textContent='No prompts yet — start a project first.';list.innerHTML='';cta.style.display='block';return;}
-  cta.style.display='none';
-  sub.textContent=G.prompts.length+' prompts generated for your project.';
-  list.innerHTML=G.prompts.map((p,i)=>
-    `<div class="pli ${i===G.ap?'on':''}" onclick="pickP(${i})">
-      <div class="pli-h">
-        <span class="badge" style="background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc33">${p.type}</span>
-        <span style="font-size:11px;color:#3a3a50">${p.content.length} chars</span>
-      </div>
-      <div class="pli-p">${p.content}</div>
-    </div>`
-  ).join('');
+  var sub=g('pl-sub'), list=g('pl-list'), cta=g('pl-cta');
+  if(!G.prompts.length){
+    if(sub) sub.textContent='No prompts yet — start a project first.';
+    if(list) list.innerHTML='';
+    if(cta) cta.style.display='block';
+    return;
+  }
+  if(cta) cta.style.display='none';
+  if(sub) sub.textContent=G.prompts.length+' prompts generated and ready.';
+  var h='';
+  for(var i=0;i<G.prompts.length;i++){
+    var p=G.prompts[i];
+    h+='<div class="pli'+(i===G.ap?' on':'')+'" data-pi="'+i+'">'+
+      '<div class="pli-h">'+
+        '<span class="badge" style="background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc33">'+p.type+'</span>'+
+        '<span style="font-size:11px;color:#3a3a50">'+p.content.length+' chars</span>'+
+      '</div>'+
+      '<div class="pli-p">'+p.content.slice(0,180)+'</div>'+
+    '</div>';
+  }
+  if(list){
+    list.innerHTML=h;
+    var rows=list.querySelectorAll('.pli');
+    for(var j=0;j<rows.length;j++){
+      (function(row){
+        row.addEventListener('click',function(){
+          G.ap=parseInt(row.getAttribute('data-pi'));
+          openPO();
+        });
+      })(rows[j]);
+    }
+  }
 }
-function pickP(i){G.ap=i;openPO();}
+
+// ═══════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function(){
+
+  // Build landing agents
+  var lag=g('land-ag');
+  if(lag){
+    for(var i=0;i<AGTS.length;i++){
+      var a=AGTS[i];
+      var d=document.createElement('div');
+      d.className='ag-card';
+      d.innerHTML='<div class="aci">'+a.icon+'</div><h3 style="color:'+a.color+'">'+a.label+'</h3><p>'+a.desc+'</p>';
+      lag.appendChild(d);
+    }
+  }
+
+  // Prompt overlay placeholders
+  var phs=g('po-phs');
+  if(phs){ for(var j=0;j<PTYPES.length;j++) phs.innerHTML+='<div style="padding:8px 12px;border-radius:8px;background:#111118;border:1px solid #1e1e2a;font-size:12px;color:#3a3a50;display:flex;align-items:center;gap:7px"><span style="width:5px;height:5px;border-radius:50%;background:#3a3a50;display:inline-block;flex-shrink:0"></span>'+PTYPES[j]+'</div>'; }
+
+  // Build input bar content
+  buildInputBar();
+
+  renderAg();
+  renderPj();
+
+  // ── LANDING EVENTS ──
+  function bindLand(id,fn){ var e=g(id); if(e) e.addEventListener('click',fn); }
+  bindLand('logo-land',  function(){ goLand(); });
+  bindLand('lnk-ws',     function(){ goApp('ws'); });
+  bindLand('lnk-agents', function(){ goApp('agents'); });
+  bindLand('lnk-projects',function(){ goApp('projects'); });
+  bindLand('l-cta-btn',  function(){ goApp('ws'); });
+
+  bindLand('l-start-btn', function(){
+    var inp=g('l-idea'); if(!inp) return;
+    var idea=(inp.value||'').trim();
+    if(!idea){ inp.focus(); return; }
+    var wi=g('inp-idea'); if(wi) wi.value=idea;
+    goApp('ws');
+    W(function(){ runFlow(idea); }, 100);
+  });
+
+  var li=g('l-idea');
+  if(li){
+    li.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){
+        e.preventDefault();
+        var idea=(li.value||'').trim();
+        if(!idea) return;
+        var wi=g('inp-idea'); if(wi) wi.value=idea;
+        goApp('ws');
+        W(function(){ runFlow(idea); },100);
+      }
+    });
+  }
+
+  // ── APP NAV EVENTS ──
+  function bindApp(id,fn){ var e=g(id); if(e) e.addEventListener('click',fn); }
+  bindApp('logo-app',     function(){ goLand(); });
+  bindApp('aln-ws',       function(){ setV('ws'); });
+  bindApp('aln-prompts',  function(){ setV('prompts'); });
+  bindApp('aln-agents',   function(){ setV('agents'); });
+  bindApp('aln-projects', function(){ setV('projects'); });
+  bindApp('plsel',        null); // handled by change
+  var ps=g('plsel'); if(ps) ps.addEventListener('change',function(){ G.pl=this.value; });
+  bindApp('vpbtn',        function(){ openPO(); });
+  bindApp('new-proj-btn', function(){ setV('ws'); });
+  bindApp('pl-cta-btn',   function(){ setV('ws'); });
+
+  // ── PROMPT OVERLAY EVENTS ──
+  bindApp('po-close-btn', function(){ closePO(); });
+  bindApp('copy-btn',     function(){ copyP(); });
+  bindApp('export-btn',   function(){ exportAll(); });
+
+  // new-btn built dynamically — bind after DOM ready
+  W(function(){
+    var nb=g('new-btn'); if(nb) nb.addEventListener('click',function(){ resetFlow(); });
+  },100);
+
+});
 </script>
 </body>
 </html>
