@@ -4,257 +4,1806 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>PromptOS — AI Product Architect</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#07070a;color:#e8e8f0;font-family:'DM Sans','Segoe UI',sans-serif;-webkit-text-size-adjust:100%}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#07070a}::-webkit-scrollbar-thumb{background:#2e2e42;border-radius:2px}
-input,select,button{font-family:inherit;-webkit-appearance:none;appearance:none}
-input:focus,select:focus{outline:none}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes ping{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.2);opacity:0}}
-@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+html{scroll-behavior:smooth}
+body{background:#060608;color:#e2e2ec;font-family:'Geist','Segoe UI',sans-serif;-webkit-text-size-adjust:100%;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#060608}
+::-webkit-scrollbar-thumb{background:#252535;border-radius:4px}
+input,select,button,textarea{font-family:inherit;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{outline:none}
+a{color:inherit;text-decoration:none}
+
+/* ═══════════════════════════════════════
+   CSS VARIABLES
+═══════════════════════════════════════ */
+:root{
+  --bg:       #060608;
+  --bg1:      #0d0d12;
+  --bg2:      #13131a;
+  --bg3:      #1a1a24;
+  --border:   #1f1f2e;
+  --border2:  #2a2a3d;
+  --accent:   #6c47ff;
+  --accent2:  #8b6dff;
+  --green:    #1fd4a0;
+  --amber:    #f0a730;
+  --red:      #ff4f70;
+  --text:     #e2e2ec;
+  --muted:    #7070878;
+  --dim:      #3a3a52;
+  --font-d:   'Instrument Serif', Georgia, serif;
+  --font-s:   'Geist', sans-serif;
+  --font-m:   'Geist Mono', monospace;
+  --r:        10px;
+  --r2:       14px;
+  --sh:       0 1px 3px rgba(0,0,0,.4), 0 4px 24px rgba(0,0,0,.3);
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes ping{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.4);opacity:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes countUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
-/* LANDING */
-#pg-land{display:block;background:#07070a}
-#pg-app{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#07070a;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+/* ═══════════════════════════════════════
+   PAGE CONTROLLER
+═══════════════════════════════════════ */
+#pg-land{display:block;background:var(--bg)}
+#pg-app{display:none;position:fixed;inset:0;background:var(--bg);flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
 
-.l-nav{position:sticky;top:0;z-index:50;background:rgba(7,7,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1e1e2a;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.logo-t{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;background:linear-gradient(135deg,#7c5cfc,#22d3a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:none;cursor:pointer;padding:0;display:inline-block}
-.l-links{display:flex;gap:3px;flex-wrap:wrap}
-.l-link{background:none;border:none;color:#6b6b80;font-size:12px;font-weight:500;padding:5px 9px;border-radius:6px;cursor:pointer;touch-action:manipulation}
-.hero{padding:50px 20px 32px;text-align:center;max-width:620px;margin:0 auto}
-.hbadge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc44;margin-bottom:16px}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(26px,8vw,52px);font-weight:800;line-height:1.08;margin-bottom:14px}
-.grd{background:linear-gradient(135deg,#7c5cfc,#22d3a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero p{font-size:14px;color:#6b6b80;line-height:1.7;max-width:360px;margin:0 auto 26px}
-.idea-box{display:flex;flex-direction:column;gap:9px;max-width:440px;margin:0 auto 12px}
-.idea-inp{width:100%;padding:14px 16px;border-radius:10px;font-size:15px;background:#111118;border:1px solid #1e1e2a;color:#e8e8f0;transition:border-color .2s}
-.idea-inp:focus{border-color:#7c5cfc55}
-.hint{font-size:12px;color:#3a3a50;text-align:center;margin-bottom:36px}
-.pills{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;padding:0 16px 48px}
-.pill{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;background:#111118;border:1px solid #1e1e2a;font-size:12px;color:#6b6b80}
-.feat{max-width:840px;margin:0 auto;padding:0 16px 60px}
-.feat-hd{text-align:center;margin-bottom:32px}
-.feat-hd h2{font-family:'Syne',sans-serif;font-size:clamp(19px,5vw,28px);font-weight:800;margin-bottom:8px}
-.feat-hd p{color:#6b6b80;font-size:13px}
-.ag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
-.ag-card{padding:17px;border-radius:12px;background:#111118;border:1px solid #1e1e2a}
-.ag-card .aci{font-size:21px;margin-bottom:8px}
-.ag-card h3{font-size:13px;font-weight:700;margin-bottom:3px}
-.ag-card p{font-size:12px;color:#6b6b80;line-height:1.6}
-.stats{border-top:1px solid #1e1e2a;border-bottom:1px solid #1e1e2a;padding:28px 16px;display:flex;justify-content:center;gap:clamp(20px,5vw,56px);flex-wrap:wrap}
-.sv{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#7c5cfc}
-.sl{font-size:12px;color:#6b6b80;margin-top:3px}
-.l-cta{text-align:center;padding:50px 16px}
-.l-cta h2{font-family:'Syne',sans-serif;font-size:clamp(19px,5vw,28px);font-weight:800;margin-bottom:10px}
-.l-cta p{color:#6b6b80;margin-bottom:22px;font-size:13px}
-.l-foot{border-top:1px solid #1e1e2a;padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.l-foot span{font-size:12px;color:#3a3a50}
+/* ═══════════════════════════════════════
+   LANDING — NAVBAR
+═══════════════════════════════════════ */
+.l-nav{
+  position:sticky;top:0;z-index:100;
+  padding:0 24px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:rgba(6,6,8,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.l-logo{
+  font-family:var(--font-s);font-weight:700;font-size:17px;
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;background:none;border:none;color:var(--text);
+}
+.l-logo-mark{
+  width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,#6c47ff,#1fd4a0);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.l-nav-links{display:flex;gap:2px;align-items:center}
+.l-nav-link{
+  background:none;border:none;color:#70708a;
+  font-size:13px;font-weight:500;padding:6px 12px;
+  border-radius:7px;cursor:pointer;transition:all .15s;
+}
+.l-nav-link:hover{color:var(--text);background:var(--bg2)}
+.l-nav-right{display:flex;align-items:center;gap:8px}
+.badge-new{
+  font-size:10px;font-weight:600;letter-spacing:.06em;
+  padding:2px 7px;border-radius:4px;text-transform:uppercase;
+  background:rgba(108,71,255,.15);color:var(--accent2);
+  border:1px solid rgba(108,71,255,.25);
+}
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600;border:1px solid #2e2e42;background:transparent;color:#e8e8f0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-.btn-sm{padding:8px 14px;font-size:13px}
-.btn-xs{padding:6px 11px;font-size:12px}
-.btn-p{background:#7c5cfc;border-color:#7c5cfc;color:#fff}
-.btn-full{width:100%;display:flex}
-.badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 7px;border-radius:4px}
+/* ═══════════════════════════════════════
+   LANDING — HERO
+═══════════════════════════════════════ */
+.hero{
+  padding:90px 24px 70px;
+  text-align:center;
+  max-width:780px;margin:0 auto;
+  position:relative;
+}
+.hero::before{
+  content:'';position:absolute;
+  top:-60px;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;
+  background:radial-gradient(ellipse at center,rgba(108,71,255,.12) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.hero>*{position:relative;z-index:1}
 
-/* APP NAV */
-.a-nav{height:48px;flex-shrink:0;background:rgba(7,7,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid #1e1e2a;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 12px;border-radius:999px;
+  background:rgba(108,71,255,.1);color:var(--accent2);
+  border:1px solid rgba(108,71,255,.2);
+  margin-bottom:28px;
+  animation:fadeIn .6s ease both;
+}
+.hero-eyebrow .pulse-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  position:relative;display:inline-block;flex-shrink:0;
+}
+.hero-eyebrow .pulse-dot::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:var(--green);opacity:.4;animation:ping 2s infinite;
+}
+
+.hero h1{
+  font-family:var(--font-d);
+  font-size:clamp(38px,7.5vw,82px);
+  font-weight:400;line-height:1.03;
+  letter-spacing:-.01em;
+  margin-bottom:24px;
+  animation:fadeUp .7s .1s ease both;
+}
+.hero h1 em{
+  font-style:italic;
+  background:linear-gradient(135deg,#6c47ff 0%,#a480ff 40%,#1fd4a0 100%);
+  background-size:200% 200%;
+  animation:gradMove 4s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(15px,2vw,18px);
+  color:#8888a4;
+  line-height:1.7;
+  max-width:520px;margin:0 auto 40px;
+  animation:fadeUp .7s .2s ease both;
+}
+
+.hero-input-wrap{
+  max-width:520px;margin:0 auto 16px;
+  animation:fadeUp .7s .3s ease both;
+}
+.hero-input-row{
+  display:flex;gap:0;
+  background:var(--bg2);
+  border:1.5px solid var(--border2);
+  border-radius:12px;
+  padding:4px 4px 4px 16px;
+  transition:border-color .2s;
+}
+.hero-input-row:focus-within{border-color:rgba(108,71,255,.5)}
+.hero-input{
+  flex:1;background:none;border:none;
+  font-size:15px;color:var(--text);
+  padding:10px 0;
+  min-width:0;
+}
+.hero-input::placeholder{color:#454560}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 20px;border-radius:8px;
+  font-size:14px;font-weight:600;
+  background:linear-gradient(135deg,#6c47ff,#8b6dff);
+  border:none;color:#fff;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+  flex-shrink:0;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(108,71,255,.4)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 18px;border-radius:8px;
+  font-size:14px;font-weight:500;
+  background:transparent;border:1.5px solid var(--border2);
+  color:#8888a4;cursor:pointer;transition:all .15s;
+}
+.btn-secondary:hover{color:var(--text);border-color:#3a3a52;background:var(--bg2)}
+
+.hero-hint{
+  font-size:12px;color:#454560;
+  animation:fadeUp .7s .4s ease both;
+}
+
+/* ═══════════════════════════════════════
+   PLATFORM STRIP
+═══════════════════════════════════════ */
+.plat-strip{
+  padding:20px 24px 56px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.plat-label{font-size:11px;color:#454560;letter-spacing:.07em;text-transform:uppercase;font-weight:500}
+.plat-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.plat-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 13px;border-radius:999px;
+  background:var(--bg1);border:1px solid var(--border);
+  font-size:12px;font-weight:500;color:#70708a;
+  transition:all .15s;
+}
+.plat-pill:hover{color:var(--text);border-color:var(--border2)}
+.plat-pill .pi{font-size:14px}
+
+/* ═══════════════════════════════════════
+   SOCIAL PROOF BAR
+═══════════════════════════════════════ */
+.proof-bar{
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:24px;
+  display:flex;justify-content:center;gap:clamp(24px,5vw,72px);
+  flex-wrap:wrap;
+  background:var(--bg1);
+}
+.proof-item{text-align:center}
+.proof-val{
+  font-family:var(--font-s);font-weight:700;
+  font-size:clamp(22px,4vw,32px);
+  background:linear-gradient(135deg,#6c47ff,#1fd4a0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;line-height:1;margin-bottom:5px;
+}
+.proof-lbl{font-size:12px;color:#70708a;font-weight:500}
+
+/* ═══════════════════════════════════════
+   SECTION COMMON
+═══════════════════════════════════════ */
+.section{padding:80px 24px;max-width:1100px;margin:0 auto}
+.section-sm{padding:56px 24px;max-width:1100px;margin:0 auto}
+.section-eyebrow{
+  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent2);margin-bottom:14px;display:block;
+}
+.section-title{
+  font-family:var(--font-d);
+  font-size:clamp(28px,5vw,52px);font-weight:400;
+  line-height:1.1;letter-spacing:-.01em;
+  margin-bottom:16px;
+}
+.section-title em{font-style:italic;color:#8888a4}
+.section-body{font-size:16px;color:#8888a4;line-height:1.75;max-width:560px}
+.section-body.center{margin:0 auto;text-align:center}
+
+/* ═══════════════════════════════════════
+   PROBLEM SECTION
+═══════════════════════════════════════ */
+.problem-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  overflow:hidden;
+  margin-top:48px;
+}
+.problem-card{
+  padding:28px;background:var(--bg);
+  position:relative;
+}
+.problem-card::before{
+  content:'✕';position:absolute;top:20px;right:20px;
+  font-size:12px;color:#ff4f7044;
+  width:24px;height:24px;border-radius:50%;
+  border:1px solid rgba(255,79,112,.15);
+  display:flex;align-items:center;justify-content:center;
+}
+.problem-card h3{font-size:14px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.problem-card p{font-size:13px;color:#70708a;line-height:1.65}
+
+/* ═══════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════ */
+.how-steps{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:2px;margin-top:48px;
+}
+.how-step{
+  padding:28px 24px;
+  background:var(--bg1);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  position:relative;
+  transition:border-color .2s;
+}
+.how-step:hover{border-color:rgba(108,71,255,.3)}
+.step-num{
+  font-family:var(--font-m);font-size:11px;font-weight:500;
+  color:#454560;margin-bottom:14px;display:block;
+}
+.step-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;margin-bottom:16px;
+}
+.how-step h3{font-size:14px;font-weight:600;margin-bottom:7px;color:var(--text)}
+.how-step p{font-size:13px;color:#70708a;line-height:1.65}
+
+/* ═══════════════════════════════════════
+   DEMO PREVIEW
+═══════════════════════════════════════ */
+.demo-wrap{
+  margin-top:56px;
+  border:1px solid var(--border2);
+  border-radius:16px;
+  overflow:hidden;
+  background:var(--bg1);
+  position:relative;
+}
+.demo-topbar{
+  height:40px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:8px;
+}
+.demo-dot{width:10px;height:10px;border-radius:50%}
+.demo-body{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:320px;
+}
+.demo-left{
+  padding:24px;
+  border-right:1px solid var(--border);
+}
+.demo-right{padding:24px}
+.demo-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#454560;margin-bottom:14px}
+.demo-idea{
+  background:var(--bg2);border:1px solid rgba(108,71,255,.25);
+  border-radius:8px;padding:12px 14px;
+  font-size:13px;color:var(--text);margin-bottom:16px;
+  line-height:1.55;
+}
+.demo-agents{display:flex;flex-direction:column;gap:6px}
+.demo-agent{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:7px;
+  background:var(--bg);border:1px solid var(--border);
+  font-size:12px;font-weight:500;
+}
+.demo-agent.active{
+  border-color:rgba(31,212,160,.3);
+  background:rgba(31,212,160,.05);
+}
+.demo-agent .adi{font-size:14px;flex-shrink:0}
+.demo-agent .adn{flex:1}
+.demo-agent .ads{
+  font-size:10px;color:#454560;
+  display:flex;align-items:center;gap:4px;
+}
+.demo-agent.active .ads{color:var(--green)}
+.demo-output{
+  font-family:var(--font-m);font-size:11px;
+  color:#8888a4;line-height:1.85;
+  white-space:pre-wrap;
+  overflow:hidden;
+}
+.demo-output .hl{color:var(--accent2)}
+.demo-output .grn{color:var(--green)}
+.demo-output .amb{color:var(--amber)}
+
+/* ═══════════════════════════════════════
+   AGENTS SECTION
+═══════════════════════════════════════ */
+.agents-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:12px;
+  margin-top:48px;
+}
+.agent-card{
+  padding:22px;border-radius:var(--r2);
+  background:var(--bg1);
+  border:1px solid var(--border);
+  transition:all .2s;
+  cursor:default;
+}
+.agent-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+}
+.agent-icon{
+  width:44px;height:44px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:14px;
+}
+.agent-name{font-size:14px;font-weight:600;margin-bottom:3px}
+.agent-role{font-size:11px;color:#454560;font-weight:500;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+.agent-desc{font-size:13px;color:#70708a;line-height:1.6;margin-bottom:12px}
+.agent-tags{display:flex;flex-wrap:wrap;gap:5px}
+.agent-tag{
+  font-size:10px;font-weight:500;
+  padding:2px 8px;border-radius:4px;
+  background:var(--bg2);border:1px solid var(--border);
+  color:#70708a;
+}
+
+/* ═══════════════════════════════════════
+   OUTPUT EXAMPLES
+═══════════════════════════════════════ */
+.output-tabs{
+  display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap;
+}
+.otab{
+  padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;
+  border:1px solid var(--border);background:var(--bg1);color:#70708a;
+  cursor:pointer;transition:all .15s;
+}
+.otab.on{
+  background:linear-gradient(135deg,rgba(108,71,255,.15),rgba(31,212,160,.08));
+  border-color:rgba(108,71,255,.35);color:var(--accent2);
+}
+.output-panel{
+  display:none;
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:var(--r2);overflow:hidden;
+}
+.output-panel.on{display:block}
+.output-panel-hd{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg2);
+}
+.output-panel-hd span{font-size:12px;font-weight:600;color:#70708a}
+.output-code{
+  padding:18px;
+  font-family:var(--font-m);font-size:12px;
+  color:#9090b0;line-height:1.8;
+  white-space:pre-wrap;word-break:break-word;
+}
+.code-hl{color:#8b6dff}
+.code-str{color:#1fd4a0}
+.code-cmt{color:#454560}
+.code-key{color:#f0a730}
+
+/* ═══════════════════════════════════════
+   BEFORE / AFTER
+═══════════════════════════════════════ */
+.ba-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  margin-top:48px;
+}
+.ba-col{
+  border-radius:var(--r2);overflow:hidden;
+  border:1px solid var(--border);
+}
+.ba-header{
+  padding:12px 18px;
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;
+  border-bottom:1px solid var(--border);
+}
+.ba-before .ba-header{background:rgba(255,79,112,.06);color:#ff4f70}
+.ba-after  .ba-header{background:rgba(31,212,160,.06);color:var(--green)}
+.ba-body{padding:18px;background:var(--bg1)}
+.ba-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 0;border-bottom:1px solid var(--border);
+  font-size:13px;line-height:1.55;
+}
+.ba-item:last-child{border-bottom:none}
+.ba-item .bi{flex-shrink:0;font-size:15px;margin-top:1px}
+
+/* ═══════════════════════════════════════
+   USE CASES
+═══════════════════════════════════════ */
+.usecase-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:12px;margin-top:48px;
+}
+.usecase-card{
+  padding:24px;border-radius:var(--r2);
+  background:var(--bg1);border:1px solid var(--border);
+}
+.usecase-icon{font-size:28px;margin-bottom:14px;display:block}
+.usecase-title{font-size:15px;font-weight:600;margin-bottom:8px}
+.usecase-desc{font-size:13px;color:#70708a;line-height:1.65;margin-bottom:14px}
+.usecase-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.usecase-list li{
+  font-size:12px;color:#8888a4;
+  display:flex;align-items:center;gap:6px;
+}
+.usecase-list li::before{
+  content:'';width:4px;height:4px;border-radius:50%;
+  background:var(--accent2);flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════
+   FEATURES DEEP
+═══════════════════════════════════════ */
+.feat-list{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;
+  margin-top:48px;
+}
+.feat-item{
+  padding:24px;background:var(--bg);
+  display:flex;gap:14px;align-items:flex-start;
+}
+.feat-item-icon{
+  width:36px;height:36px;flex-shrink:0;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.feat-item-text h4{font-size:14px;font-weight:600;margin-bottom:5px}
+.feat-item-text p{font-size:13px;color:#70708a;line-height:1.6}
+
+/* ═══════════════════════════════════════
+   TRUST / TESTIMONIALS
+═══════════════════════════════════════ */
+.testi-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:12px;margin-top:48px;
+}
+.testi-card{
+  padding:22px;border-radius:var(--r2);
+  background:var(--bg1);border:1px solid var(--border);
+}
+.testi-stars{color:var(--amber);font-size:13px;margin-bottom:12px}
+.testi-text{font-size:14px;color:#b0b0c8;line-height:1.7;margin-bottom:16px}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-av{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.testi-name{font-size:13px;font-weight:600;margin-bottom:1px}
+.testi-role{font-size:12px;color:#70708a}
+
+/* ═══════════════════════════════════════
+   PRICING
+═══════════════════════════════════════ */
+.pricing-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:12px;margin-top:48px;
+  max-width:900px;margin-left:auto;margin-right:auto;
+}
+.pricing-card{
+  padding:28px;border-radius:var(--r2);
+  background:var(--bg1);border:1px solid var(--border);
+  position:relative;
+}
+.pricing-card.popular{
+  border-color:rgba(108,71,255,.4);
+  background:linear-gradient(135deg,rgba(108,71,255,.07),rgba(31,212,160,.04));
+}
+.pricing-popular-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 12px;border-radius:999px;
+  background:linear-gradient(135deg,#6c47ff,#8b6dff);color:#fff;
+  white-space:nowrap;
+}
+.pricing-tier{font-size:13px;font-weight:500;color:#70708a;margin-bottom:8px}
+.pricing-price{
+  font-family:var(--font-s);font-size:38px;font-weight:700;
+  line-height:1;margin-bottom:4px;
+}
+.pricing-price span{font-size:16px;font-weight:400;color:#70708a}
+.pricing-desc{font-size:13px;color:#70708a;margin-bottom:20px;line-height:1.5}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.pricing-features li{
+  font-size:13px;color:#b0b0c8;
+  display:flex;align-items:center;gap:8px;
+}
+.pricing-features li .chk{color:var(--green);font-size:12px;flex-shrink:0}
+.pricing-features li .na{color:#454560;font-size:12px;flex-shrink:0}
+.btn-pricing{
+  width:100%;padding:11px;border-radius:8px;
+  font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);
+  background:transparent;color:var(--text);transition:all .15s;
+}
+.btn-pricing:hover{background:var(--bg2);border-color:#3a3a52}
+.pricing-card.popular .btn-pricing{
+  background:linear-gradient(135deg,#6c47ff,#8b6dff);border-color:transparent;color:#fff;
+}
+.pricing-card.popular .btn-pricing:hover{box-shadow:0 4px 20px rgba(108,71,255,.4)}
+
+/* ═══════════════════════════════════════
+   FAQ
+═══════════════════════════════════════ */
+.faq-list{margin-top:48px;display:flex;flex-direction:column;gap:1px;max-width:720px;margin-left:auto;margin-right:auto}
+.faq-item{
+  border:1px solid var(--border);border-radius:var(--r);
+  background:var(--bg1);overflow:hidden;margin-bottom:8px;
+}
+.faq-q{
+  width:100%;padding:18px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:none;border:none;color:var(--text);
+  font-size:14px;font-weight:600;cursor:pointer;text-align:left;
+  transition:background .15s;
+}
+.faq-q:hover{background:var(--bg2)}
+.faq-q .faq-arrow{color:#454560;transition:transform .2s;flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{
+  display:none;padding:0 20px 18px;
+  font-size:14px;color:#8888a4;line-height:1.7;
+}
+.faq-item.open .faq-a{display:block}
+
+/* ═══════════════════════════════════════
+   FINAL CTA
+═══════════════════════════════════════ */
+.final-cta{
+  padding:100px 24px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.final-cta::before{
+  content:'';position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:800px;height:500px;
+  background:radial-gradient(ellipse at center,rgba(108,71,255,.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.final-cta h2{
+  font-family:var(--font-d);
+  font-size:clamp(32px,6vw,64px);font-weight:400;
+  line-height:1.05;letter-spacing:-.01em;
+  margin-bottom:20px;position:relative;z-index:1;
+}
+.final-cta p{font-size:17px;color:#70708a;margin-bottom:36px;position:relative;z-index:1}
+.final-cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.l-footer{
+  border-top:1px solid var(--border);
+  padding:24px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.footer-left{display:flex;align-items:center;gap:16px}
+.footer-logo{font-weight:700;font-size:15px;color:#454560}
+.footer-copy{font-size:12px;color:#454560}
+.footer-links{display:flex;gap:16px;flex-wrap:wrap}
+.footer-link{font-size:12px;color:#454560;cursor:pointer;border:none;background:none;transition:color .15s}
+.footer-link:hover{color:#8888a4}
+
+/* ═══════════════════════════════════════
+   APP — NAV
+═══════════════════════════════════════ */
+.a-nav{
+  height:52px;flex-shrink:0;
+  background:rgba(6,6,8,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 14px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.a-logo{
+  font-family:var(--font-s);font-weight:700;font-size:16px;
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;background:none;border:none;color:var(--text);
+}
+.a-logo-mark{
+  width:26px;height:26px;border-radius:7px;
+  background:linear-gradient(135deg,#6c47ff,#1fd4a0);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;
+}
 .a-links{display:flex;gap:2px}
-.aln{background:none;border:1px solid transparent;border-radius:6px;color:#6b6b80;font-size:12px;font-weight:500;padding:5px 8px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-.aln.on{background:#7c5cfc22;border-color:#7c5cfc44;color:#7c5cfc}
-.a-st{display:flex;align-items:center;gap:5px;font-size:11px;color:#6b6b80}
-.dot{position:relative;display:inline-flex;width:8px;height:8px;flex-shrink:0}
-.dc{position:absolute;width:8px;height:8px;border-radius:50%}
-.dp{position:absolute;width:8px;height:8px;border-radius:50%;opacity:.4;animation:ping 2s infinite}
+.aln{
+  background:none;border:1px solid transparent;border-radius:7px;
+  color:#70708a;font-size:12px;font-weight:500;
+  padding:5px 10px;cursor:pointer;
+  touch-action:manipulation;transition:all .15s;
+}
+.aln.on{background:rgba(108,71,255,.12);border-color:rgba(108,71,255,.25);color:var(--accent2)}
+.a-nav-right{display:flex;align-items:center;gap:6px}
+.a-status{display:flex;align-items:center;gap:6px;font-size:11px;color:#70708a}
+.status-dot{position:relative;display:inline-flex;width:8px;height:8px;flex-shrink:0}
+.status-dot .dc{position:absolute;inset:0;border-radius:50%}
+.status-dot .dp{position:absolute;inset:0;border-radius:50%;opacity:.4;animation:ping 2s infinite}
 
-/* VIEWS */
+/* ═══════════════════════════════════════
+   APP — VIEWS
+═══════════════════════════════════════ */
 .views-wrap{flex:1;position:relative;overflow:hidden;min-height:0}
 .view{display:none;position:absolute;inset:0;flex-direction:column;overflow:hidden}
 .view.on{display:flex}
 .v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
 
-/* WORKSPACE */
-.ws-top{flex-shrink:0;padding:10px 13px;border-bottom:1px solid #1e1e2a;background:#07070a;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.ws-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ws-st{display:flex;align-items:center;gap:6px}
-.ws-stxt{font-size:13px;font-weight:600;color:#6b6b80}
-.itag{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 7px;border-radius:4px;background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc44;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none}
-.plsel{background:#111118;border:1px solid #1e1e2a;color:#e8e8f0;padding:5px 8px;border-radius:7px;font-size:12px;cursor:pointer}
+/* ═══════════════════════════════════════
+   APP — WORKSPACE
+═══════════════════════════════════════ */
+.ws-topbar{
+  flex-shrink:0;
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
+}
+.ws-topbar-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ws-status{display:flex;align-items:center;gap:6px}
+.ws-status-txt{font-size:12px;font-weight:600;color:#70708a}
+.idea-tag{
+  display:none;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:5px;
+  background:rgba(108,71,255,.12);color:var(--accent2);border:1px solid rgba(108,71,255,.2);
+  max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.plat-select{
+  background:var(--bg2);border:1px solid var(--border);
+  color:var(--text);padding:5px 9px;border-radius:7px;font-size:12px;cursor:pointer;
+}
+.view-prompts-btn{
+  display:none;
+  padding:6px 12px;border-radius:7px;font-size:12px;font-weight:600;
+  background:rgba(108,71,255,.12);border:1px solid rgba(108,71,255,.25);
+  color:var(--accent2);cursor:pointer;transition:all .15s;
+}
+.view-prompts-btn:hover{background:rgba(108,71,255,.2)}
 
 /* MESSAGES */
-.msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px}
-.msgs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#3a3a50;height:100%;text-align:center;padding:24px}
-.msgs-empty .ei{font-size:36px}
-.msgs-empty p{font-size:14px;line-height:1.7;max-width:260px}
-
-.msg{margin-bottom:12px;animation:rise .3s ease}
-.msys{text-align:center;margin-bottom:9px}
-.msys span{font-size:11px;color:#3a3a50;padding:3px 10px;border-radius:999px;background:#111118;border:1px solid #1e1e2a}
-.mai{display:flex;gap:8px;max-width:92%}
-.mai-av{width:26px;height:26px;border-radius:7px;background:#7c5cfc22;border:1px solid #7c5cfc44;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.mai-b{background:#111118;border:1px solid #1e1e2a;border-radius:3px 10px 10px 10px;padding:10px 13px;font-size:13px;line-height:1.75;color:#e8e8f0;white-space:pre-wrap}
-.magt{display:flex;gap:7px;max-width:84%;margin-left:34px}
-.magt-b{background:#0d0d12;border:1px solid #1e1e2a;border-radius:8px;padding:6px 11px;font-size:12px;color:#6b6b80;display:flex;align-items:center;gap:6px}
-.mq{display:flex;gap:8px;max-width:96%}
-.mq-av{width:26px;height:26px;border-radius:7px;background:#7c5cfc22;border:1px solid #7c5cfc44;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.mq-b{flex:1;background:linear-gradient(135deg,#111118,#7c5cfc0d);border:1px solid #7c5cfc44;border-radius:3px 10px 10px 10px;padding:12px 14px}
-.mq-t{font-size:14px;font-weight:600;color:#e8e8f0;line-height:1.6;margin-bottom:4px}
-.musr{display:flex;justify-content:flex-end}
-.musr-b{background:#7c5cfc;border-radius:10px 3px 10px 10px;padding:9px 14px;font-size:13px;color:#fff;max-width:80%;line-height:1.65}
-.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.chip{padding:8px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
-.yn-row{display:flex;gap:9px;margin-top:10px}
-.yn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:1px solid transparent;transition:opacity .15s}
-
-/* INPUT BAR */
-#inp-bar{
-  height:68px;
-  flex-shrink:0;
-  background:#07070a;
-  border-top:1px solid #2e2e42;
-  padding:12px 14px;
-  /* ALWAYS flex — never hidden */
-  display:flex;
-  align-items:center;
+.msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px;min-height:0}
+.msgs-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;height:100%;text-align:center;padding:32px;
 }
-/* All children hidden by default via inline style in HTML */
+.msgs-empty-icon{
+  width:48px;height:48px;border-radius:13px;
+  background:rgba(108,71,255,.1);border:1px solid rgba(108,71,255,.2);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.msgs-empty h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.msgs-empty p{font-size:13px;color:#70708a;max-width:260px;line-height:1.6}
+
+.msg{margin-bottom:12px;animation:fadeUp .3s ease both}
+.msg-sys{text-align:center;margin-bottom:8px}
+.msg-sys span{
+  font-size:11px;color:#454560;
+  padding:3px 10px;border-radius:999px;
+  background:var(--bg2);border:1px solid var(--border);
+}
+.msg-ai{display:flex;gap:9px;max-width:94%}
+.msg-ai-av{
+  width:28px;height:28px;border-radius:8px;
+  background:rgba(108,71,255,.12);border:1px solid rgba(108,71,255,.2);
+  display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;
+}
+.msg-ai-body{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:3px 11px 11px 11px;
+  padding:11px 14px;font-size:13px;line-height:1.8;color:var(--text);
+  white-space:pre-wrap;
+}
+.msg-agent{display:flex;gap:8px;max-width:88%;margin-left:37px}
+.msg-agent-body{
+  background:var(--bg1);border:1px solid var(--border);border-radius:8px;
+  padding:7px 12px;font-size:12px;color:#70708a;
+  display:flex;align-items:center;gap:7px;
+}
+.agent-pulse{
+  width:6px;height:6px;border-radius:50%;background:var(--amber);
+  animation:pulse 1.2s infinite;flex-shrink:0;
+}
+.msg-q{display:flex;gap:9px;max-width:96%}
+.msg-q-av{
+  width:28px;height:28px;border-radius:8px;
+  background:rgba(31,212,160,.1);border:1px solid rgba(31,212,160,.2);
+  display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;
+}
+.msg-q-body{
+  flex:1;
+  background:linear-gradient(135deg,var(--bg2),rgba(108,71,255,.05));
+  border:1px solid rgba(108,71,255,.25);
+  border-radius:3px 11px 11px 11px;padding:13px 15px;
+}
+.msg-q-text{font-size:14px;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:6px}
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user-body{
+  background:linear-gradient(135deg,#6c47ff,#8b6dff);
+  border-radius:11px 3px 11px 11px;
+  padding:10px 14px;font-size:13px;color:#fff;
+  max-width:82%;line-height:1.65;
+}
+
+/* CHIPS & YN */
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{
+  padding:8px 13px;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;border:1px solid;touch-action:manipulation;
+  transition:opacity .15s, transform .1s;
+}
+.chip:active{transform:scale(.96)}
+.yn-row{display:flex;gap:10px;margin-top:10px}
+.yn{
+  padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;
+  cursor:pointer;touch-action:manipulation;border:1px solid transparent;
+  transition:opacity .15s;
+}
+
+/* ═══════════════════════════════════════
+   INPUT BAR
+═══════════════════════════════════════ */
+#inp-bar{
+  height:68px;flex-shrink:0;
+  background:var(--bg);border-top:1px solid var(--border2);
+  padding:12px 14px;display:flex;align-items:center;
+}
 .irow{display:flex;gap:9px;align-items:center;width:100%}
-.ci{flex:1;height:44px;padding:0 14px;border-radius:9px;font-size:15px;background:#1a1a24;border:2px solid #2e2e42;color:#e8e8f0;-webkit-appearance:none}
-.ci:focus{border-color:#7c5cfc;background:#1e1e2e}
-.send-btn{height:44px;min-width:80px;padding:0 16px;border-radius:9px;font-size:15px;font-weight:700;background:#7c5cfc;border:none;color:#fff;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap}
-.send-btn:active{background:#5a3cc0}
-.new-btn{height:44px;padding:0 14px;border-radius:9px;font-size:13px;font-weight:600;background:#2e2e42;border:none;color:#e8e8f0;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.status-done{flex:1;height:44px;display:flex;align-items:center;padding:0 12px;border-radius:9px;background:#22d3a022;border:1px solid #22d3a044;font-size:12px;color:#22d3a0;overflow:hidden;white-space:nowrap}
-.status-gen{width:100%;height:44px;display:flex;align-items:center;gap:9px;padding:0 14px;border-radius:9px;background:#f5a62322;border:1px solid #f5a62344;font-size:13px;color:#f5a623}
-.spin-i{width:14px;height:14px;border:2px solid #7c5cfc44;border-top-color:#7c5cfc;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+.chat-input{
+  flex:1;height:44px;padding:0 14px;border-radius:9px;
+  font-size:15px;background:var(--bg3);
+  border:1.5px solid var(--border2);color:var(--text);
+  transition:border-color .2s;
+}
+.chat-input:focus{border-color:rgba(108,71,255,.5);background:var(--bg2)}
+.chat-input::placeholder{color:#454560}
+.send-btn{
+  height:44px;min-width:82px;padding:0 16px;border-radius:9px;
+  font-size:14px;font-weight:700;
+  background:linear-gradient(135deg,#6c47ff,#8b6dff);
+  border:none;color:#fff;cursor:pointer;flex-shrink:0;
+  touch-action:manipulation;transition:all .15s;
+}
+.send-btn:hover{box-shadow:0 4px 16px rgba(108,71,255,.4)}
+.send-btn:active{transform:scale(.97)}
+.new-btn{
+  height:44px;padding:0 14px;border-radius:9px;
+  font-size:13px;font-weight:600;
+  background:var(--bg3);border:1.5px solid var(--border2);
+  color:#8888a4;cursor:pointer;flex-shrink:0;transition:all .15s;
+}
+.new-btn:hover{color:var(--text);border-color:#3a3a52}
+.status-done-bar{
+  flex:1;height:44px;display:flex;align-items:center;
+  padding:0 14px;border-radius:9px;
+  background:rgba(31,212,160,.08);border:1px solid rgba(31,212,160,.2);
+  font-size:12px;color:var(--green);overflow:hidden;white-space:nowrap;
+}
+.status-gen-bar{
+  width:100%;height:44px;display:flex;align-items:center;gap:10px;
+  padding:0 14px;border-radius:9px;
+  background:rgba(240,167,48,.08);border:1px solid rgba(240,167,48,.2);
+  font-size:13px;color:var(--amber);
+}
+.spin-icon{
+  width:14px;height:14px;border:2px solid rgba(240,167,48,.3);
+  border-top-color:var(--amber);border-radius:50%;
+  animation:spin .8s linear infinite;flex-shrink:0;
+}
 
-/* OTHER VIEWS */
-.ar{display:flex;align-items:center;gap:12px;padding:14px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;transition:border-color .3s}
-.ar.lit{border-color:#22d3a055}
-.ar-i{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.ar-inf{flex:1}.ar-inf h3{font-size:13px;font-weight:700;margin-bottom:3px}.ar-inf p{font-size:12px;color:#6b6b80}
-.ar-st{display:flex;align-items:center;gap:6px;font-size:12px}
-.pr{display:flex;align-items:center;gap:11px;padding:14px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.pr-i{width:38px;height:38px;border-radius:8px;background:#7c5cfc22;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.pr-inf{flex:1;min-width:0}.pr-inf h3{font-weight:700;font-size:13px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pr-bg{display:flex;gap:5px;flex-wrap:wrap}
-.pr-sc{text-align:right;flex-shrink:0}.pr-sv{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}.pr-sl{font-size:10px;color:#6b6b80}
-.pr-mt{text-align:right;flex-shrink:0;min-width:65px}.pr-mp{font-size:12px;color:#6b6b80}.pr-md{font-size:11px;color:#3a3a50;margin-top:2px}
-.pli{padding:14px;border-radius:11px;background:#111118;border:1px solid #1e1e2a;margin-bottom:10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.pli.on{border-color:#7c5cfc44}
-.pli-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.pli-p{font-size:12px;color:#6b6b80;line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.sh{margin-bottom:20px}.sh h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:4px}.sh p{color:#6b6b80;font-size:13px}
-.shr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:10px}.shr h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:4px}.shr p{color:#6b6b80;font-size:13px}
+/* ═══════════════════════════════════════
+   OTHER APP VIEWS
+═══════════════════════════════════════ */
+.view-header{margin-bottom:20px}
+.view-header h2{font-size:20px;font-weight:700;margin-bottom:4px}
+.view-header p{color:#70708a;font-size:13px}
+.view-header-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:20px;flex-wrap:wrap;gap:10px;
+}
 
-/* PROMPT OVERLAY */
-#po{position:fixed;inset:0;z-index:300;background:#0d0d12;display:none;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+/* AGENT ROW */
+.agent-row{
+  display:flex;align-items:center;gap:12px;padding:14px;
+  border-radius:11px;background:var(--bg2);border:1px solid var(--border);
+  margin-bottom:9px;transition:border-color .3s;
+}
+.agent-row.lit{border-color:rgba(31,212,160,.3)}
+.agent-row-icon{
+  width:40px;height:40px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;
+}
+.agent-row-info{flex:1}
+.agent-row-info h3{font-size:13px;font-weight:700;margin-bottom:3px}
+.agent-row-info p{font-size:12px;color:#70708a}
+.agent-row-status{display:flex;align-items:center;gap:6px;font-size:12px}
+
+/* PROJECT ROW */
+.proj-row{
+  display:flex;align-items:center;gap:11px;padding:14px;
+  border-radius:11px;background:var(--bg2);border:1px solid var(--border);
+  margin-bottom:9px;cursor:pointer;touch-action:manipulation;transition:border-color .2s;
+}
+.proj-row:hover{border-color:var(--border2)}
+.proj-icon{
+  width:38px;height:38px;border-radius:8px;
+  background:rgba(108,71,255,.1);display:flex;align-items:center;
+  justify-content:center;font-size:16px;flex-shrink:0;
+}
+.proj-info{flex:1;min-width:0}
+.proj-info h3{font-weight:700;font-size:13px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proj-badges{display:flex;gap:5px;flex-wrap:wrap}
+.proj-score{text-align:right;flex-shrink:0}
+.proj-score-val{font-size:18px;font-weight:800}
+.proj-score-lbl{font-size:10px;color:#70708a}
+.proj-meta{text-align:right;flex-shrink:0;min-width:65px}
+.proj-meta-pc{font-size:12px;color:#70708a}
+.proj-meta-date{font-size:11px;color:#454560;margin-top:2px}
+
+/* PROMPT LIST */
+.prompt-row{
+  padding:14px;border-radius:11px;background:var(--bg2);border:1px solid var(--border);
+  margin-bottom:9px;cursor:pointer;touch-action:manipulation;transition:border-color .2s;
+}
+.prompt-row:hover{border-color:var(--border2)}
+.prompt-row.on{border-color:rgba(108,71,255,.3)}
+.prompt-row-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prompt-row-preview{font-size:12px;color:#70708a;line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* ═══════════════════════════════════════
+   PROMPT OVERLAY
+═══════════════════════════════════════ */
+#po{
+  position:fixed;inset:0;z-index:300;background:var(--bg1);
+  display:none;flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
 #po.open{display:flex}
-.po-hd{padding:13px 15px;border-bottom:1px solid #1e1e2a;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.po-tabs{display:flex;overflow-x:auto;gap:5px;padding:9px 13px;border-bottom:1px solid #1e1e2a;flex-shrink:0}
+.po-header{
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+  background:var(--bg2);
+}
+.po-header-left h3{font-size:14px;font-weight:700;margin-bottom:2px}
+.po-header-left p{font-size:12px;color:#70708a}
+.po-tabs{
+  display:flex;overflow-x:auto;gap:5px;padding:10px 14px;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
 .po-tabs::-webkit-scrollbar{height:0}
-.ptab{white-space:nowrap;padding:6px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #1e1e2a;background:#111118;color:#6b6b80;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.ptab.on{background:#7c5cfc;border-color:#7c5cfc;color:#fff}
-.po-sc{margin:10px 13px;padding:9px 12px;border-radius:8px;background:#22d3a022;border:1px solid #22d3a044}
-.po-sc-l{font-size:10px;color:#22d3a0;font-weight:600;letter-spacing:.07em;text-transform:uppercase}
-.po-sc-v{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#22d3a0;line-height:1.2}
-.po-sc-bg{height:4px;border-radius:2px;background:#111118;margin-top:4px}
-.po-sc-b{height:4px;border-radius:2px;background:#22d3a0;width:0%;transition:width 1.2s ease}
-.po-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:13px}
-.po-card{padding:13px;border-radius:10px;background:#111118;border:1px solid #1e1e2a}
-.po-card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.po-card pre{font-family:inherit;font-size:12px;line-height:1.85;color:#9090b0;white-space:pre-wrap;word-break:break-word}
-.po-ft{padding:10px 13px 14px;border-top:1px solid #1e1e2a;display:flex;gap:7px;flex-shrink:0}
+.po-tab{
+  white-space:nowrap;padding:6px 12px;border-radius:7px;
+  font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid var(--border);background:var(--bg2);color:#70708a;
+  touch-action:manipulation;transition:all .15s;
+}
+.po-tab.on{background:linear-gradient(135deg,#6c47ff,#8b6dff);border-color:transparent;color:#fff}
+.po-score{
+  margin:10px 14px;padding:10px 14px;border-radius:9px;
+  background:rgba(31,212,160,.08);border:1px solid rgba(31,212,160,.2);
+  display:none;
+}
+.po-score-label{font-size:10px;color:var(--green);font-weight:600;letter-spacing:.07em;text-transform:uppercase}
+.po-score-val{font-size:22px;font-weight:800;color:var(--green);line-height:1.1}
+.po-score-bar-bg{height:4px;border-radius:2px;background:var(--bg);margin-top:6px}
+.po-score-bar{height:4px;border-radius:2px;background:var(--green);width:0%;transition:width 1.3s cubic-bezier(.4,0,.2,1)}
+.po-empty{
+  display:flex;flex:1;flex-direction:column;align-items:center;
+  justify-content:center;gap:10px;color:#454560;padding:24px;text-align:center;
+}
+.po-content{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0}
+.po-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px}
+.po-card{
+  padding:14px;border-radius:11px;
+  background:var(--bg2);border:1px solid var(--border);
+}
+.po-card-hd{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;
+}
+.po-card pre{
+  font-family:var(--font-m);font-size:12px;line-height:1.9;
+  color:#9090b0;white-space:pre-wrap;word-break:break-word;
+}
+.po-footer{
+  padding:10px 14px 14px;border-top:1px solid var(--border);
+  display:flex;gap:8px;flex-shrink:0;background:var(--bg2);
+}
+
+/* ═══════════════════════════════════════
+   PRIVACY OVERLAY
+═══════════════════════════════════════ */
+#pp-overlay{
+  display:none;position:fixed;inset:0;z-index:400;
+  background:var(--bg);flex-direction:column;overflow:hidden;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.pp-header{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;background:var(--bg1);
+}
+.pp-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:28px 24px;max-width:740px;margin:0 auto;width:100%}
+.pp-section{margin-bottom:28px}
+.pp-h{font-size:15px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.pp-sh{font-size:13px;font-weight:600;color:#b0b0c8;margin-bottom:7px;margin-top:14px}
+.pp-text{font-size:13px;color:#8888a4;line-height:1.75;margin-bottom:10px}
+.pp-list{list-style:none;display:flex;flex-direction:column;gap:7px;padding:0}
+.pp-list li{font-size:13px;color:#8888a4;line-height:1.65;padding-left:16px;position:relative}
+.pp-list li::before{content:'•';position:absolute;left:0;color:#454560}
+
+/* ═══════════════════════════════════════
+   BADGE COMPONENT
+═══════════════════════════════════════ */
+.badge{
+  display:inline-block;font-size:10px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 7px;border-radius:4px;
+}
+
+/* ═══════════════════════════════════════
+   BUTTON XS
+═══════════════════════════════════════ */
+.btn-xs{
+  padding:6px 12px;border-radius:7px;font-size:12px;font-weight:600;
+  background:transparent;border:1.5px solid var(--border2);
+  color:#8888a4;cursor:pointer;transition:all .15s;
+}
+.btn-xs:hover{color:var(--text);border-color:#3a3a52}
+
+/* ═══════════════════════════════════════
+   MOBILE
+═══════════════════════════════════════ */
+@media(max-width:640px){
+  .l-nav-links{display:none}
+  .demo-body{grid-template-columns:1fr}
+  .demo-right{border-top:1px solid var(--border);border-right:none}
+  .ba-grid{grid-template-columns:1fr}
+  .hero h1{font-size:clamp(32px,9vw,52px)}
+  .hero-input-row{flex-direction:column;gap:8px;padding:10px}
+  .btn-primary{width:100%;justify-content:center}
+  .section{padding:56px 16px}
+  .final-cta{padding:60px 16px}
+}
 </style>
 </head>
 <body>
 
-<!-- ═══ LANDING ═══ -->
+<!-- ═══════════════════════════════════════
+     LANDING PAGE
+═══════════════════════════════════════ -->
 <div id="pg-land">
+
+  <!-- NAV -->
   <nav class="l-nav">
-    <span class="logo-t" id="logo-land">PromptOS</span>
-    <div class="l-links">
-      <button class="l-link" id="lnk-ws">Workspace</button>
-      <button class="l-link" id="lnk-agents">Agents</button>
-      <button class="l-link" id="lnk-projects">Projects</button>
+    <button class="l-logo" id="logo-land">
+      <span class="l-logo-mark">✦</span>
+      PromptOS
+    </button>
+    <div class="l-nav-links">
+      <button class="l-nav-link" id="lnk-ws">Workspace</button>
+      <button class="l-nav-link" id="lnk-agents">Agents</button>
+      <button class="l-nav-link" id="lnk-projects">Projects</button>
+      <button class="l-nav-link" id="lnk-how">How it works</button>
+    </div>
+    <div class="l-nav-right">
+      <span class="badge-new">Free</span>
+      <button class="btn-primary" id="nav-cta-btn" style="padding:8px 16px;font-size:13px">Start Building →</button>
     </div>
   </nav>
+
+  <!-- HERO -->
   <section class="hero">
-    <div class="hbadge">AI Product Architect</div>
-    <h1>Stop prompting.<br/><span class="grd">Start building.</span></h1>
-    <p>PromptOS thinks like a senior PM, CTO &amp; UX strategist — then generates ultra-optimized, platform-specific prompts for any AI coding tool.</p>
-    <div class="idea-box">
-      <input id="l-idea" class="idea-inp" type="text" placeholder="I want to build a food delivery app…"/>
-      <button class="btn btn-p btn-full" id="l-start-btn">Start Building →</button>
+    <div class="hero-eyebrow">
+      <span class="pulse-dot"></span>
+      AI Product Architect · 7 Specialized Agents
     </div>
-    <p class="hint">Works with Lovable, Bolt, Cursor, v0, Claude, GPT-4o &amp; more</p>
+    <h1>Your idea becomes a<br/><em>production-ready</em> product</h1>
+    <p class="hero-sub">Stop guessing at prompts. PromptOS thinks like your PM, CTO, and designer combined — then outputs structured, platform-specific prompts that actually build what you envision.</p>
+
+    <div class="hero-input-wrap">
+      <div class="hero-input-row">
+        <input id="l-idea" class="hero-input" type="text" placeholder="I want to build a fitness tracking app with AI coach…" autocomplete="off"/>
+        <button class="btn-primary" id="l-start-btn">Build it →</button>
+      </div>
+    </div>
+    <p class="hero-hint">Works with Lovable · Bolt · Cursor · v0 · Claude · GPT-4o · Replit · Gemini</p>
   </section>
-  <section class="pills">
-    <div class="pill">💜<span style="color:#a855f7">Lovable</span></div>
-    <div class="pill">⚡<span style="color:#f59e0b">Bolt</span></div>
-    <div class="pill">◎<span style="color:#3b82f6">Cursor</span></div>
-    <div class="pill">▲<span style="color:#e2e8f0">v0</span></div>
-    <div class="pill">🔁<span style="color:#f97316">Replit</span></div>
-    <div class="pill">✦<span style="color:#7c5cfc">Claude</span></div>
-    <div class="pill">◉<span style="color:#10a37f">GPT-4o</span></div>
-    <div class="pill">◈<span style="color:#4285f4">Gemini</span></div>
-  </section>
-  <section class="feat">
-    <div class="feat-hd"><h2>Full-stack prompt intelligence</h2><p>7 specialized AI agents architect your vision from every angle.</p></div>
-    <div class="ag-grid" id="land-ag"></div>
-  </section>
-  <section class="stats">
-    <div><div class="sv">10</div><div class="sl">Prompt Types</div></div>
-    <div><div class="sv">7</div><div class="sl">AI Agents</div></div>
-    <div><div class="sv">8</div><div class="sl">Platforms</div></div>
-    <div><div class="sv">95+</div><div class="sl">Avg Score</div></div>
-  </section>
-  <section class="l-cta">
-    <h2>Ready to build something great?</h2>
-    <p>Describe your idea. PromptOS does the rest.</p>
-    <button class="btn btn-p" id="l-cta-btn" style="font-size:15px;padding:13px 26px">Open Workspace →</button>
-  </section>
-  <footer class="l-foot">
-    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#3a3a50">PromptOS</span>
-    <span>© 2025 · AI Product Architect</span>
+
+  <!-- PLATFORM STRIP -->
+  <div class="plat-strip">
+    <span class="plat-label">Optimized output for every platform</span>
+    <div class="plat-pills">
+      <div class="plat-pill"><span class="pi">💜</span><span style="color:#a855f7">Lovable</span></div>
+      <div class="plat-pill"><span class="pi">⚡</span><span style="color:#f59e0b">Bolt</span></div>
+      <div class="plat-pill"><span class="pi">◎</span><span style="color:#3b82f6">Cursor</span></div>
+      <div class="plat-pill"><span class="pi">▲</span><span style="color:#e2e8f0">v0</span></div>
+      <div class="plat-pill"><span class="pi">🔁</span><span style="color:#f97316">Replit</span></div>
+      <div class="plat-pill"><span class="pi">✦</span><span style="color:#8b6dff">Claude</span></div>
+      <div class="plat-pill"><span class="pi">◉</span><span style="color:#10a37f">GPT-4o</span></div>
+      <div class="plat-pill"><span class="pi">◈</span><span style="color:#4285f4">Gemini</span></div>
+    </div>
+  </div>
+
+  <!-- PROOF BAR -->
+  <div class="proof-bar">
+    <div class="proof-item"><span class="proof-val">7</span><span class="proof-lbl">AI Agents</span></div>
+    <div class="proof-item"><span class="proof-val">10</span><span class="proof-lbl">Prompt Types</span></div>
+    <div class="proof-item"><span class="proof-val">8</span><span class="proof-lbl">Platforms</span></div>
+    <div class="proof-item"><span class="proof-val">95+</span><span class="proof-lbl">Avg. Score</span></div>
+    <div class="proof-item"><span class="proof-val">&lt;60s</span><span class="proof-lbl">Time to Prompts</span></div>
+  </div>
+
+  <!-- PROBLEM SECTION -->
+  <div class="section">
+    <span class="section-eyebrow">The Problem</span>
+    <h2 class="section-title">Why most AI builders<br/><em>waste hours</em> before writing a line of code</h2>
+    <p class="section-body">Brilliant ideas die in the gap between imagination and execution. The tools are powerful — but the prompts are where most people fail.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>Vague prompts = vague code</h3>
+        <p>"Build a fitness app" gets you a generic skeleton. Without structure, even the best AI tools produce bloated, misaligned output.</p>
+      </div>
+      <div class="problem-card">
+        <h3>No product thinking built in</h3>
+        <p>Most builders jump straight to UI. They skip architecture, data modeling, auth flows, and API design — and rebuild them later.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Different tools need different prompts</h3>
+        <p>A Cursor prompt looks nothing like a Lovable prompt. Copying between platforms loses context, structure, and output quality.</p>
+      </div>
+      <div class="problem-card">
+        <h3>No system, just trial and error</h3>
+        <p>Without a structured workflow, every project starts from scratch. Hours wasted re-figuring out what worked last time.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section" id="how-it-works-section">
+    <span class="section-eyebrow">How it works</span>
+    <h2 class="section-title">From raw idea to<br/><em>ready-to-ship</em> in 60 seconds</h2>
+    <p class="section-body">A structured 3-step workflow that replaces hours of planning with intelligence you can immediately put to work.</p>
+    <div class="how-steps">
+      <div class="how-step">
+        <span class="step-num">STEP 01</span>
+        <div class="step-icon" style="background:rgba(108,71,255,.1)">💡</div>
+        <h3>Describe your idea</h3>
+        <p>Type your product idea in plain language. PromptOS detects the category — app, SaaS, e-commerce, marketplace — and tailors everything to it.</p>
+      </div>
+      <div class="how-step">
+        <span class="step-num">STEP 02</span>
+        <div class="step-icon" style="background:rgba(31,212,160,.1)">🧠</div>
+        <h3>Answer smart questions</h3>
+        <p>8–12 precise, category-specific questions about your audience, features, and tech stack. Every answer sharpens the output.</p>
+      </div>
+      <div class="how-step">
+        <span class="step-num">STEP 03</span>
+        <div class="step-icon" style="background:rgba(240,167,48,.1)">🤖</div>
+        <h3>7 agents activate</h3>
+        <p>Your answers flow through 7 specialized agents — PM, UX, Backend, Database, Branding, SEO, and Deployment — simultaneously.</p>
+      </div>
+      <div class="how-step">
+        <span class="step-num">STEP 04</span>
+        <div class="step-icon" style="background:rgba(139,109,255,.1)">✦</div>
+        <h3>Get production prompts</h3>
+        <p>10 structured, platform-optimized prompts exported as tabs. Copy, export as Markdown, or paste directly into your tool.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE DEMO PREVIEW -->
+  <div class="section-sm" style="padding-top:0">
+    <div class="demo-wrap">
+      <div class="demo-topbar">
+        <div class="demo-dot" style="background:#ff5f57"></div>
+        <div class="demo-dot" style="background:#febc2e"></div>
+        <div class="demo-dot" style="background:#28c840"></div>
+        <span style="margin-left:8px;font-size:11px;color:#454560;font-family:var(--font-m)">promptos.app / workspace</span>
+      </div>
+      <div class="demo-body">
+        <div class="demo-left">
+          <div class="demo-label">Input</div>
+          <div class="demo-idea">"Build a fitness tracking app with an AI personal coach that adapts workout plans based on progress"</div>
+          <div class="demo-label" style="margin-top:16px">Agents Activated</div>
+          <div class="demo-agents">
+            <div class="demo-agent active"><span class="adi">🏗</span><span class="adn">Product Architect</span><span class="ads">● Complete</span></div>
+            <div class="demo-agent active"><span class="adi">🎨</span><span class="adn">UI/UX Expert</span><span class="ads">● Complete</span></div>
+            <div class="demo-agent active"><span class="adi">⌨</span><span class="adn">Senior Developer</span><span class="ads">● Complete</span></div>
+            <div class="demo-agent active"><span class="adi">🚀</span><span class="adn">Startup Advisor</span><span class="ads">● Complete</span></div>
+            <div class="demo-agent active"><span class="adi">📈</span><span class="adn">SEO & Marketing</span><span class="ads">● Complete</span></div>
+            <div class="demo-agent active"><span class="adi">✦</span><span class="adn">Prompt Engineer</span><span class="ads">● Complete</span></div>
+            <div class="demo-agent active"><span class="adi">☁</span><span class="adn">Deployment Agent</span><span class="ads">● Complete</span></div>
+          </div>
+        </div>
+        <div class="demo-right">
+          <div class="demo-label">Generated Output · Master Prompt</div>
+          <div class="demo-output"><span class="hl">BUILD "FitCore AI" — Fitness Tracking App</span>
+<span class="cmt">═══════════════════════════════</span>
+
+<span class="grn">PRODUCT VISION:</span>
+An adaptive fitness coach that learns from
+user performance and adjusts workouts weekly.
+
+<span class="grn">TECH STACK:</span>
+Frontend: React Native (iOS + Android)
+Backend:  Node.js + Supabase
+AI:       Claude claude-sonnet-4-20250514 + embeddings
+Storage:  Supabase + AWS S3
+
+<span class="amb">CORE FEATURES (MVP):</span>
+• Workout plan generator (AI-powered)
+• Progress tracking + streaks
+• Wearable sync (Apple Watch, Fitbit)
+• AI coach chat interface
+• Social challenges
+
+<span class="grn">AUTH:</span> Phone OTP + Google OAuth
+<span class="grn">MONETIZE:</span> Freemium → $9.99/mo Pro
+<span class="grn">QUALITY SCORE:</span> 96/100</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGENTS SECTION -->
+  <div class="section">
+    <span class="section-eyebrow">Multi-Agent System</span>
+    <h2 class="section-title">Not one AI.<br/><em>Seven specialists.</em></h2>
+    <p class="section-body">Each agent is trained for a different discipline. They analyze your answers in parallel and produce output from their own expertise — then the Prompt Engineer fuses it all together.</p>
+    <div class="agents-grid" id="agents-grid-land"></div>
+  </div>
+
+  <!-- OUTPUT EXAMPLES -->
+  <div class="section" style="padding-top:0">
+    <span class="section-eyebrow">Real Output Examples</span>
+    <h2 class="section-title">This is what you<br/><em>actually get</em></h2>
+    <p class="section-body">Not templates. Not vague suggestions. Structured, production-grade output that goes straight into your AI coding tool.</p>
+
+    <div style="margin-top:40px">
+      <div class="output-tabs" id="output-tabs">
+        <button class="otab on" data-tab="master">Master Prompt</button>
+        <button class="otab" data-tab="frontend">Frontend</button>
+        <button class="otab" data-tab="backend">Backend</button>
+        <button class="otab" data-tab="database">Database</button>
+        <button class="otab" data-tab="ai">AI Integration</button>
+      </div>
+
+      <div class="output-panel on" id="tab-master">
+        <div class="output-panel-hd">
+          <span>Master Prompt · FitCore AI · Lovable</span>
+          <span style="color:#1fd4a0;font-size:11px;font-weight:600">Score: 96/100</span>
+        </div>
+        <div class="output-code">BUILD "FitCore AI" — AI-Powered Fitness App
+Platform: Lovable | Style: Premium Dark | Scale: 10k+ users
+
+<span class="code-hl">═══ PROJECT BRIEF ═══</span>
+An adaptive fitness platform with an AI personal coach that learns
+from workout history and automatically adjusts future plans. Target
+audience: 25-40 year old fitness enthusiasts, home + gym workouts.
+
+<span class="code-hl">═══ REQUIRED SCREENS ═══</span>
+<span class="code-str">1. Onboarding flow</span>     — 4 steps: goal + fitness level + schedule + wearable
+<span class="code-str">2. Home dashboard</span>      — Today's workout, streak counter, AI insights widget
+<span class="code-str">3. Workout player</span>      — Animated exercise guide, rest timer, completion flow
+<span class="code-str">4. Progress analytics</span>  — Charts, PRs, body measurements, before/after
+<span class="code-str">5. AI Coach chat</span>       — Conversational interface, context-aware suggestions
+<span class="code-str">6. Social challenges</span>   — Leaderboard, weekly challenges, friend activity
+<span class="code-str">7. Settings + profile</span>  — Subscription, wearable sync, notification preferences
+
+<span class="code-hl">═══ VISUAL SYSTEM ═══</span>
+Theme: Premium dark — #060608 bg, #1fd4a0 accent, #6c47ff secondary
+Typography: Geist 700 for headings, 400 for body, Geist Mono for metrics
+Motion: staggered entry animations, 60fps progress rings, spring bounces
+
+<span class="code-hl">═══ MONETIZATION ═══</span>
+Free: 3 workouts/week, basic tracking
+Pro ($9.99/mo): unlimited workouts, AI coach, advanced analytics</div>
+      </div>
+
+      <div class="output-panel" id="tab-frontend">
+        <div class="output-panel-hd">
+          <span>Frontend Prompt · React Native Components</span>
+          <span style="color:#8b6dff;font-size:11px;font-weight:600">Lovable / v0</span>
+        </div>
+        <div class="output-code">BUILD THE FRONTEND FOR "FitCore AI"
+
+<span class="code-hl">DESIGN TOKENS:</span>
+<span class="code-key">--bg:</span>         <span class="code-str">#060608</span>   (page bg)
+<span class="code-key">--surface:</span>    <span class="code-str">#111118</span>   (cards)
+<span class="code-key">--accent:</span>     <span class="code-str">#1fd4a0</span>   (primary CTA, active states)
+<span class="code-key">--accent2:</span>    <span class="code-str">#6c47ff</span>   (secondary, AI elements)
+<span class="code-key">--text:</span>       <span class="code-str">#e2e2ec</span>   (primary)
+<span class="code-key">--muted:</span>      <span class="code-str">#70708a</span>   (secondary)
+
+<span class="code-hl">HOME DASHBOARD COMPONENT:</span>
+• Greeting header with user name + streak badge
+• "Today's Plan" card: workout name, duration, muscle groups, start CTA
+• Progress ring (animated SVG, 90fps) showing weekly completion %
+• AI Insight card: dynamically generated tip based on recent activity
+• Quick-log bar: weight, reps, mood check-in
+
+<span class="code-hl">WORKOUT PLAYER:</span>
+• Full-screen exercise view with animated guide GIF/video
+• Countdown timer with audio cues (haptic on mobile)
+• Set/rep tracker with quick +/- buttons
+• Rest timer with auto-progression
+• Mid-workout AI tip ("You're ahead of last week's pace!")</div>
+      </div>
+
+      <div class="output-panel" id="tab-backend">
+        <div class="output-panel-hd">
+          <span>Backend Prompt · Node.js + Supabase</span>
+          <span style="color:#f0a730;font-size:11px;font-weight:600">Cursor / Replit</span>
+        </div>
+        <div class="output-code">BUILD THE BACKEND FOR "FitCore AI"
+
+<span class="code-hl">TECH STACK:</span>
+Runtime:   Node.js 20 LTS + Next.js API Routes
+Database:  PostgreSQL via Supabase
+Auth:      Supabase Auth — phone OTP, Google OAuth
+Cache:     Upstash Redis — session data, leaderboards
+AI:        Anthropic Claude claude-sonnet-4-20250514 via Vercel AI SDK
+
+<span class="code-hl">API ENDPOINTS:</span>
+<span class="code-str">POST /api/workouts/generate</span>     → AI generates weekly plan
+<span class="code-str">GET  /api/workouts/today</span>         → personalized daily workout
+<span class="code-str">POST /api/workouts/log</span>           → log completed set/exercise
+<span class="code-str">GET  /api/progress/analytics</span>     → charts data (PRs, volume, frequency)
+<span class="code-str">POST /api/coach/message</span>          → AI coach chat (streaming SSE)
+<span class="code-str">GET  /api/challenges/active</span>      → current social challenges
+<span class="code-str">POST /api/wearables/sync</span>         → ingest Apple Health / Fitbit data
+
+<span class="code-hl">MIDDLEWARE (all protected routes):</span>
+1. JWT verify via Supabase → 401 if invalid
+2. Rate limit via Upstash → 100/min free, 1000/min pro
+3. Zod schema validation → 400 with field errors
+4. Request logging → structured JSON via Axiom</div>
+      </div>
+
+      <div class="output-panel" id="tab-database">
+        <div class="output-panel-hd">
+          <span>Database Schema · PostgreSQL + Supabase</span>
+          <span style="color:#1fd4a0;font-size:11px;font-weight:600">Production-ready</span>
+        </div>
+        <div class="output-code">DATABASE SCHEMA FOR "FitCore AI"
+
+<span class="code-hl">users</span> (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  email           text UNIQUE NOT NULL,
+  name            text,
+  avatar_url      text,
+  fitness_goal    text CHECK (goal IN ('lose_weight','build_muscle','endurance')),
+  fitness_level   text CHECK (level IN ('beginner','intermediate','advanced')),
+  streak_count    int DEFAULT 0,
+  streak_best     int DEFAULT 0,
+  subscription    text DEFAULT 'free' CHECK (sub IN ('free','pro','annual')),
+  created_at      timestamptz DEFAULT now()
+)
+
+<span class="code-hl">workout_plans</span> (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id         uuid REFERENCES users(id) ON DELETE CASCADE,
+  week_number     int NOT NULL,
+  plan_data       jsonb NOT NULL,    <span class="code-cmt">-- AI-generated structure</span>
+  ai_rationale    text,              <span class="code-cmt">-- why this plan was chosen</span>
+  created_at      timestamptz DEFAULT now()
+)
+
+<span class="code-hl">workout_logs</span> (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id         uuid REFERENCES users(id) ON DELETE CASCADE,
+  exercise_id     text NOT NULL,
+  sets_data       jsonb NOT NULL,    <span class="code-cmt">-- [{reps, weight, rest_sec}]</span>
+  duration_sec    int,
+  mood_score      int CHECK (mood BETWEEN 1 AND 5),
+  logged_at       timestamptz DEFAULT now()
+)
+
+<span class="code-hl">-- ROW LEVEL SECURITY (all tables)</span>
+ALTER TABLE workout_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "own data" ON workout_logs
+  FOR ALL USING (auth.uid() = user_id);</div>
+      </div>
+
+      <div class="output-panel" id="tab-ai">
+        <div class="output-panel-hd">
+          <span>AI Integration · Claude claude-sonnet-4-20250514 + pgvector</span>
+          <span style="color:#6c47ff;font-size:11px;font-weight:600">claude-sonnet-4-20250514</span>
+        </div>
+        <div class="output-code">AI INTEGRATION FOR "FitCore AI"
+
+<span class="code-hl">SYSTEM PROMPT (AI Coach):</span>
+"You are Alex, the AI personal coach inside FitCore AI.
+You know the user's fitness goal ({goal}), level ({level}),
+last 30 days of workout history ({history}), and current streak ({streak}).
+
+Your job: provide short, motivating, data-driven coaching.
+— Reference specific metrics: 'You lifted 5kg more than last Tuesday'
+— Adjust for fatigue signals from mood scores
+— Never recommend exercises outside the user's current plan
+— Always end with a concrete next action"
+
+<span class="code-hl">CONTEXT INJECTION (every request):</span>
+• user.fitness_goal, fitness_level, subscription
+• Last 7 workout_logs (exercise, sets, mood, duration)
+• Embedding similarity search: top 3 similar user journeys
+• Current week's plan_data from workout_plans
+
+<span class="code-hl">WORKOUT GENERATION PROMPT:</span>
+"Based on this user profile and history, generate a 5-day workout plan.
+Return valid JSON matching the WorkoutPlan schema below.
+Progressively overload from last week: increase volume by 5-10%.
+Format: { days: [{ name, focus, exercises: [{ id, sets, reps, rest }] }] }"
+
+<span class="code-hl">RATE LIMITS:</span>
+Free: 5 AI messages/day + 1 plan generation/week
+Pro:  200 messages/day + daily plan regeneration</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER -->
+  <div class="section" style="padding-top:0">
+    <span class="section-eyebrow">Before vs After</span>
+    <h2 class="section-title">What changes when you<br/>use <em>structured prompts</em></h2>
+    <div class="ba-grid">
+      <div class="ba-col ba-before">
+        <div class="ba-header">
+          <span style="font-size:15px">✕</span> Without PromptOS
+        </div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bi">😤</span><span style="color:#8888a4">"Build a fitness app" → Generic to-do list UI returned by AI</span></div>
+          <div class="ba-item"><span class="bi">⏰</span><span style="color:#8888a4">3 hours spent reformatting the same prompt for different tools</span></div>
+          <div class="ba-item"><span class="bi">🧩</span><span style="color:#8888a4">Missing auth flow discovered on day 5 of building</span></div>
+          <div class="ba-item"><span class="bi">💸</span><span style="color:#8888a4">No database schema → rebuild all data structures later</span></div>
+          <div class="ba-item"><span class="bi">🤷</span><span style="color:#8888a4">No deployment plan → panic when it's time to ship</span></div>
+          <div class="ba-item"><span class="bi">📉</span><span style="color:#8888a4">AI produces inconsistent output across sessions</span></div>
+        </div>
+      </div>
+      <div class="ba-col ba-after">
+        <div class="ba-header">
+          <span style="font-size:15px">✓</span> With PromptOS
+        </div>
+        <div class="ba-body">
+          <div class="ba-item"><span class="bi">✅</span><span style="color:#b0b0c8">Detailed product spec with screens, flows, and features in &lt;60s</span></div>
+          <div class="ba-item"><span class="bi">✅</span><span style="color:#b0b0c8">Platform-optimized prompts: Cursor format, Lovable format, v0 format</span></div>
+          <div class="ba-item"><span class="bi">✅</span><span style="color:#b0b0c8">Auth flow, roles, and edge cases defined before you write line 1</span></div>
+          <div class="ba-item"><span class="bi">✅</span><span style="color:#b0b0c8">Complete PostgreSQL schema with RLS, indexes, and triggers</span></div>
+          <div class="ba-item"><span class="bi">✅</span><span style="color:#b0b0c8">CI/CD pipeline, env vars, and deployment stack fully specified</span></div>
+          <div class="ba-item"><span class="bi">✅</span><span style="color:#b0b0c8">Every session starts from the same structured baseline — 96/100 score</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="section" style="padding-top:0">
+    <span class="section-eyebrow">Who it's for</span>
+    <h2 class="section-title">Built for <em>every type</em><br/>of builder</h2>
+    <div class="usecase-grid">
+      <div class="usecase-card">
+        <span class="usecase-icon">⚡</span>
+        <div class="usecase-title">Indie Hackers & Founders</div>
+        <p class="usecase-desc">Move from "I have an idea" to "I have a working MVP" in a single afternoon. No co-founder needed.</p>
+        <ul class="usecase-list">
+          <li>Full startup MVP specs in 60 seconds</li>
+          <li>Monetization strategy baked in</li>
+          <li>Viral growth hooks built into architecture</li>
+          <li>Launch-ready deployment plan</li>
+        </ul>
+      </div>
+      <div class="usecase-card">
+        <span class="usecase-icon">👩‍💻</span>
+        <div class="usecase-title">Developers & Engineers</div>
+        <p class="usecase-desc">Stop context-switching between architecture decisions. Get a fully scoped engineering brief before you open your editor.</p>
+        <ul class="usecase-list">
+          <li>Database schema with RLS & indexes</li>
+          <li>API contract with request/response shapes</li>
+          <li>Folder structure & module design</li>
+          <li>CI/CD pipeline configuration</li>
+        </ul>
+      </div>
+      <div class="usecase-card">
+        <span class="usecase-icon">🎨</span>
+        <div class="usecase-title">Designers & Creators</div>
+        <p class="usecase-desc">Translate visual ideas into buildable specs. Go from Figma concept to production prompt without touching code.</p>
+        <ul class="usecase-list">
+          <li>Component system & design tokens</li>
+          <li>Motion language & interaction spec</li>
+          <li>Responsive layout rules</li>
+          <li>Brand voice & copy guidelines</li>
+        </ul>
+      </div>
+      <div class="usecase-card">
+        <span class="usecase-icon">🏢</span>
+        <div class="usecase-title">Agencies & Freelancers</div>
+        <p class="usecase-desc">Productize your process. Generate client deliverables in minutes. Show up to every brief with a structured plan ready.</p>
+        <ul class="usecase-list">
+          <li>Client-ready project architecture docs</li>
+          <li>SEO & marketing brief built in</li>
+          <li>Tech stack recommendations per budget</li>
+          <li>Re-use across multiple client projects</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES DEEP -->
+  <div class="section" style="padding-top:0">
+    <span class="section-eyebrow">Features</span>
+    <h2 class="section-title">Everything a senior team<br/>would build <em>before writing code</em></h2>
+    <p class="section-body">PromptOS doesn't just generate prompts — it generates the thinking behind great products.</p>
+    <div class="feat-list">
+      <div class="feat-item">
+        <div class="feat-item-icon" style="background:rgba(108,71,255,.1)">🧠</div>
+        <div class="feat-item-text">
+          <h4>Category Intelligence</h4>
+          <p>Detects 30+ product categories from your idea. Each category has a custom question set, prompt structure, and output format.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-item-icon" style="background:rgba(31,212,160,.1)">◎</div>
+        <div class="feat-item-text">
+          <h4>Platform Optimization</h4>
+          <p>Each prompt is rewritten for your target tool. Lovable wants visual descriptions. Cursor wants module architecture. v0 wants Tailwind components.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-item-icon" style="background:rgba(240,167,48,.1)">📊</div>
+        <div class="feat-item-text">
+          <h4>Prompt Quality Scoring</h4>
+          <p>Every output is scored 0–100 across clarity, specificity, completeness, and AI-readability. Average: 95+.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-item-icon" style="background:rgba(108,71,255,.1)">🗄</div>
+        <div class="feat-item-text">
+          <h4>Full Database Schema</h4>
+          <p>Generates production-grade PostgreSQL schemas with Row Level Security, performance indexes, and auto-trigger functions.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-item-icon" style="background:rgba(31,212,160,.1)">☁</div>
+        <div class="feat-item-text">
+          <h4>Deployment Blueprint</h4>
+          <p>Vercel + Supabase + Cloudflare stack with GitHub Actions CI/CD, environment variables, and performance targets.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-item-icon" style="background:rgba(255,79,112,.1)">📤</div>
+        <div class="feat-item-text">
+          <h4>Export as Markdown</h4>
+          <p>All 10 prompts exported as a single structured Markdown document. Save it, share it, or drop it straight into Notion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section" style="padding-top:0">
+    <span class="section-eyebrow">Trusted by Builders</span>
+    <h2 class="section-title">What builders say<br/>after their <em>first project</em></h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I spent 3 days trying to get Lovable to build my SaaS the way I imagined it. Used PromptOS for 8 minutes, fed the output in — and it just worked. Database, auth, dashboard, all of it."</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:rgba(108,71,255,.15)">🧑</div>
+          <div>
+            <div class="testi-name">Marcus R.</div>
+            <div class="testi-role">Indie Hacker · Built AtoZ Service Hub</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The database schema alone was worth it. It generated a full Supabase schema with RLS policies that I would have taken 2 hours to write. Score was 94 — basically production-ready."</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:rgba(31,212,160,.15)">👩</div>
+          <div>
+            <div class="testi-name">Priya S.</div>
+            <div class="testi-role">Full-stack Developer · EdTech Startup</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I showed a client a PromptOS output as my 'pre-build specification document.' They were blown away. Closed a $4,500 project in the same meeting. I built it in a week using Cursor + the prompts."</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:rgba(240,167,48,.15)">👨</div>
+          <div>
+            <div class="testi-name">Daniel K.</div>
+            <div class="testi-role">Freelance Developer · 6 projects shipped</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="section" style="padding-top:0;text-align:center">
+    <span class="section-eyebrow">Pricing</span>
+    <h2 class="section-title">Start free.<br/><em>Scale when ready.</em></h2>
+    <p class="section-body center">Every plan includes all 7 agents and all 10 prompt types. Upgrade for more projects and advanced features.</p>
+    <div class="pricing-grid" style="margin-top:48px">
+      <div class="pricing-card">
+        <div class="pricing-tier">Free</div>
+        <div class="pricing-price">$0<span>/mo</span></div>
+        <div class="pricing-desc">Everything you need to start building.</div>
+        <ul class="pricing-features">
+          <li><span class="chk">✓</span> 3 projects per month</li>
+          <li><span class="chk">✓</span> All 7 AI agents</li>
+          <li><span class="chk">✓</span> All 10 prompt types</li>
+          <li><span class="chk">✓</span> 8 platforms supported</li>
+          <li><span class="chk">✓</span> Markdown export</li>
+          <li><span class="na">–</span> <span style="color:#454560">Saved project history</span></li>
+          <li><span class="na">–</span> <span style="color:#454560">Custom agent instructions</span></li>
+        </ul>
+        <button class="btn-pricing" onclick="goApp('ws')">Start for free</button>
+      </div>
+      <div class="pricing-card popular">
+        <div class="pricing-popular-badge">Most Popular</div>
+        <div class="pricing-tier">Pro</div>
+        <div class="pricing-price">$12<span>/mo</span></div>
+        <div class="pricing-desc">For serious builders who ship consistently.</div>
+        <ul class="pricing-features">
+          <li><span class="chk">✓</span> Unlimited projects</li>
+          <li><span class="chk">✓</span> All 7 AI agents</li>
+          <li><span class="chk">✓</span> All 10 prompt types</li>
+          <li><span class="chk">✓</span> All 8 platforms</li>
+          <li><span class="chk">✓</span> Full project history</li>
+          <li><span class="chk">✓</span> Custom agent instructions</li>
+          <li><span class="chk">✓</span> Priority generation speed</li>
+        </ul>
+        <button class="btn-pricing" onclick="goApp('ws')">Start Pro trial →</button>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-tier">Agency</div>
+        <div class="pricing-price">$39<span>/mo</span></div>
+        <div class="pricing-desc">For teams delivering client projects at scale.</div>
+        <ul class="pricing-features">
+          <li><span class="chk">✓</span> Everything in Pro</li>
+          <li><span class="chk">✓</span> 5 team seats</li>
+          <li><span class="chk">✓</span> Shared project library</li>
+          <li><span class="chk">✓</span> White-label export</li>
+          <li><span class="chk">✓</span> Client-facing PDF reports</li>
+          <li><span class="chk">✓</span> Zapier / API access</li>
+          <li><span class="chk">✓</span> Dedicated support</li>
+        </ul>
+        <button class="btn-pricing" onclick="goApp('ws')">Contact sales</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section" style="padding-top:0;text-align:center">
+    <span class="section-eyebrow">FAQ</span>
+    <h2 class="section-title">Questions <em>worth asking</em></h2>
+    <div class="faq-list" id="faq-list" style="text-align:left">
+      <div class="faq-item">
+        <button class="faq-q">What types of products can PromptOS architect?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">PromptOS supports 30+ product categories: mobile apps, SaaS dashboards, e-commerce stores, marketplaces, AI tools, automation workflows, websites (portfolio, restaurant, healthcare, education, and more), chatbots, CRMs, booking systems, and startup MVPs. If you describe it, it can architect it.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Do I need to know how to code?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">No. PromptOS is designed for non-technical founders too. The prompts it generates are made to be pasted directly into tools like Lovable or Bolt that build the code for you. That said, developers get even more value — the backend, database, and deployment prompts are production-grade specs you can use directly in Cursor.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How is this different from just asking ChatGPT?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">Asking ChatGPT "build me a fitness app" gives you a generic response with no product thinking. PromptOS asks you 8–12 specific questions about your audience, features, tech stack, and business model — then 7 specialized agents analyze your answers in parallel and produce structured output. The result is 10x more specific, more complete, and optimized for your target platform.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I use the prompts in any AI coding tool?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">Yes. PromptOS generates separate, platform-optimized versions for Lovable, Bolt, Cursor, v0, Replit, Claude, GPT-4o, and Gemini. Each platform has a different prompt style and structure — PromptOS knows the difference and adapts automatically.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is my data stored anywhere?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">Your project answers and prompts are stored locally in your browser session. On the free plan, nothing is stored server-side. Pro users get persistent project history saved to their account. We never use your prompts to train AI models.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How long does it take to generate the full prompt set?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">The question flow takes 2–5 minutes depending on how detailed you are. Once you submit, the 7 agents activate and generate all 10 prompts in about 15–30 seconds. Total time from idea to production-ready prompts: under 8 minutes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="final-cta">
+    <h2>Your next product starts<br/>with <em>one sentence.</em></h2>
+    <p>Describe what you want to build. Get production-ready prompts in 60 seconds.</p>
+    <div class="final-cta-btns">
+      <button class="btn-primary" id="final-cta-btn" style="padding:14px 28px;font-size:15px;border-radius:10px">Start Building Free →</button>
+      <button class="btn-secondary" style="padding:13px 20px;font-size:14px;border-radius:10px" id="final-demo-btn">See a live demo</button>
+    </div>
+    <p style="margin-top:20px;font-size:12px;color:#3a3a52">No sign-up required · Works in your browser · Free forever</p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="l-footer">
+    <div class="footer-left">
+      <span class="footer-logo">PromptOS</span>
+      <span class="footer-copy">© 2026 · AI Product Architect</span>
+    </div>
+    <div class="footer-links">
+      <button class="footer-link" id="pp-open-btn">Privacy Policy</button>
+      <button class="footer-link" onclick="goApp('ws')">Workspace</button>
+      <button class="footer-link" onclick="goApp('agents')">Agents</button>
+    </div>
   </footer>
 </div>
 
-<!-- ═══ APP SHELL ═══ -->
-<div id="pg-app">
-  <nav class="a-nav">
-    <span class="logo-t" id="logo-app">PromptOS</span>
-    <div class="a-links">
-      <button class="aln on" id="aln-ws">✦ Workspace</button>
-      <button class="aln" id="aln-prompts">◈ Prompts</button>
-      <button class="aln" id="aln-agents">◎ Agents</button>
-      <button class="aln" id="aln-projects">▦ Projects</button>
+<!-- ═══════════════════════════════════════
+     PRIVACY POLICY OVERLAY
+═══════════════════════════════════════ -->
+<div id="pp-overlay">
+  <div class="pp-header">
+    <div>
+      <span style="font-family:var(--font-s);font-weight:700;font-size:16px;background:linear-gradient(135deg,#6c47ff,#1fd4a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">PromptOS</span>
+      <span style="font-size:13px;font-weight:500;color:#70708a;margin-left:10px">Privacy Policy</span>
     </div>
-    <div class="a-st">
-      <span class="dot"><span class="dc" style="background:#22d3a0;animation:pulse 2s infinite"></span><span class="dp" style="background:#22d3a0"></span></span>
-      7 ready
+    <button class="btn-xs" id="pp-close-btn">✕ Close</button>
+  </div>
+  <div class="pp-body">
+    <p style="font-size:12px;color:#454560;margin-bottom:24px">Last updated: January 1, 2026</p>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:20px">
+      <p class="pp-text" style="margin:0">PromptOS is committed to protecting your privacy. This policy explains how we collect, use, and protect your information when you use the PromptOS platform.</p>
+    </div>
+    <div class="pp-section">
+      <h2 class="pp-h">1. Information We Collect</h2>
+      <h3 class="pp-sh">1.1 Information You Provide</h3>
+      <ul class="pp-list">
+        <li><strong>Project ideas and answers</strong> — used solely to generate your prompts, not stored on our servers on the free plan.</li>
+        <li><strong>Account information</strong> — if you create an account, we collect your name and email address.</li>
+        <li><strong>Payment information</strong> — processed securely by Stripe. Never stored on our servers.</li>
+      </ul>
+      <h3 class="pp-sh">1.2 Automatically Collected</h3>
+      <ul class="pp-list">
+        <li><strong>Usage data</strong> — pages visited, features used, session duration.</li>
+        <li><strong>Device information</strong> — browser type, OS, screen resolution.</li>
+        <li><strong>IP address</strong> — used for analytics and rate limiting. Not linked to your identity.</li>
+      </ul>
+    </div>
+    <div class="pp-section">
+      <h2 class="pp-h">2. How We Use Your Data</h2>
+      <ul class="pp-list">
+        <li>Generate prompts and provide the PromptOS service</li>
+        <li>Improve the platform based on anonymized usage patterns</li>
+        <li>Send product updates if you opt in</li>
+        <li>Protect against fraud and abuse</li>
+      </ul>
+    </div>
+    <div class="pp-section">
+      <h2 class="pp-h">3. Your Rights</h2>
+      <p class="pp-text">You can request deletion of your account and all associated data at any time by contacting us. We respond within 30 days.</p>
+    </div>
+    <div class="pp-section">
+      <h2 class="pp-h">4. Contact</h2>
+      <p class="pp-text">Questions about this policy? Email: privacy@promptos.app</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     APP
+═══════════════════════════════════════ -->
+<div id="pg-app">
+
+  <!-- APP NAV -->
+  <nav class="a-nav">
+    <button class="a-logo" id="logo-app">
+      <span class="a-logo-mark">✦</span>
+      PromptOS
+    </button>
+    <div class="a-links">
+      <button class="aln on" id="aln-ws">Workspace</button>
+      <button class="aln" id="aln-prompts">Prompts</button>
+      <button class="aln" id="aln-agents">Agents</button>
+      <button class="aln" id="aln-projects">Projects</button>
+    </div>
+    <div class="a-nav-right">
+      <div class="a-status">
+        <div class="status-dot" id="std">
+          <span class="dc" id="stdc" style="background:#6c47ff"></span>
+        </div>
+        <span id="stlbl">Ready</span>
+      </div>
     </div>
   </nav>
 
+  <!-- VIEWS -->
   <div class="views-wrap">
-    <!-- WORKSPACE -->
-    <div id="v-ws" class="view on">
-      <div class="ws-top">
-        <div class="ws-l">
-          <div class="ws-st">
-            <span class="dot" id="std"><span class="dc" id="stdc" style="background:#7c5cfc"></span></span>
-            <span class="ws-stxt" id="stlbl">Ready</span>
+
+    <!-- WORKSPACE VIEW -->
+    <div class="view on" id="v-ws">
+      <div class="ws-topbar">
+        <div class="ws-topbar-left">
+          <div class="ws-status">
+            <div class="status-dot" style="width:8px;height:8px">
+              <span class="dc" id="ws-stdc" style="background:#6c47ff"></span>
+            </div>
+            <span class="ws-status-txt" id="ws-stlbl">Ready</span>
           </div>
-          <span class="itag" id="itag"></span>
+          <span class="idea-tag" id="itag"></span>
+          <button class="view-prompts-btn" id="vpbtn">◈ View Prompts</button>
         </div>
-        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
-          <button class="btn btn-sm" id="vpbtn" style="display:none">◈ View Prompts</button>
-          <span style="font-size:11px;color:#6b6b80">Platform:</span>
-          <select class="plsel" id="plsel">
+        <div style="display:flex;align-items:center;gap:7px">
+          <select class="plat-select" id="plsel">
             <option value="lovable">💜 Lovable</option>
             <option value="bolt">⚡ Bolt</option>
             <option value="cursor">◎ Cursor</option>
@@ -266,1054 +1815,374 @@ input:focus,select:focus{outline:none}
           </select>
         </div>
       </div>
+
       <div class="msgs" id="msgs">
         <div class="msgs-empty" id="msgs-empty">
-          <div class="ei">✦</div>
-          <p>Type your project idea below and tap Begin →</p>
+          <div class="msgs-empty-icon">✦</div>
+          <h3>Start with your idea</h3>
+          <p>Type your product idea below and tap Begin → I'll ask you the right questions to architect it properly.</p>
         </div>
       </div>
+
+      <div id="inp-bar">
+        <div id="inp-idle" class="irow"></div>
+        <div id="inp-q"    class="irow" style="display:none"></div>
+        <div id="inp-gen"  style="display:none;width:100%"></div>
+        <div id="inp-done" style="display:none;width:100%"></div>
+      </div>
     </div>
-    <!-- AGENTS -->
-    <div id="v-agents" class="view">
-      <div class="v-scroll"><div class="sh"><h2>AI Agent Panel</h2><p>Seven specialized agents ready to architect your project.</p></div><div id="ag-rows"></div></div>
-    </div>
-    <!-- PROJECTS -->
-    <div id="v-projects" class="view">
+
+    <!-- PROMPTS VIEW -->
+    <div class="view" id="v-prompts">
       <div class="v-scroll">
-        <div class="shr"><div><h2>Project Memory</h2><p>Past builds and prompts.</p></div><button class="btn btn-p btn-sm" id="new-proj-btn">+ New</button></div>
+        <div class="view-header-row">
+          <div>
+            <h2 style="font-size:20px;font-weight:700;margin-bottom:4px">Generated Prompts</h2>
+            <p style="color:#70708a;font-size:13px" id="pl-sub">No prompts yet — start a project first.</p>
+          </div>
+          <button class="btn-xs" id="pl-cta-btn" style="display:none">Open Workspace →</button>
+        </div>
+        <div id="pl-list"></div>
+      </div>
+    </div>
+
+    <!-- AGENTS VIEW -->
+    <div class="view" id="v-agents">
+      <div class="v-scroll">
+        <div class="view-header">
+          <h2>AI Agents</h2>
+          <p>7 specialized agents that collaborate on your product architecture</p>
+        </div>
+        <div id="ag-rows"></div>
+      </div>
+    </div>
+
+    <!-- PROJECTS VIEW -->
+    <div class="view" id="v-projects">
+      <div class="v-scroll">
+        <div class="view-header-row">
+          <div>
+            <h2 style="font-size:20px;font-weight:700;margin-bottom:4px">Projects</h2>
+            <p style="color:#70708a;font-size:13px">Your recent architectures</p>
+          </div>
+          <button class="btn-xs" id="new-proj-btn">+ New Project</button>
+        </div>
         <div id="pj-rows"></div>
       </div>
     </div>
-    <!-- PROMPTS LIST -->
-    <div id="v-prompts" class="view">
-      <div class="v-scroll">
-        <div class="sh"><h2>Prompt Dashboard</h2><p id="pl-sub">No prompts yet.</p></div>
-        <div id="pl-list"></div>
-        <div id="pl-cta" style="text-align:center;padding:40px 0;color:#3a3a50">
-          <div style="font-size:34px;margin-bottom:10px">◈</div>
-          <p style="font-size:13px;margin-bottom:18px">Start a conversation to generate prompts</p>
-          <button class="btn btn-p btn-sm" id="pl-cta-btn">Open Workspace →</button>
-        </div>
+
+  </div><!-- end views-wrap -->
+
+</div><!-- end pg-app -->
+
+<!-- ═══════════════════════════════════════
+     PROMPT OVERLAY
+═══════════════════════════════════════ -->
+<div id="po">
+  <div class="po-header">
+    <div class="po-header-left">
+      <h3>Generated Prompts</h3>
+      <p id="po-subtitle" style="font-size:12px;color:#70708a"></p>
+    </div>
+    <button class="btn-xs" id="po-close-btn">✕ Close</button>
+  </div>
+  <div class="po-tabs" id="po-tabs"></div>
+  <div id="po-sc" class="po-score">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div>
+        <div class="po-score-label">Quality Score</div>
+        <div class="po-score-val" id="po-sc-v">—</div>
+      </div>
+      <div style="flex:1">
+        <div class="po-score-bar-bg"><div class="po-score-bar" id="po-sc-b"></div></div>
       </div>
     </div>
   </div>
-
-  <!--
-    INPUT BAR — ALWAYS display:flex, never toggled.
-    Inner children show/hide via JS setting their display directly.
-    #inp-idle starts visible. Others start display:none.
-  -->
-  <div id="inp-bar">
-    <div id="inp-idle" class="irow"><!-- display controlled by JS, starts flex --></div>
-    <div id="inp-q"    class="irow" style="display:none"></div>
-    <div id="inp-gen"  style="display:none;width:100%"></div>
-    <div id="inp-done" style="display:none;width:100%"></div>
-  </div>
-</div>
-
-<!-- PROMPT OVERLAY -->
-<div id="po">
-  <div class="po-hd">
-    <span style="font-weight:700;font-size:14px">Generated Prompts</span>
-    <button class="btn btn-xs" id="po-close-btn">✕ Close</button>
-  </div>
-  <div class="po-tabs" id="po-tabs"></div>
-  <div id="po-sc" style="display:none" class="po-sc">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div><div class="po-sc-l">Prompt Quality Score</div><div class="po-sc-v" id="po-sc-v">—</div></div>
-      <div style="flex:1"><div class="po-sc-bg"><div class="po-sc-b" id="po-sc-b"></div></div></div>
-    </div>
-  </div>
-  <div id="po-empty" style="display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#3a3a50;padding:22px;text-align:center">
+  <div id="po-empty" style="display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#454560;padding:24px;text-align:center">
     <div style="font-size:32px">◈</div>
-    <p style="font-size:13px;line-height:1.7">Complete the questions in Workspace — prompts appear here.</p>
-    <div id="po-phs" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;width:100%"></div>
+    <p style="font-size:13px;line-height:1.7">Complete the questions in Workspace —<br/>prompts appear here.</p>
+    <div id="po-phs" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;width:100%;max-width:300px"></div>
   </div>
-  <div id="po-fill" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
+  <div id="po-fill" class="po-content">
     <div class="po-body">
       <div class="po-card">
         <div class="po-card-hd">
-          <span class="badge" id="po-type" style="background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc44"></span>
-          <span style="font-size:11px;color:#3a3a50" id="po-ch"></span>
+          <span class="badge" id="po-type" style="background:rgba(108,71,255,.12);color:#8b6dff;border:1px solid rgba(108,71,255,.2)"></span>
+          <span style="font-size:11px;color:#454560" id="po-ch"></span>
         </div>
         <pre id="po-txt"></pre>
       </div>
     </div>
-    <div class="po-ft">
-      <button class="btn btn-sm" id="export-btn" style="flex:1">Export All (MD)</button>
-      <button class="send-btn" style="font-size:13px;min-width:110px" id="copy-btn">Copy Prompt</button>
+    <div class="po-footer">
+      <button class="btn-xs" id="export-btn" style="flex:1;text-align:center">Export All (MD)</button>
+      <button class="send-btn" style="font-size:13px;min-width:120px" id="copy-btn">Copy Prompt</button>
     </div>
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
 <script>
-// ═══════════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════════
+// ─── DATA ───────────────────────────────
 var PLATS = [
   {id:'lovable',label:'Lovable',      icon:'💜',color:'#a855f7'},
   {id:'bolt',   label:'Bolt',         icon:'⚡',color:'#f59e0b'},
   {id:'cursor', label:'Cursor',       icon:'◎',color:'#3b82f6'},
   {id:'v0',     label:'v0',           icon:'▲',color:'#e2e8f0'},
   {id:'replit', label:'Replit Agent', icon:'🔁',color:'#f97316'},
-  {id:'claude', label:'Claude',       icon:'✦',color:'#7c5cfc'},
+  {id:'claude', label:'Claude',       icon:'✦',color:'#8b6dff'},
   {id:'gpt',    label:'GPT-4o',       icon:'◉',color:'#10a37f'},
   {id:'gemini', label:'Gemini',       icon:'◈',color:'#4285f4'},
 ];
 var AGTS = [
-  {id:'pm', label:'Product Architect',icon:'🏗',color:'#7c5cfc',desc:'App structure, workflows, features'},
-  {id:'ux', label:'UI/UX Expert',     icon:'🎨',color:'#22d3a0',desc:'Design, animations, layouts'},
-  {id:'dev',label:'Senior Developer', icon:'⌨', color:'#60a5fa',desc:'Architecture, APIs, databases'},
-  {id:'sa', label:'Startup Advisor',  icon:'🚀',color:'#f5a623',desc:'Monetization, growth, virality'},
-  {id:'seo',label:'SEO & Marketing',  icon:'📈',color:'#f472b6',desc:'SEO, landing pages, CRO'},
-  {id:'pe', label:'Prompt Engineer',  icon:'✦', color:'#a78bfa',desc:'Prompt optimization, context'},
-  {id:'da', label:'Deployment Agent', icon:'☁', color:'#34d399',desc:'Hosting, CI/CD, cloud'},
+  {id:'pm',  label:'Product Architect', icon:'🏗', color:'#8b6dff', desc:'App structure, user flows, feature hierarchy, and product requirements document.',         tags:['MVP','Product','Flows']},
+  {id:'ux',  label:'UI/UX Expert',      icon:'🎨', color:'#1fd4a0', desc:'Design system, component specs, motion language, and screen-by-screen layout guidance.',   tags:['Design','Components','UX']},
+  {id:'dev', label:'Senior Developer',  icon:'⌨',  color:'#60a5fa', desc:'Tech stack decisions, folder structure, API contract, and engineering best practices.',    tags:['Architecture','APIs','Code']},
+  {id:'db',  label:'Database Architect',icon:'🗄',  color:'#34d399', desc:'PostgreSQL schema, RLS policies, performance indexes, and migration strategies.',          tags:['PostgreSQL','Supabase','RLS']},
+  {id:'sa',  label:'Startup Advisor',   icon:'🚀', color:'#f0a730', desc:'Monetization models, pricing strategy, growth loops, and go-to-market foundations.',       tags:['Growth','Monetize','GTM']},
+  {id:'seo', label:'SEO & Marketing',   icon:'📈', color:'#f472b6', desc:'Landing page copy, SEO structure, conversion optimization, and brand voice guidelines.',    tags:['SEO','CRO','Copy']},
+  {id:'dep', label:'Deployment Agent',  icon:'☁',  color:'#38bdf8', desc:'Vercel + Supabase + Cloudflare infrastructure, CI/CD pipelines, and performance targets.', tags:['Vercel','CI/CD','DevOps']},
 ];
 var STYS = ['Premium Dark','Clean Minimal','Bold & Colorful','Corporate Professional','Futuristic / AI-Native','Playful & Friendly'];
 var PTYPES = ['Master Prompt','Frontend','Backend','Database','UI/UX','Branding','Deployment','AI Agent'];
 var PROJS = [
-  {id:1,name:'AtoZ Service Hub',type:'Marketplace',   pl:'claude', date:'2 days ago',pc:8, sc:94},
-  {id:2,name:'EduTrack Portal', type:'SaaS Dashboard',pl:'lovable',date:'5 days ago',pc:10,sc:88},
-  {id:3,name:'AutoEarn AI',     type:'AI Tool',        pl:'bolt',   date:'1 week ago',pc:7, sc:91},
+  {id:1,name:'AtoZ Service Hub',  type:'Marketplace',    pl:'claude', date:'2 days ago', pc:8,  sc:94},
+  {id:2,name:'EduTrack Portal',   type:'SaaS Dashboard', pl:'lovable',date:'5 days ago', pc:10, sc:88},
+  {id:3,name:'AutoEarn AI',       type:'AI Tool',        pl:'bolt',   date:'1 week ago', pc:7,  sc:91},
 ];
 var G = {pl:'claude',phase:'idle',qs:[],qi:0,ans:{},prompts:[],ap:0,score:null,aAg:[]};
 
-// ═══════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════
-function g(id){ return document.getElementById(id); }
-function show(id,flex){ var e=g(id); if(e) e.style.display = flex?'flex':'block'; }
-function hide(id){ var e=g(id); if(e) e.style.display='none'; }
-function txt(id,t){ var e=g(id); if(e) e.textContent=t; }
-function W(fn,ms){ return setTimeout(fn,ms); }
-function esc(t){
-  return String(t)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
+// ─── HELPERS ────────────────────────────
+function g(id){return document.getElementById(id)}
+function show(id,flex){var e=g(id);if(e)e.style.display=flex?'flex':'block'}
+function hide(id){var e=g(id);if(e)e.style.display='none'}
+function txt(id,t){var e=g(id);if(e)e.textContent=t}
+function W(fn,ms){return setTimeout(fn,ms)}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
-// ═══════════════════════════════════════════
-// INPUT BAR — build content once at boot
-// Then show/hide each section directly
-// ═══════════════════════════════════════════
-function buildInputBar() {
-  // IDLE row
-  var idle = g('inp-idle');
-  idle.innerHTML = '';
-  var idea = document.createElement('input');
-  idea.id = 'inp-idea'; idea.className = 'ci'; idea.type = 'text';
-  idea.placeholder = 'Type your project idea…';
-  var beginBtn = document.createElement('button');
-  beginBtn.id = 'begin-btn'; beginBtn.className = 'send-btn';
-  beginBtn.textContent = 'Begin →';
-  idle.appendChild(idea); idle.appendChild(beginBtn);
-  idle.style.display = 'flex'; // visible by default
-
-  // Q row
-  var qrow = g('inp-q');
-  qrow.innerHTML = '';
-  var ans = document.createElement('input');
-  ans.id = 'inp-ans'; ans.className = 'ci'; ans.type = 'text';
-  ans.placeholder = 'Type your answer…';
-  var nextBtn = document.createElement('button');
-  nextBtn.id = 'next-btn'; nextBtn.className = 'send-btn';
-  nextBtn.textContent = 'Next →';
-  qrow.appendChild(ans); qrow.appendChild(nextBtn);
-  // stays display:none
-
-  // GEN row
-  var gen = g('inp-gen');
-  gen.innerHTML = '<div class="status-gen"><span class="spin-i"></span>AI agents analyzing your project…</div>';
-
-  // DONE row
-  var done = g('inp-done');
-  done.innerHTML = '<div style="display:flex;gap:8px;align-items:center;width:100%"><div class="status-done" id="done-txt">Prompts ready!</div><button class="new-btn" id="new-btn">New</button></div>';
-
-  // Bind events
-  beginBtn.addEventListener('click', function(){
-    var v = (idea.value||'').trim();
-    if(!v){ idea.focus(); return; }
-    runFlow(v);
-  });
-  idea.addEventListener('keydown', function(e){
-    if(e.key==='Enter'){ e.preventDefault(); var v=(idea.value||'').trim(); if(v) runFlow(v); }
-  });
-  nextBtn.addEventListener('click', function(){ subAns(); });
-  ans.addEventListener('keydown', function(e){
-    if(e.key==='Enter'){ e.preventDefault(); subAns(); }
-  });
-  // new-btn bound after done is built
-}
-
-// ═══════════════════════════════════════════
-// SHOW INPUT STATE — direct display control
-// ═══════════════════════════════════════════
-function showInp(s) {
-  // Always set each one explicitly — no ambiguity
-  g('inp-idle').style.display = (s==='idle') ? 'flex'  : 'none';
-  g('inp-q').style.display    = (s==='q')    ? 'flex'  : 'none';
-  g('inp-gen').style.display  = (s==='gen')  ? 'block' : 'none';
-  g('inp-done').style.display = (s==='done') ? 'block' : 'none';
-
-  if(s==='q'){
-    W(function(){ var a=g('inp-ans'); if(a) a.focus(); }, 200);
-  }
-}
-
-// ═══════════════════════════════════════════
-// STATUS DOT
-// ═══════════════════════════════════════════
-function setSt(ph, idx, tot) {
-  var dc = g('stdc');
-  if(dc){
-    if(ph==='idle'){ dc.style.background='#7c5cfc'; dc.style.animation=''; }
-    else if(ph==='q'){ dc.style.background='#7c5cfc'; dc.style.animation='pulse 2s infinite'; }
-    else if(ph==='gen'){ dc.style.background='#f5a623'; dc.style.animation='pulse 2s infinite'; }
-    else if(ph==='done'){ dc.style.background='#22d3a0'; dc.style.animation=''; }
-  }
-  var lbl = g('stlbl');
-  if(lbl){
-    if(ph==='idle') lbl.textContent='Ready';
-    else if(ph==='q') lbl.textContent='Q '+(idx+1)+'/'+tot;
-    else if(ph==='gen') lbl.textContent='Generating…';
-    else if(ph==='done') lbl.textContent='Complete ✓';
-  }
-  var dot = g('std');
-  if(dot){
-    var old=dot.querySelectorAll('.dp'); for(var i=0;i<old.length;i++) old[i].remove();
-    if(ph==='q'||ph==='gen'){
-      var p=document.createElement('span'); p.className='dp';
-      p.style.background = ph==='gen'?'#f5a623':'#7c5cfc';
-      dot.appendChild(p);
-    }
-  }
-}
-
-// ═══════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════
-function goLand(){
-  g('pg-land').style.display='block';
-  g('pg-app').style.display='none';
-}
-function goApp(v){
-  g('pg-land').style.display='none';
-  g('pg-app').style.display='flex';
-  setV(v||'ws');
-}
+// ─── NAVIGATION ─────────────────────────
+function goLand(){g('pg-land').style.display='block';g('pg-app').style.display='none'}
+function goApp(v){g('pg-land').style.display='none';g('pg-app').style.display='flex';setV(v||'ws')}
 function setV(v){
   var vs=['ws','agents','projects','prompts'];
   for(var i=0;i<vs.length;i++){
-    var ve=g('v-'+vs[i]); if(ve) ve.classList.toggle('on',vs[i]===v);
-    var be=g('aln-'+vs[i]); if(be) be.classList.toggle('on',vs[i]===v);
+    var ve=g('v-'+vs[i]);if(ve)ve.classList.toggle('on',vs[i]===v);
+    var be=g('aln-'+vs[i]);if(be)be.classList.toggle('on',vs[i]===v);
   }
-  if(v==='prompts') renderPL();
-  if(v==='agents')  renderAg();
+  if(v==='prompts')renderPL();
+  if(v==='agents')renderAg();
 }
 
-// ═══════════════════════════════════════════
-// MESSAGES
-// ═══════════════════════════════════════════
-function scrollMsgs(){
-  var m=g('msgs'); if(m) W(function(){ m.scrollTop=m.scrollHeight; },60);
+// ─── INPUT BAR ──────────────────────────
+function buildInputBar(){
+  var idle=g('inp-idle');
+  idle.innerHTML='';
+  var idea=document.createElement('input');
+  idea.id='inp-idea';idea.className='chat-input';idea.type='text';
+  idea.placeholder='Describe your product idea…';idea.autocomplete='off';
+  var btn=document.createElement('button');
+  btn.id='begin-btn';btn.className='send-btn';btn.textContent='Begin →';
+  idle.appendChild(idea);idle.appendChild(btn);
+  idle.style.display='flex';
+
+  var qrow=g('inp-q');
+  qrow.innerHTML='';
+  var ans=document.createElement('input');
+  ans.id='inp-ans';ans.className='chat-input';ans.type='text';ans.placeholder='Type your answer…';ans.autocomplete='off';
+  var nxt=document.createElement('button');
+  nxt.id='next-btn';nxt.className='send-btn';nxt.textContent='Next →';
+  qrow.appendChild(ans);qrow.appendChild(nxt);
+
+  var gen=g('inp-gen');
+  gen.innerHTML='<div class="status-gen-bar"><div class="spin-icon"></div>AI agents analyzing your project…</div>';
+
+  var done=g('inp-done');
+  done.innerHTML='<div style="display:flex;gap:8px;align-items:center;width:100%"><div class="status-done-bar" id="done-txt">Prompts ready!</div><button class="new-btn" id="new-btn">New</button></div>';
+
+  btn.addEventListener('click',function(){var v=(idea.value||'').trim();if(!v){idea.focus();return;}runFlow(v);});
+  idea.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();var v=(idea.value||'').trim();if(v)runFlow(v);}});
+  nxt.addEventListener('click',function(){subAns();});
+  ans.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();subAns();}});
 }
+
+function showInp(s){
+  g('inp-idle').style.display=(s==='idle')?'flex':'none';
+  g('inp-q').style.display=(s==='q')?'flex':'none';
+  g('inp-gen').style.display=(s==='gen')?'block':'none';
+  g('inp-done').style.display=(s==='done')?'block':'none';
+  if(s==='q'){W(function(){var a=g('inp-ans');if(a)a.focus();},200);}
+}
+
+// ─── STATUS DOT ─────────────────────────
+function setSt(ph,idx,tot){
+  var dc=g('stdc');
+  var wdc=g('ws-stdc');
+  var colors={idle:'#6c47ff',q:'#6c47ff',gen:'#f0a730',done:'#1fd4a0'};
+  var col=colors[ph]||'#6c47ff';
+  if(dc){dc.style.background=col;dc.style.animation=(ph==='q'||ph==='gen')?'pulse 2s infinite':'';}
+  if(wdc){wdc.style.background=col;wdc.style.animation=(ph==='q'||ph==='gen')?'pulse 2s infinite':'';}
+  var lbl=g('stlbl');var wlbl=g('ws-stlbl');
+  var labels={idle:'Ready',q:'Q '+(((idx||0)+1))+'/'+((tot||0)),gen:'Generating…',done:'Complete ✓'};
+  var la=labels[ph]||'Ready';
+  if(lbl)lbl.textContent=la;
+  if(wlbl)wlbl.textContent=la;
+  var dot=g('std');
+  if(dot){var old=dot.querySelectorAll('.dp');for(var i=0;i<old.length;i++)old[i].remove();
+    if(ph==='q'||ph==='gen'){var p=document.createElement('span');p.className='dp';p.style.background=col;dot.appendChild(p);}
+  }
+}
+
+// ─── MESSAGES ───────────────────────────
+function scrollMsgs(){var m=g('msgs');if(m)W(function(){m.scrollTop=m.scrollHeight;},60);}
 function addMsg(html){
-  var mc=g('msgs'); if(!mc) return;
-  // hide empty state
-  var mt=g('msgs-empty'); if(mt) mt.style.display='none';
-  var d=document.createElement('div');
-  d.innerHTML=html;
-  var node=d.firstChild;
-  mc.appendChild(node);
-  bindChips(node);
-  scrollMsgs();
+  var mc=g('msgs');if(!mc)return;
+  var mt=g('msgs-empty');if(mt)mt.style.display='none';
+  var d=document.createElement('div');d.innerHTML=html;
+  var node=d.firstChild;mc.appendChild(node);
+  bindChips(node);scrollMsgs();
 }
-function addSys(t){ addMsg('<div class="msg msys"><span>'+esc(t)+'</span></div>'); }
-function addAi(t){
-  // preserve newlines
-  var safe=esc(t).replace(/&lt;br\/&gt;/g,'<br/>');
-  addMsg('<div class="msg mai"><div class="mai-av">✦</div><div class="mai-b">'+t.replace(/</g,'&lt;')+'</div></div>');
-}
-function addAgt(t){ addMsg('<div class="msg magt"><div class="magt-b"><span style="width:6px;height:6px;border-radius:50%;background:#f5a623;animation:pulse 1s infinite;display:inline-block;flex-shrink:0"></span> '+esc(t)+'</div></div>'); }
-function addUser(t){ addMsg('<div class="msg musr"><div class="musr-b">'+esc(t)+'</div></div>'); }
-
+function addSys(t){addMsg('<div class="msg msg-sys"><span>'+esc(t)+'</span></div>');}
+function addAi(t){addMsg('<div class="msg msg-ai"><div class="msg-ai-av">✦</div><div class="msg-ai-body">'+t.replace(/</g,'&lt;').replace(/\n/g,'<br/>')+'</div></div>');}
+function addAgt(t){addMsg('<div class="msg msg-agent"><div class="msg-agent-body"><span class="agent-pulse"></span>'+esc(t)+'</div></div>');}
+function addUser(t){addMsg('<div class="msg msg-user"><div class="msg-user-body">'+esc(t)+'</div></div>');}
 function addQ(q){
   var ex='';
   if(q.t==='pl'){
     ex='<div class="chip-row">';
-    for(var i=0;i<PLATS.length;i++){
-      var p=PLATS[i];
-      ex+='<button class="chip" data-val="'+p.label+'" data-pid="'+p.id+'" style="background:'+p.color+'22;border-color:'+p.color+'44;color:'+p.color+'">'+p.icon+' '+p.label+'</button>';
-    }
+    for(var i=0;i<PLATS.length;i++){var p=PLATS[i];ex+='<button class="chip" data-val="'+p.label+'" data-pid="'+p.id+'" style="background:'+p.color+'22;border-color:'+p.color+'44;color:'+p.color+'">'+p.icon+' '+p.label+'</button>';}
     ex+='</div>';
   } else if(q.t==='st'){
     ex='<div class="chip-row">';
-    for(var j=0;j<STYS.length;j++){
-      ex+='<button class="chip" data-val="'+STYS[j]+'" style="background:#7c5cfc11;border-color:#2e2e42;color:#8888a0">'+STYS[j]+'</button>';
-    }
+    for(var j=0;j<STYS.length;j++){ex+='<button class="chip" data-val="'+STYS[j]+'" style="background:rgba(108,71,255,.07);border-color:var(--border2);color:#8888a4">'+STYS[j]+'</button>';}
     ex+='</div>';
   } else if(q.t==='yn'){
     ex='<div class="yn-row">'+
-      '<button class="yn" data-val="yes" style="background:#22d3a022;border-color:#22d3a044;color:#22d3a0">Yes</button>'+
-      '<button class="yn" data-val="no"  style="background:#7c5cfc22;border-color:#7c5cfc44;color:#7c5cfc">No</button>'+
+      '<button class="yn" data-val="yes" style="background:rgba(31,212,160,.1);border-color:rgba(31,212,160,.3);color:#1fd4a0">Yes</button>'+
+      '<button class="yn" data-val="no"  style="background:rgba(108,71,255,.1);border-color:rgba(108,71,255,.3);color:#8b6dff">No</button>'+
     '</div>';
   }
-  addMsg('<div class="msg mq"><div class="mq-av">◎</div><div class="mq-b"><div class="mq-t">'+esc(q.q)+'</div>'+ex+'</div></div>');
+  addMsg('<div class="msg msg-q"><div class="msg-q-av">◎</div><div class="msg-q-body"><div class="msg-q-text">'+esc(q.q)+'</div>'+ex+'</div></div>');
 }
 
 function bindChips(node){
-  if(!node||!node.querySelectorAll) return;
-  var chips=node.querySelectorAll('.chip');
+  if(!node||!node.querySelectorAll)return;
+  var chips=node.querySelectorAll('.chip,.yn');
   for(var i=0;i<chips.length;i++){
-    (function(btn,all){
-      btn.addEventListener('click',function(){
-        for(var k=0;k<all.length;k++){ all[k].style.opacity='.5'; all[k].style.fontWeight='500'; }
-        btn.style.opacity='1'; btn.style.fontWeight='700';
-        var ai=g('inp-ans'); if(ai) ai.value=btn.getAttribute('data-val');
-        var pid=btn.getAttribute('data-pid');
-        if(pid){ G.pl=pid; var ps=g('plsel'); if(ps) ps.value=pid; }
+    (function(chip){
+      chip.addEventListener('click',function(){
+        var val=chip.getAttribute('data-val');
+        var pid=chip.getAttribute('data-pid');
+        if(pid){G.pl=pid;var ps=g('plsel');if(ps)ps.value=pid;}
+        G.ans[G.qs[G.qi].k]=val;
+        addUser(val);
+        var nxt=G.qi+1;
+        if(nxt<G.qs.length){G.qi=nxt;setSt('q',nxt,G.qs.length);W(function(){addQ(G.qs[nxt]);},420);}
+        else{G.phase='gen';showInp('gen');setSt('gen');addSys('All '+G.qs.length+' questions answered. Activating AI agents…');W(function(){runAgents();},500);}
       });
-    })(chips[i],chips);
-  }
-  var yns=node.querySelectorAll('.yn');
-  for(var j=0;j<yns.length;j++){
-    (function(btn,all){
-      btn.addEventListener('click',function(){
-        for(var k=0;k<all.length;k++){ all[k].style.opacity='.5'; all[k].style.fontWeight='500'; }
-        btn.style.opacity='1'; btn.style.fontWeight='800';
-        var ai=g('inp-ans'); if(ai) ai.value=btn.getAttribute('data-val');
-      });
-    })(yns[j],yns);
+    })(chips[i]);
   }
 }
 
-// ═══════════════════════════════════════════
-// QUESTION ENGINE
-// ═══════════════════════════════════════════
-function getQs(idea){
+// ─── CATEGORY DETECTION ─────────────────
+function detectCategory(idea){
   var lo=idea.toLowerCase();
-  var b=[
-    {k:'name',     q:"What is the name of your project or brand?"},
-    {k:'audience', q:"Who is the primary audience? (e.g. students, businesses, consumers, developers)"},
-    {k:'platform', q:"Which platform will you build on?",t:'pl'},
-    {k:'style',    q:"What visual style fits best?",t:'st'},
-    {k:'features', q:"List your 3–5 must-have features (comma separated):"},
-    {k:'monetize', q:"Monetization model? (subscriptions, ads, marketplace fees, free)"},
-    {k:'scale',    q:"Expected scale in year 1? (hundreds / thousands / millions of users)"},
-    {k:'backend',  q:"Do you need a backend, database, or user authentication?",t:'yn'},
-    {k:'ai',       q:"Should this app include AI features?",t:'yn'},
-    {k:'timeline', q:"What is your target launch timeline?"},
-  ];
-  if(lo.includes('school')||lo.includes('educat')){
-    b.splice(3,0,{k:'curr',q:"What curriculum or grade levels does this cover?"});
-    b.splice(4,0,{k:'portal',q:"Do you need a student or parent portal with login?",t:'yn'});
-  }
-  if(lo.includes('food')||lo.includes('deliver')||lo.includes('restaurant')){
-    b.splice(3,0,{k:'deliv',q:"In-house orders, third-party delivery, or both?"});
-    b.splice(4,0,{k:'pay',q:"What payment methods? (card, UPI, COD, wallets)"});
-  }
-  if(lo.includes('crm')||lo.includes('real estate')){
-    b.splice(3,0,{k:'pipe',q:"Describe your sales or workflow pipeline stages."});
-    b.splice(4,0,{k:'int',q:"Third-party integrations needed? (email, Slack, Zapier…)"});
-  }
-  if(lo.includes('saas')||lo.includes('dashboard')){
-    b.splice(3,0,{k:'roles',q:"What user roles will exist? (admin, user, viewer…)"});
-    b.splice(4,0,{k:'api',q:"Do you need a public API or webhook system?",t:'yn'});
-  }
-  return b;
+  if(lo.match(/school|college|university|education|learning|course|lms|tutor/)) return 'edu_website';
+  if(lo.match(/restaurant|cafe|coffee|food|menu|dine|eatery|bistro/)) return 'restaurant_website';
+  if(lo.match(/hotel|resort|hostel|accommodation|stay|booking.*room/)) return 'hotel_website';
+  if(lo.match(/portfolio|personal site|my website|showcase|resume site/)) return 'portfolio_website';
+  if(lo.match(/hospital|clinic|health.*site|doctor.*site|medical.*web/)) return 'healthcare_website';
+  if(lo.match(/real estate|property|rental.*list|housing|homes for sale/)) return 'realestate_website';
+  if(lo.match(/agency|studio.*site|design.*company|creative.*firm/)) return 'agency_website';
+  if(lo.match(/service.*business|plumber|electrician|contractor|cleaning|pest/)) return 'service_website';
+  if(lo.match(/nonprofit|ngo|charity|foundation|donation.*site/)) return 'nonprofit_website';
+  if(lo.match(/blog|publication|newsletter|magazine|article.*site/)) return 'blog_website';
+  if(lo.match(/landing page|waitlist page|product.*page|signup page/)) return 'landing_page';
+  if(lo.match(/event|conference|wedding|concert|festival.*site/)) return 'event_website';
+  if(lo.match(/website|web.*page|company.*site|business.*site/)) return 'generic_website';
+  if(lo.match(/shop|store|ecommerce|e-commerce|sell.*online|shopify|woocommerce/)) return 'ecommerce';
+  if(lo.match(/mobile app|ios app|android app|flutter|react native/) && !lo.match(/fitness|workout|gym/)) return 'mobile_app';
+  if(lo.match(/fitness|workout|gym|exercise|health.*app|wellness|yoga|meditation|calories|weight.*loss/)) return 'fitness_app';
+  if(lo.match(/social.*app|community|forum|feed|followers|posts|likes|network/)) return 'social_app';
+  if(lo.match(/delivery|food.*order|uber.*eat|takeout|doorstep|logistics.*app/)) return 'delivery_app';
+  if(lo.match(/travel|trip|booking.*travel|flight|hotel.*app|airbnb|vacation/)) return 'travel_app';
+  if(lo.match(/finance|fintech|budget|investment|crypto|stock|expense|banking/)) return 'finance_app';
+  if(lo.match(/dating|match|relationship|tinder|bumble|couple/)) return 'dating_app';
+  if(lo.match(/saas|dashboard|admin.*panel|analytics|reporting|platform.*tool/)) return 'saas_dashboard';
+  if(lo.match(/crm|customer.*relation|lead.*manage|sales.*pipeline/)) return 'crm';
+  if(lo.match(/project.*manage|task.*manage|trello|asana|jira|kanban/)) return 'pm_tool';
+  if(lo.match(/booking|scheduling|appointment|calendar.*app|reservation/)) return 'booking_tool';
+  if(lo.match(/hr|human.*resource|payroll|employee|attendance|leave.*manage/)) return 'hrm';
+  if(lo.match(/ai agent|autonomous.*agent|agentic|long.*running.*ai/)) return 'ai_agent';
+  if(lo.match(/chatbot|ai.*assistant|chat.*bot|customer.*support.*bot/)) return 'chatbot';
+  if(lo.match(/ai tool|ai.*platform|ai.*product|generate|llm|openai|claude api/)) return 'ai_tool';
+  if(lo.match(/automation|workflow.*automation|zapier|n8n|automate/)) return 'automation';
+  if(lo.match(/marketplace|two.sided|fiverr|freelance.*platform|gig/)) return 'marketplace';
+  if(lo.match(/startup|mvp|product.*idea|new.*product|launch/)) return 'startup_mvp';
+  return 'generic_app';
 }
 
-// ═══════════════════════════════════════════
-// MAIN FLOW
-// ═══════════════════════════════════════════
-function runFlow(idea){
-  if(!idea) return;
-  G.qs=getQs(idea); G.qi=0; G.ans={idea:idea};
-  G.prompts=[]; G.aAg=[]; G.score=null; G.phase='q';
+// ─── QUESTION SETS ──────────────────────
+function getQs(idea){
+  var cat=detectCategory(idea);
+  function closing(){return[
+    {k:'platform',q:'Which AI coding platform will you use to build this?',t:'pl'},
+    {k:'timeline',q:'What is your target launch timeline? (e.g. 2 weeks, 1 month, 3 months)'},
+    {k:'scale',   q:'Expected users in year 1? (hundreds / thousands / millions)'},
+  ];}
 
-  // Reset messages
-  var mc=g('msgs');
-  if(mc){
-    mc.innerHTML='<div class="msgs-empty" id="msgs-empty" style="display:none"><div class="ei">✦</div><p>Type your project idea below and tap Begin →</p></div>';
-  }
+  if(cat==='fitness_app')return[
+    {k:'name',     q:'What is the name of your fitness or wellness app?'},
+    {k:'type',     q:'What type of fitness app? (workout tracker, diet/nutrition, yoga, meditation, gym management, personal trainer)'},
+    {k:'audience', q:'Who are the target users? (beginners, advanced athletes, gym-goers, home workout, specific age group)'},
+    {k:'features', q:'What features? (e.g. workout plans, exercise library, progress tracking, calorie counter, AI coach chat, streaks)'},
+    {k:'ai',       q:'Should it include an AI coach or AI-personalized workouts?',t:'yn'},
+    {k:'wearables',q:'Integrate with wearables like Apple Watch, Fitbit, or Google Fit?',t:'yn'},
+    {k:'social',   q:'Social/community features — leaderboards, challenges, friend activity?',t:'yn'},
+    {k:'monetize', q:'Monetization model? (free / premium subscription / one-time / in-app coaching)'},
+    {k:'style',    q:'What visual style fits best?',t:'st'},
+  ].concat(closing());
 
-  // Show idea tag
-  var tag=g('itag');
-  if(tag){ tag.textContent='"'+idea.slice(0,20)+(idea.length>20?'…':'"'); tag.style.display='inline-block'; }
+  if(cat==='saas_dashboard')return[
+    {k:'name',     q:'What is the name of your SaaS product?'},
+    {k:'purpose',  q:'What does it do? One sentence describing the core value.'},
+    {k:'audience', q:'Who are your target customers? (job title, company size, industry)'},
+    {k:'features', q:'What are the 3–5 core features? (comma separated)'},
+    {k:'backend',  q:'Does it need a backend and database?',t:'yn'},
+    {k:'ai',       q:'Should it have AI-powered features?',t:'yn'},
+    {k:'monetize', q:'Pricing model? (subscription / usage-based / freemium / enterprise license)'},
+    {k:'style',    q:'What visual style fits best?',t:'st'},
+  ].concat(closing());
 
-  // Switch input to question mode
-  showInp('q');
-  setSt('q',0,G.qs.length);
+  if(cat==='ecommerce')return[
+    {k:'name',     q:'What is the name of your online store?'},
+    {k:'products', q:'What type of products? (physical, digital, subscriptions, or mixed)'},
+    {k:'niche',    q:'What is your product niche? (fashion, electronics, handmade, books, cosmetics)'},
+    {k:'audience', q:'Who are your target buyers? (age, interests, location — local or global)'},
+    {k:'features', q:'Features needed? (product search, filters, cart, wishlist, reviews, promo codes)'},
+    {k:'payment',  q:'Payment methods? (card, UPI, PayPal, COD, EMI)'},
+    {k:'vendor',   q:'Single-vendor store or multi-vendor marketplace?'},
+    {k:'style',    q:'What visual style fits your brand?',t:'st'},
+  ].concat(closing());
 
-  addSys('Analyzing: "'+idea+'"');
-  W(function(){
-    addAi('Excellent! I\'ll act as your senior product strategist.\n\nLet\'s go through focused questions to build your perfect prompts.');
-    W(function(){ addQ(G.qs[0]); }, 400);
-  },300);
-}
+  if(cat==='mobile_app')return[
+    {k:'name',     q:'What is the name of your mobile app?'},
+    {k:'category', q:'What category? (productivity, social, health, education, entertainment, utility)'},
+    {k:'audience', q:'Describe your target users — age, interest, pain point being solved.'},
+    {k:'core',     q:'What is the single core action users will do most in this app?'},
+    {k:'features', q:'List the key screens and features (comma separated):'},
+    {k:'auth',     q:'Does the app require user login?',t:'yn'},
+    {k:'ai',       q:'Should the app include AI-powered features?',t:'yn'},
+    {k:'monetize', q:'Monetization? (free / ads / in-app purchase / subscription / one-time)'},
+    {k:'style',    q:'What visual style fits best?',t:'st'},
+  ].concat(closing());
 
-function subAns(){
-  var ainp=g('inp-ans');
-  if(!ainp) return;
-  var ans=(ainp.value||'').trim();
-  if(!ans){ ainp.focus(); return; }
-
-  // Save answer
-  G.ans[G.qs[G.qi].k]=ans;
-  addUser(ans);
-  ainp.value='';
-
-  var nxt=G.qi+1;
-  if(nxt<G.qs.length){
-    G.qi=nxt;
-    setSt('q',nxt,G.qs.length);
-    W(function(){ addQ(G.qs[nxt]); }, 420);
-  } else {
-    // All questions answered → generate
-    G.phase='gen';
-    showInp('gen');
-    setSt('gen');
-    addSys('All '+ G.qs.length +' questions answered. Activating AI agents…');
-    W(function(){ runAgents(); }, 500);
-  }
-}
-
-function runAgents(){
-  var i=0;
-  function tick(){
-    if(i>=AGTS.length){
-      // Build all prompts
-      var ps=buildPrompts(G.ans,G.pl);
-      G.prompts=ps;
-      G.score=Math.floor(Math.random()*8)+91;
-      G.phase='done';
-      setSt('done');
-      showInp('done');
-      txt('done-txt','✓ '+ps.length+' prompts ready · Score: '+G.score+'/100');
-
-      var plLabel='the selected platform';
-      for(var x=0;x<PLATS.length;x++){ if(PLATS[x].id===G.pl){plLabel=PLATS[x].label;break;} }
-
-      addAi('✦ All '+ps.length+' prompts generated and optimized for '+plLabel+'!\n\nPrompt Quality Score: '+G.score+'/100\n\nTap "◈ View Prompts" above to browse, copy, or export all prompts.');
-
-      var vp=g('vpbtn'); if(vp) vp.style.display='inline-flex';
-      renderPL();
-      return;
-    }
-    G.aAg.push(AGTS[i].id);
-    addAgt(AGTS[i].icon+' '+AGTS[i].label+' analyzing context…');
-    renderAg();
-    i++;
-    W(tick,560);
-  }
-  W(tick,300);
-}
-
-function resetFlow(){
-  G.phase='idle'; G.prompts=[]; G.aAg=[]; G.score=null; G.ans={};
-  var mc=g('msgs');
-  if(mc) mc.innerHTML='<div class="msgs-empty" id="msgs-empty"><div class="ei">✦</div><p>Type your project idea below and tap Begin →</p></div>';
-  var tag=g('itag'); if(tag) tag.style.display='none';
-  var vp=g('vpbtn'); if(vp) vp.style.display='none';
-  var ii=g('inp-idea'); if(ii) ii.value='';
-  showInp('idle');
-  setSt('idle');
-  renderAg();
-}
-
-// ═══════════════════════════════════════════
-// PROMPT BUILDER
-// ═══════════════════════════════════════════
-function getPl(pid){
-  for(var i=0;i<PLATS.length;i++){ if(PLATS[i].id===pid) return PLATS[i]; }
-  return PLATS[5]; // default claude
-}
-
-function buildPrompts(ctx,pid){
-  var pl=getPl(pid);
-  var nm   = ctx.name     || 'the app';
-  var aud  = ctx.audience || 'general users';
-  var feat = ctx.features || 'core features';
-  var sty  = ctx.style    || 'premium modern';
-  var mon  = ctx.monetize || 'freemium';
-  var be   = ctx.backend  === 'yes';
-  var ai   = ctx.ai       === 'yes';
-  var sc   = ctx.scale    || 'MVP scale';
-  var tm   = ctx.timeline || 'ASAP';
-  var idea = ctx.idea     || nm;
-
-  var hints={
-    lovable:'Focus on visual UI descriptions, component layout, color systems, and UX flow. Describe every screen in detail. Include animation preferences and design tokens.',
-    bolt:   'Emphasize feature structure, app flow logic, and step-by-step implementation details. Specify exact functionality for each feature.',
-    cursor: 'Structure as modular engineering tasks. Include folder structure, file names, component architecture, and technology decisions.',
-    v0:     'Specify React components with Tailwind classes, exact UI hierarchy, props, and responsive layout at each breakpoint.',
-    replit: 'Include full deployable backend logic, environment variable setup, package.json dependencies, and database initialization scripts.',
-    claude: 'Use structured reasoning chains with detailed context, constraints, architecture decisions, and success criteria for each component.',
-    gpt:    'Provide clear role definition, expected output format, concrete examples, edge cases to handle, and quality criteria.',
-    gemini: 'Use structured JSON schemas for data. Be concise and precise. Provide multimodal context where relevant. Focus on key architectural decisions.',
-  };
-  var h=hints[pid]||hints.claude;
-
-  var fArr=feat.split(',');
-  var fL=''; for(var i=0;i<fArr.length;i++) fL+=(i+1)+'. '+fArr[i].trim()+' — full dedicated screen/section\n';
-  var aL=''; for(var j=0;j<fArr.length;j++) aL+='POST/GET /api/'+fArr[j].trim().toLowerCase().replace(/\s+/g,'-')+'\n';
-  var dT='';
-  for(var k=0;k<fArr.length;k++){
-    var t=fArr[k].trim().toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
-    dT+=t+' (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id uuid REFERENCES users(id) ON DELETE CASCADE,\n  title text NOT NULL,\n  data jsonb DEFAULT \'{}\',\n  status text DEFAULT \'active\',\n  created_at timestamptz DEFAULT now(),\n  updated_at timestamptz DEFAULT now()\n)\n\n';
-  }
-
-  return [
-    // ── 1. MASTER PROMPT
-    {type:'Master Prompt', content:
-'PROJECT: "'+nm+'"\n'+
-'AUDIENCE: '+aud+'\n'+
-'VISION: '+idea+'\n\n'+
-'═══ PLATFORM CONTEXT ═══\n'+
-'Platform: '+pl.label+'\n'+
-h+'\n\n'+
-'═══ CORE REQUIREMENTS ═══\n'+
-'• Audience: '+aud+'\n'+
-'• Features: '+feat+'\n'+
-'• Visual Style: '+sty+'\n'+
-'• Monetization: '+mon+'\n'+
-'• Backend & Auth: '+(be?'REQUIRED — full auth, database, and API layer':'NOT needed — frontend only, client-side state')+'\n'+
-'• AI Features: '+(ai?'REQUIRED — integrate intelligent AI capabilities':'Not required for this phase')+'\n'+
-'• Scale Target: '+sc+'\n'+
-'• Launch Timeline: '+tm+'\n\n'+
-'═══ QUALITY STANDARDS ═══\n'+
-'• Mobile-first responsive (min 360px)\n'+
-'• Core Web Vitals: all green\n'+
-'• WCAG 2.1 AA accessibility\n'+
-'• Production-ready code only — no placeholders\n'+
-'• Input validation + rate limiting + CORS on all endpoints\n'+
-'• Error handling with user-friendly messages\n\n'+
-'═══ DELIVERABLE ═══\n'+
-'A complete, fully working, deployable application named "'+nm+'" that serves '+aud+' and delivers on the vision above. Build it as if it will go live tomorrow.'
-    },
-
-    // ── 2. FRONTEND
-    {type:'Frontend', content:
-'BUILD THE FRONTEND FOR "'+nm+'"\n\n'+
-'═══ TECH STACK ═══\n'+
-'• Framework: Next.js 14 with App Router\n'+
-'• Styling: Tailwind CSS with custom design tokens\n'+
-'• Animations: Framer Motion\n'+
-'• Language: TypeScript (strict mode)\n'+
-'• Components: shadcn/ui + Radix UI primitives\n'+
-'• State: Zustand for global, React Query for server state\n'+
-'• Forms: React Hook Form + Zod validation\n\n'+
-'═══ DESIGN SYSTEM ═══\n'+
-'• Style Direction: '+sty+'\n'+
-'• Font Pairing: Syne 800 (headlines) + DM Sans 400/600 (body)\n'+
-'• Spacing: 4px base unit — use multiples of 4\n'+
-'• Radius: 8px (default), 12px (cards), 999px (pills)\n'+
-'• Motion: 150ms ease for hover, 300ms ease for transitions\n'+
-'• Loading: skeleton screens always — never raw spinners\n\n'+
-'═══ REQUIRED SCREENS ═══\n'+fL+'\n'+
-'═══ CORE COMPONENTS ═══\n'+
-'• Navigation: sticky 56px, glassmorphism, logo left, links center, CTA right, mobile hamburger\n'+
-'• Hero: animated headline with gradient, supporting text, primary + secondary CTA\n'+
-'• Feature showcase: icon cards with hover lift effect and description\n'+
-(be?'• Auth flow: login, signup, email verification, password reset, OAuth buttons\n':'')+
-'• Dashboard layout: collapsible sidebar + main content + top header with user menu\n'+
-'• Empty states: illustration + headline + CTA for every list that can be empty\n'+
-'• Error boundary: catches JS errors, shows friendly message with retry button\n'+
-'• Toast notifications: success, error, warning, info variants\n'+
-'• Footer: navigation links, social proof, newsletter signup\n\n'+
-'═══ RESPONSIVE BREAKPOINTS ═══\n'+
-'360px (mobile) | 640px (sm) | 768px (md) | 1024px (lg) | 1280px (xl)'
-    },
-
-    // ── 3. BACKEND
-    {type:'Backend', content: be ?
-'BUILD THE BACKEND FOR "'+nm+'"\n\n'+
-'═══ TECH STACK ═══\n'+
-'• Runtime: Node.js 20 LTS + Next.js API Routes\n'+
-'• Database: PostgreSQL via Supabase (managed)\n'+
-'• Auth: Supabase Auth — email/password, OAuth (Google, GitHub), magic link\n'+
-'• Storage: Supabase Storage for user-uploaded files\n'+
-'• Cache: Redis via Upstash — rate limiting and hot data\n'+
-'• Email: Resend for transactional emails (welcome, reset, notifications)\n'+
-'• Queues: Trigger.dev for background jobs\n\n'+
-'═══ API ENDPOINTS ═══\n'+aL+'\n'+
-'Standard patterns for each:\n'+
-'• GET /api/[resource] — paginated list (page, limit, search, sort)\n'+
-'• GET /api/[resource]/[id] — single item\n'+
-'• POST /api/[resource] — create (validate with Zod)\n'+
-'• PATCH /api/[resource]/[id] — partial update\n'+
-'• DELETE /api/[resource]/[id] — soft delete (set status=deleted)\n\n'+
-'═══ MIDDLEWARE (every protected route) ═══\n'+
-'1. JWT verification via Supabase — return 401 if invalid\n'+
-'2. Rate limiting via Upstash — 100 req/min (free), 1000/min (pro)\n'+
-'3. Zod schema validation — return 400 with field-level errors\n'+
-'4. CORS whitelist — only allow production domains\n'+
-'5. Request logging — structured JSON for debugging\n\n'+
-'═══ RESPONSE ENVELOPE ═══\n'+
-'Success: { "success": true, "data": any, "meta": { "page": n, "total": n } }\n'+
-'Error:   { "success": false, "error": "message", "code": "ERROR_CODE" }\n\n'+
-'HTTP codes: 200 OK | 201 Created | 400 Validation | 401 Unauth | 403 Forbidden | 404 Not found | 429 Rate limited | 500 Server error'
-    :
-'NO BACKEND REQUIRED for "'+nm+'" in this phase.\n\n'+
-'═══ CLIENT-SIDE ARCHITECTURE ═══\n'+
-'• State: Zustand stores with devtools and persist middleware\n'+
-'• Local persistence: localStorage with versioned schema migration\n'+
-'• Auth (if needed): Clerk for hosted authentication — handles UI and sessions\n'+
-'• API calls: native fetch with typed wrappers and error handling\n'+
-'• Offline support: service worker with stale-while-revalidate\n\n'+
-'═══ WHEN READY TO ADD BACKEND ═══\n'+
-'Start with Supabase for rapid setup:\n'+
-'• Auth, database, storage, and realtime in one platform\n'+
-'• Free tier generous enough for MVP\n'+
-'• Instant REST and GraphQL APIs from your schema'
-    },
-
-    // ── 4. DATABASE
-    {type:'Database', content:
-'DATABASE SCHEMA FOR "'+nm+'"\n\n'+
-'═══ CORE TABLES ═══\n\n'+
-'users (\n'+
-'  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n'+
-'  email text UNIQUE NOT NULL,\n'+
-'  name text,\n'+
-'  avatar_url text,\n'+
-'  role text DEFAULT \'user\' CHECK (role IN (\'user\',\'admin\',\'pro\')),\n'+
-'  stripe_customer_id text,\n'+
-'  metadata jsonb DEFAULT \'{}\',\n'+
-'  created_at timestamptz DEFAULT now(),\n'+
-'  updated_at timestamptz DEFAULT now()\n'+
-')\n\n'+
-dT+
-'═══ PERFORMANCE INDEXES ═══\n'+
-'-- Foreign key lookups (critical for JOIN performance)\n'+
-'CREATE INDEX ON each_table (user_id);\n'+
-'-- Pagination (always sort newest first)\n'+
-'CREATE INDEX ON each_table (created_at DESC);\n'+
-'-- Full-text search on content fields\n'+
-'CREATE INDEX ON each_table USING gin(to_tsvector(\'english\', title));\n\n'+
-'═══ ROW LEVEL SECURITY (Supabase) ═══\n'+
-'Enable RLS on ALL tables — users can only access their own data.\n\n'+
-'ALTER TABLE [table] ENABLE ROW LEVEL SECURITY;\n'+
-'CREATE POLICY "Users own their data" ON [table]\n'+
-'  FOR ALL USING (auth.uid() = user_id)\n'+
-'  WITH CHECK (auth.uid() = user_id);\n\n'+
-'Admin override policy:\n'+
-'CREATE POLICY "Admins see all" ON [table]\n'+
-'  FOR SELECT USING (\n'+
-'    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND role = \'admin\')\n'+
-'  );\n\n'+
-'═══ TRIGGERS ═══\n'+
-'-- Auto-create profile on signup\n'+
-'CREATE FUNCTION handle_new_user() RETURNS trigger AS $$\n'+
-'BEGIN INSERT INTO users (id, email) VALUES (NEW.id, NEW.email); RETURN NEW; END;\n'+
-'$$ LANGUAGE plpgsql SECURITY DEFINER;\n'+
-'CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users\n'+
-'  FOR EACH ROW EXECUTE FUNCTION handle_new_user();'
-    },
-
-    // ── 5. UI/UX
-    {type:'UI/UX', content:
-'DESIGN SYSTEM FOR "'+nm+'"\n\n'+
-'═══ VISUAL IDENTITY ═══\n'+
-'Style: '+sty+'\n\n'+
-'COLOR TOKENS:\n'+
-'--color-bg:         #07070a  (page background)\n'+
-'--color-surface:    #111118  (cards, panels)\n'+
-'--color-elevated:   #1a1a24  (dropdowns, popovers)\n'+
-'--color-border:     #1e1e2a  (subtle borders)\n'+
-'--color-border-hi:  #2e2e42  (hover borders)\n'+
-'--color-accent:     #7c5cfc  (primary action)\n'+
-'--color-accent-hi:  #8b6dff  (hover state)\n'+
-'--color-success:    #22d3a0\n'+
-'--color-warning:    #f5a623\n'+
-'--color-error:      #ff4d6d\n'+
-'--color-text:       #e8e8f0  (primary text)\n'+
-'--color-muted:      #6b6b80  (secondary text)\n'+
-'--color-dim:        #3a3a50  (placeholder, disabled)\n\n'+
-'TYPOGRAPHY:\n'+
-'Display  → Syne 800, clamp(30px,6vw,60px), tight leading 1.05\n'+
-'H1       → Syne 800, clamp(24px,4vw,40px), leading 1.1\n'+
-'H2       → DM Sans 700, clamp(19px,3vw,28px), leading 1.2\n'+
-'Body     → DM Sans 400/500, 14–16px, leading 1.7\n'+
-'Caption  → DM Sans 400, 11–12px, leading 1.6\n'+
-'Mono     → JetBrains Mono, 12–14px\n\n'+
-'═══ COMPONENT SPEC ═══\n'+
-'Buttons: 3 variants (primary/secondary/ghost) × 3 sizes (sm/md/lg) × 4 states (default/hover/active/disabled)\n'+
-'Cards: glassmorphism — rgba(17,17,24,.9) + backdrop-blur(12px) + 1px border\n'+
-'Inputs: height 44px, 2px border, focus ring 3px at 20% opacity\n'+
-'Modals: centered overlay, backdrop 60% black, ESC to close, focus trap\n'+
-'Nav: 56px height, sticky, backdrop-blur(16px), smooth color transition on scroll\n\n'+
-'═══ MOTION LANGUAGE ═══\n'+
-'Page entry:    staggered fade-up, Y+12px → 0, 60ms delay per element\n'+
-'Hover:         scale(1.02) + box-shadow lift, 150ms cubic-bezier(.4,0,.2,1)\n'+
-'Route change:  slide + fade, 200ms\n'+
-'Skeleton:      shimmer animation left-to-right, 1.5s loop\n'+
-'Success:       scale(1) → scale(1.05) → scale(1), 300ms spring\n'+
-'Micro:         button press scale(.97), checkbox pop, toggle slide'
-    },
-
-    // ── 6. BRANDING
-    {type:'Branding', content:
-'BRAND IDENTITY FOR "'+nm+'"\n\n'+
-'═══ BRAND STRATEGY ═══\n'+
-'Product: '+nm+'\n'+
-'Audience: '+aud+'\n'+
-'Vision: '+idea+'\n\n'+
-'BRAND PERSONALITY (pick 3):\n'+
-'Bold / Intelligent / Human / Reliable / Innovative / Playful / Premium / Accessible\n\n'+
-'BRAND VOICE:\n'+
-'• Confident but not arrogant\n'+
-'• Clear and direct — never corporate jargon\n'+
-'• Warm and encouraging — celebrates user wins\n'+
-'• Action-oriented — tells users what to do next\n\n'+
-'TAGLINE FORMAT: [Active verb] + [specific outcome] + [for audience]\n'+
-'Example: "Build faster products, ship in days"\n\n'+
-'═══ VISUAL IDENTITY ═══\n'+
-'Logo:\n'+
-'• Primary: modern wordmark with custom letterforms\n'+
-'• Variants: full logo, icon mark only, horizontal, stacked\n'+
-'• Minimum size: 24px height for icon, 80px for wordmark\n'+
-'• Clear space: 0.5× logo height on all sides\n\n'+
-'Icon system:\n'+
-'• Size: 16px, 20px, 24px (standard), 32px\n'+
-'• Style: 1.5px stroke weight, rounded line caps\n'+
-'• Grid: 24px canvas with 2px padding\n\n'+
-'═══ COPY GUIDELINES ═══\n'+
-'Headlines: verb-first ("Build faster", "Ship smarter", "Scale effortlessly")\n'+
-'CTAs: action + outcome ("Start building free", "Get your first prompt")\n'+
-'Errors: human, never blame user ("Something went wrong — try again" ✓)\n'+
-'Empty states: encouraging + next action ("No items yet — create your first one →")\n'+
-'Onboarding: celebrate every step ("Great! Now let\'s set up your first project")\n\n'+
-'SOCIAL PROOF FORMATS:\n'+
-'"'+nm+' — trusted by 10,000+ builders worldwide"\n'+
-'Testimonial: [avatar] [Name, Role at Company] "[2-sentence quote]"'
-    },
-
-    // ── 7. DEPLOYMENT
-    {type:'Deployment', content:
-'PRODUCTION DEPLOYMENT FOR "'+nm+'"\n\n'+
-'═══ INFRASTRUCTURE ═══\n'+
-'Frontend + API:  Vercel — auto-deploy from GitHub main branch\n'+
-'Database:        Supabase — managed PostgreSQL + auth + storage\n'+
-'CDN + Security:  Cloudflare — DDoS protection, WAF, edge caching\n'+
-'Error tracking:  Sentry — real-time alerts for frontend and backend errors\n'+
-'Analytics:       Vercel Analytics + PostHog (product analytics)\n'+
-'Uptime monitor:  Better Uptime — alert via Slack when down\n'+
-'Logs:            Axiom — structured log search and dashboards\n\n'+
-'═══ ENVIRONMENT VARIABLES ═══\n'+
-'NEXT_PUBLIC_SUPABASE_URL=\n'+
-'NEXT_PUBLIC_SUPABASE_ANON_KEY=\n'+
-'SUPABASE_SERVICE_ROLE_KEY=\n'+
-'NEXTAUTH_SECRET=\n'+
-'NEXTAUTH_URL=https://yourapp.com\n'+
-'UPSTASH_REDIS_REST_URL=\n'+
-'UPSTASH_REDIS_REST_TOKEN=\n'+
-'RESEND_API_KEY=\n'+
-'SENTRY_DSN=\n'+
-'NEXT_PUBLIC_POSTHOG_KEY=\n\n'+
-'═══ CI/CD PIPELINE (GitHub Actions) ═══\n'+
-'Trigger: push to any branch\n'+
-'Step 1 — Lint & Type Check: ESLint + TypeScript compiler, fail fast\n'+
-'Step 2 — Unit Tests: Jest + React Testing Library\n'+
-'Step 3 — Preview Deploy: Vercel preview URL on every PR\n'+
-'Step 4 — E2E Tests: Playwright on preview URL\n'+
-'Step 5 — Production Deploy: auto on merge to main\n'+
-'Step 6 — Release: on git tag v* → Slack notification with changelog\n\n'+
-'═══ PERFORMANCE TARGETS ═══\n'+
-'Lighthouse Performance: 95+\n'+
-'Lighthouse Accessibility: 100\n'+
-'Time to First Byte (TTFB): < 200ms\n'+
-'First Contentful Paint (FCP): < 1.2s\n'+
-'Largest Contentful Paint (LCP): < 2.5s\n'+
-'Total Blocking Time (TBT): < 100ms\n'+
-'Uptime SLA: 99.9% (< 8.7 hours downtime/year)'
-    },
-
-    // ── 8. AI AGENT
-    {type:'AI Agent', content: ai ?
-'AI INTEGRATION FOR "'+nm+'"\n\n'+
-'═══ AI FEATURES TO BUILD ═══\n'+
-'1. Smart Recommendations — personalized suggestions using user history + embeddings\n'+
-'2. Natural Language Search — semantic search across all content in the app\n'+
-'3. Auto-Summarization — condense long content to key bullet points\n'+
-'4. AI Onboarding Assistant — guides new users step-by-step to first value\n'+
-'5. Context-aware Autocomplete — intelligent suggestions in text inputs\n\n'+
-'═══ TECH STACK ═══\n'+
-'Primary model:   Claude claude-sonnet-4-20250514 (complex reasoning, 200K context)\n'+
-'Fast model:      GPT-4o-mini (classification, quick responses, cost reduction)\n'+
-'Embeddings:      text-embedding-3-small (1536 dims, excellent quality/cost ratio)\n'+
-'Vector store:    pgvector extension on Supabase (no extra infrastructure)\n'+
-'Streaming:       Server-Sent Events (SSE) for real-time AI responses\n'+
-'Orchestration:   Vercel AI SDK for unified model interface\n\n'+
-'═══ SYSTEM PROMPT ═══\n'+
-'"You are an AI assistant built into '+nm+', a product designed for '+aud+'. '+
-'Your role is to help users [specific task]. '+
-'Always be concise, accurate, and action-oriented. '+
-'Never make up information — if unsure, say so clearly. '+
-'Respond in the same language the user writes in."\n\n'+
-'═══ CONTEXT INJECTION (every API call) ═══\n'+
-'• User ID, role (user/admin/pro), subscription tier\n'+
-'• Current feature/page the user is on\n'+
-'• Last 5 user actions in the app\n'+
-'• User\'s stored preferences and settings\n'+
-'• Relevant data from pgvector similarity search\n\n'+
-'═══ SAFETY & COST CONTROLS ═══\n'+
-'Rate limits: 20 AI calls/day (free) | 200/day (pro) | unlimited (enterprise)\n'+
-'Max tokens: 2000 per chat response | 500 per autocomplete suggestion\n'+
-'Content moderation: screen all user inputs with Anthropic + OpenAI moderation\n'+
-'Cost alerts: Slack notification if daily AI spend exceeds $10\n'+
-'Fallback: if AI unavailable, gracefully degrade to rule-based logic'
-    :
-'AI FEATURES NOT REQUIRED for "'+nm+'" in this phase.\n\n'+
-'═══ RECOMMENDED AI ADDITIONS FOR V2 ═══\n'+
-'1. Smart search — semantic search using text embeddings\n'+
-'2. Auto-suggestions — context-aware input assistance\n'+
-'3. Content generation — AI-powered templates and drafts\n'+
-'4. Analytics insights — natural language querying of your data\n'+
-'5. Onboarding assistant — personalized setup guidance\n\n'+
-'═══ WHEN READY TO ADD AI ═══\n'+
-'Primary model: Claude claude-sonnet-4-20250514 (Anthropic API)\n'+
-'Quick wins first: start with search or autocomplete\n'+
-'Infrastructure: pgvector on your existing Supabase — no new services needed\n'+
-'SDK: Vercel AI SDK for streaming and model-agnostic interface'
-    },
-  ];
-}
-
-// ═══════════════════════════════════════════
-// PROMPT OVERLAY
-// ═══════════════════════════════════════════
-function openPO(){
-  if(!G.prompts.length){
-    show('po-empty','flex'); hide('po-fill'); hide('po-sc');
-    g('po-tabs').innerHTML='';
-  } else {
-    hide('po-empty');
-    show('po-fill','flex');
-    // Tabs
-    var tabs='';
-    for(var i=0;i<G.prompts.length;i++){
-      tabs+='<button class="ptab'+(i===G.ap?' on':'')+'" data-idx="'+i+'">'+G.prompts[i].type+'</button>';
-    }
-    g('po-tabs').innerHTML=tabs;
-    var btns=g('po-tabs').querySelectorAll('.ptab');
-    for(var j=0;j<btns.length;j++){
-      (function(btn,all){
-        btn.addEventListener('click',function(){
-          G.ap=parseInt(btn.getAttribute('data-idx'));
-          for(var k=0;k<all.length;k++) all[k].classList.toggle('on',k===G.ap);
-          updPO();
-        });
-      })(btns[j],btns);
-    }
-    // Score
-    if(G.score){
-      show('po-sc','block');
-      txt('po-sc-v',G.score+'/100');
-      W(function(){ var b=g('po-sc-b'); if(b) b.style.width=G.score+'%'; },150);
-    }
-    updPO();
-  }
-  g('po').classList.add('open');
-}
-function closePO(){ g('po').classList.remove('open'); }
-function updPO(){
-  var p=G.prompts[G.ap]; if(!p) return;
-  txt('po-type',p.type);
-  txt('po-ch',p.content.length+' chars');
-  var pt=g('po-txt'); if(pt) pt.textContent=p.content;
-}
-function copyP(){
-  var p=G.prompts[G.ap]; if(!p) return;
-  wClip(p.content);
-  var b=g('copy-btn');
-  if(b){ b.textContent='✓ Copied!'; W(function(){ b.textContent='Copy Prompt'; },2000); }
-}
-function exportAll(){
-  if(!G.prompts.length) return;
-  var out='';
-  for(var i=0;i<G.prompts.length;i++){
-    out+='## '+G.prompts[i].type+'\n\n'+G.prompts[i].content+(i<G.prompts.length-1?'\n\n---\n\n':'');
-  }
-  wClip(out);
-  alert('All '+G.prompts.length+' prompts copied as Markdown!');
-}
-function wClip(t){
-  try{
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).catch(function(){ fb(t); });
-    } else { fb(t); }
-  } catch(e){ fb(t); }
-}
-function fb(t){
-  try{
-    var ta=document.createElement('textarea');
-    ta.value=t; ta.style.cssText='position:fixed;opacity:0;top:0;left:0;width:2px;height:2px';
-    document.body.appendChild(ta); ta.focus(); ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  } catch(e){}
-}
-
-// ═══════════════════════════════════════════
-// RENDER FUNCTIONS
-// ═══════════════════════════════════════════
-function renderAg(){
-  var e=g('ag-rows'); if(!e) return;
-  var h='';
-  for(var i=0;i<AGTS.length;i++){
-    var a=AGTS[i], on=G.aAg.indexOf(a.id)>=0;
-    h+='<div class="ar'+(on?' lit':'')+'">'+
-      '<div class="ar-i" style="background:'+a.color+'22">'+a.icon+'</div>'+
-      '<div class="ar-inf"><h3 style="color:'+a.color+'">'+a.label+'</h3><p>'+a.desc+'</p></div>'+
-      '<div class="ar-st"><span class="dot"><span class="dc" style="background:'+(on?'#22d3a0':'#3a3a50')+';'+(on?'animation:pulse 2s infinite':'')+'">&nbsp;</span></span>'+
-      '<span style="color:'+(on?'#22d3a0':'#3a3a50')+'">'+(on?'Active':'Standby')+'</span></div></div>';
-  }
-  e.innerHTML=h;
-}
-
-function renderPj(){
-  var e=g('pj-rows'); if(!e) return;
-  var h='';
-  for(var i=0;i<PROJS.length;i++){
-    var p=PROJS[i], pl=getPl(p.pl);
-    h+='<div class="pr" data-id="'+p.id+'">'+
-      '<div class="pr-i">'+(pl?pl.icon:'◈')+'</div>'+
-      '<div class="pr-inf"><h3>'+p.name+'</h3>'+
-        '<div class="pr-bg">'+
-          '<span class="badge" style="background:#6b6b8022;color:#6b6b80;border:1px solid #6b6b8033">'+p.type+'</span>'+
-          '<span class="badge" style="background:'+(pl.color+'22')+';color:'+pl.color+';border:1px solid '+(pl.color+'33')+'">'+pl.label+'</span>'+
-        '</div></div>'+
-      '<div class="pr-sc"><div class="pr-sv" style="color:'+(p.sc>=90?'#22d3a0':'#f5a623')+'">'+p.sc+'</div><div class="pr-sl">score</div></div>'+
-      '<div class="pr-mt"><div class="pr-mp">'+p.pc+' prompts</div><div class="pr-md">'+p.date+'</div></div>'+
-    '</div>';
-  }
-  e.innerHTML=h;
-  var rows=e.querySelectorAll('.pr');
-  for(var j=0;j<rows.length;j++){
-    rows[j].addEventListener('click',function(){ setV('ws'); });
-  }
-}
-
-function renderPL(){
-  var sub=g('pl-sub'), list=g('pl-list'), cta=g('pl-cta');
-  if(!G.prompts.length){
-    if(sub) sub.textContent='No prompts yet — start a project first.';
-    if(list) list.innerHTML='';
-    if(cta) cta.style.display='block';
-    return;
-  }
-  if(cta) cta.style.display='none';
-  if(sub) sub.textContent=G.prompts.length+' prompts generated and ready.';
-  var h='';
-  for(var i=0;i<G.prompts.length;i++){
-    var p=G.prompts[i];
-    h+='<div class="pli'+(i===G.ap?' on':'')+'" data-pi="'+i+'">'+
-      '<div class="pli-h">'+
-        '<span class="badge" style="background:#7c5cfc22;color:#7c5cfc;border:1px solid #7c5cfc33">'+p.type+'</span>'+
-        '<span style="font-size:11px;color:#3a3a50">'+p.content.length+' chars</span>'+
-      '</div>'+
-      '<div class="pli-p">'+p.content.slice(0,180)+'</div>'+
-    '</div>';
-  }
-  if(list){
-    list.innerHTML=h;
-    var rows=list.querySelectorAll('.pli');
-    for(var j=0;j<rows.length;j++){
-      (function(row){
-        row.addEventListener('click',function(){
-          G.ap=parseInt(row.getAttribute('data-pi'));
-          openPO();
-        });
-      })(rows[j]);
-    }
-  }
-}
-
-// ═══════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function(){
-
-  // Build landing agents
-  var lag=g('land-ag');
-  if(lag){
-    for(var i=0;i<AGTS.length;i++){
-      var a=AGTS[i];
-      var d=document.createElement('div');
-      d.className='ag-card';
-      d.innerHTML='<div class="aci">'+a.icon+'</div><h3 style="color:'+a.color+'">'+a.label+'</h3><p>'+a.desc+'</p>';
-      lag.appendChild(d);
-    }
-  }
-
-  // Prompt overlay placeholders
-  var phs=g('po-phs');
-  if(phs){ for(var j=0;j<PTYPES.length;j++) phs.innerHTML+='<div style="padding:8px 12px;border-radius:8px;background:#111118;border:1px solid #1e1e2a;font-size:12px;color:#3a3a50;display:flex;align-items:center;gap:7px"><span style="width:5px;height:5px;border-radius:50%;background:#3a3a50;display:inline-block;flex-shrink:0"></span>'+PTYPES[j]+'</div>'; }
-
-  // Build input bar content
-  buildInputBar();
-
-  renderAg();
-  renderPj();
-
-  // ── LANDING EVENTS ──
-  function bindLand(id,fn){ var e=g(id); if(e) e.addEventListener('click',fn); }
-  bindLand('logo-land',  function(){ goLand(); });
-  bindLand('lnk-ws',     function(){ goApp('ws'); });
-  bindLand('lnk-agents', function(){ goApp('agents'); });
-  bindLand('lnk-projects',function(){ goApp('projects'); });
-  bindLand('l-cta-btn',  function(){ goApp('ws'); });
-
-  bindLand('l-start-btn', function(){
-    var inp=g('l-idea'); if(!inp) return;
-    var idea=(inp.value||'').trim();
-    if(!idea){ inp.focus(); return; }
-    var wi=g('inp-idea'); if(wi) wi.value=idea;
-    goApp('ws');
-    W(function(){ runFlow(idea); }, 100);
-  });
-
-  var li=g('l-idea');
-  if(li){
-    li.addEventListener('keydown',function(e){
-      if(e.key==='Enter'){
-        e.preventDefault();
-        var idea=(li.value||'').trim();
-        if(!idea) return;
-        var wi=g('inp-idea'); if(wi) wi.value=idea;
-        goApp('ws');
-        W(function(){ runFlow(idea); },100);
-      }
-    });
-  }
-
-  // ── APP NAV EVENTS ──
-  function bindApp(id,fn){ var e=g(id); if(e) e.addEventListener('click',fn); }
-  bindApp('logo-app',     function(){ goLand(); });
-  bindApp('aln-ws',       function(){ setV('ws'); });
-  bindApp('aln-prompts',  function(){ setV('prompts'); });
-  bindApp('aln-agents',   function(){ setV('agents'); });
-  bindApp('aln-projects', function(){ setV('projects'); });
-  bindApp('plsel',        null); // handled by change
-  var ps=g('plsel'); if(ps) ps.addEventListener('change',function(){ G.pl=this.value; });
-  bindApp('vpbtn',        function(){ openPO(); });
-  bindApp('new-proj-btn', function(){ setV('ws'); });
-  bindApp('pl-cta-btn',   function(){ setV('ws'); });
-
-  // ── PROMPT OVERLAY EVENTS ──
-  bindApp('po-close-btn', function(){ closePO(); });
-  bindApp('copy-btn',     function(){ copyP(); });
-  bindApp('export-btn',   function(){ exportAll(); });
-
-  // new-btn built dynamically — bind after DOM ready
-  W(function(){
-    var nb=g('new-btn'); if(nb) nb.addEventListener('click',function(){ resetFlow(); });
-  },100);
-
-});
-</script>
-</body>
-</html>
+  if(cat==='ai_tool')return[
+    {k:'name',     q:'What is the name of your AI tool?'},
+    {k:'function', q:'What exactly does it DO? Describe the input the user provides and the output it generates.'},
+    {k:'audience', q:'Who are the target users? (content creators, developers, marketers, students, businesses)'},
+    {k:'model',    q:'Which AI model should power it? (Claude / GPT-4o / Gemini / multi-model)'},
+    {k:'ux',       q:'What is the UX? (chat interface / form-based / one-click / step-by-step wizard)'},
+    {k:'memory',   q:'Should it remember user history across sessions?',t:'yn'},
+    {k:'monetize', q:'Monetization? (freemium / subscription / pay-per-use / API access)'},
+    {k:'style',    q:'What visual style fits best?',t:'st'}
